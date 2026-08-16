@@ -1,24 +1,307 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { BookOpen, Library, Play, Radio, ShoppingBag, Sunrise } from "lucide-react";
+import pastors from "@/assets/images/meet-our-pastors.jpg";
+import pastorChukz from "@/assets/images/pastor-chukz.jpeg";
+import { EventCountdown, NEXT_SERVICE } from "@/components/site/EventCountdown";
+import { Card, Eyebrow, PillLink, Section, SectionHeading, StatCard } from "@/components/site/ui";
+import { PLACEHOLDER, SITE } from "@/data/site";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
+const title = "Fountain of Life Church USA | Faith, Worship & Purpose";
+const description =
+  "A place of faith, worship and purpose in Indianapolis. Join Fountain of Life Church USA in person or online for services, devotionals and teachings.";
+
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title },
+      { name: "description", content: description },
+      { property: "og:title", content: title },
+      { property: "og:description", content: description },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "/" },
+      { name: "twitter:title", content: title },
+      { name: "twitter:description", content: description },
+    ],
+    links: [{ rel: "canonical", href: "/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Church",
+          name: SITE.name,
+          url: SITE.domain,
+          telephone: SITE.phone,
+          email: SITE.email,
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: "2415 Directors Row, Suite H",
+            addressLocality: "Indianapolis",
+            addressRegion: "IN",
+            postalCode: "46241",
+            addressCountry: "US",
+          },
+        }),
+      },
+    ],
+  }),
+  component: HomePage,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+const offerings = [
+  {
+    icon: Radio,
+    title: "Livestream Services",
+    body: "Join every Sunday and midweek gathering live from anywhere in the world.",
+    to: "/livestream" as const,
+    tone: "light" as const,
+  },
+  {
+    icon: Sunrise,
+    title: "Daily Devotional",
+    body: "A fresh word, prayer and declaration for every day of the year.",
+    to: "/devotional" as const,
+    tone: "accent" as const,
+  },
+  {
+    icon: Library,
+    title: "Teachings Library",
+    body: "Series, audio and articles that ground your faith in the Word.",
+    to: "/teachings" as const,
+    tone: "deep" as const,
+  },
+  {
+    icon: ShoppingBag,
+    title: "Book Store",
+    body: "Books and study resources from our pastors and guest ministers.",
+    to: "/books" as const,
+    tone: "light" as const,
+  },
+];
+
+const gallery = [
+  { src: PLACEHOLDER.worship, caption: "Sunday Celebration", span: "sm:col-span-2 sm:row-span-2" },
+  { src: PLACEHOLDER.prayer, caption: "Hour of Prayer", span: "" },
+  { src: PLACEHOLDER.choir, caption: "Worship Team", span: "" },
+  { src: PLACEHOLDER.outreach, caption: "City Outreach", span: "sm:col-span-2" },
+  { src: PLACEHOLDER.youth, caption: "Youth Night", span: "" },
+];
+
+function HomePage() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <>
+      <section className="relative isolate overflow-hidden bg-deep text-deep-foreground">
+        <img
+          src={PLACEHOLDER.worship}
+          alt="Worshippers with hands raised during a church service"
+          className="absolute inset-0 -z-10 size-full object-cover opacity-30"
+        />
+        <div className="container-flc grid gap-10 py-20 sm:py-28 lg:grid-cols-[1.15fr_1fr] lg:items-center">
+          <div>
+            <Eyebrow tone="light">Indianapolis · Sundays 10:00 AM</Eyebrow>
+            <h1 className="mt-5 font-display text-4xl leading-[1.05] font-black sm:text-6xl">
+              Discover Your <span className="text-accent">Purpose</span>, Inheritance & Destiny in
+              Christ
+            </h1>
+            <p className="mt-5 max-w-xl text-base text-deep-foreground/80">
+              We welcome you with great joy to Fountain of Life Church USA — a family sharing the
+              good news of Jesus Christ with all who will listen.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center gap-4">
+              <PillLink to="/contact" variant="accent">
+                Plan a Visit
+              </PillLink>
+              <Link
+                to="/livestream"
+                className="inline-flex items-center gap-3 text-sm font-semibold text-deep-foreground hover:text-accent"
+              >
+                <span className="grid size-11 place-items-center rounded-full border border-deep-foreground/30">
+                  <Play className="size-4" aria-hidden="true" />
+                </span>
+                Watch Live
+              </Link>
+            </div>
+          </div>
+
+          <div className="lg:justify-self-end">
+            <div className="rounded-[2rem] border border-deep-foreground/15 bg-deep/80 p-6 backdrop-blur">
+              <p className="text-xs font-semibold tracking-wide uppercase text-accent">
+                A growing family
+              </p>
+              <dl className="mt-4 grid grid-cols-3 gap-4 text-center">
+                {[
+                  ["12+", "Years active"],
+                  ["2.5K", "Members"],
+                  ["9", "Cities reached"],
+                ].map(([v, l]) => (
+                  <div key={l}>
+                    <dt className="sr-only">{l}</dt>
+                    <dd className="font-display text-3xl font-black text-accent">{v}</dd>
+                    <p className="mt-1 text-xs text-deep-foreground/70">{l}</p>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <Section tone="cream">
+        <SectionHeading
+          eyebrow="About us"
+          title="God has a clear purpose for you, and we are here to help you discover it"
+          intro="The name of the Lord is a strong tower; the righteous run into it and are safe. At Fountain of Life Church USA we strengthen your spiritual and prayer life so you grow in faith with a family beside you."
+        />
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <StatCard value="12+" label="Years of ministry" />
+          <StatCard value="14" label="Active ministries" tone="accent" />
+          <StatCard value="6" label="Countries reached" />
+          <StatCard value="2,500+" label="Members & partners" tone="deep" />
+        </div>
+      </Section>
+
+      <Section tone="white">
+        <SectionHeading
+          eyebrow="What we offer"
+          title="Everything you need to grow, all in one place"
+          intro="Whether you gather with us in Indianapolis or online, these are the doors into the life of the church."
+        />
+        <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {offerings.map((o) => {
+            const Icon = o.icon;
+            return (
+              <li key={o.title}>
+                <div
+                  className={[
+                    "flex h-full flex-col rounded-3xl p-6",
+                    o.tone === "light" && "border border-border bg-card",
+                    o.tone === "accent" && "bg-accent text-accent-foreground",
+                    o.tone === "deep" && "bg-deep text-deep-foreground",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                >
+                  <Icon className="size-8" aria-hidden="true" />
+                  <h3 className="mt-6 font-display text-lg font-bold">{o.title}</h3>
+                  <p className="mt-2 text-sm opacity-80">{o.body}</p>
+                  <Link
+                    to={o.to}
+                    className="mt-6 inline-flex min-h-11 w-fit items-center gap-2 rounded-full border border-current/30 px-4 text-sm font-semibold"
+                  >
+                    Learn more <span aria-hidden="true">→</span>
+                  </Link>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </Section>
+
+      <Section tone="cream">
+        <SectionHeading
+          eyebrow="Our gallery"
+          title="Moments from the house of God"
+          intro="Highlights from services, outreaches and gatherings across our church family."
+        />
+        <ul className="mt-10 grid auto-rows-[180px] grid-cols-1 gap-4 sm:grid-cols-4">
+          {gallery.map((g) => (
+            <li key={g.caption} className={`relative overflow-hidden rounded-3xl ${g.span}`}>
+              <img src={g.src} alt={g.caption} loading="lazy" className="size-full object-cover" />
+              <span className="absolute bottom-3 left-3 rounded-full bg-deep/85 px-3 py-1 text-xs font-semibold text-deep-foreground">
+                {g.caption}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </Section>
+
+      <EventCountdown {...NEXT_SERVICE} />
+
+      <Section tone="white">
+        <SectionHeading
+          eyebrow="From our leaders"
+          title="A word from the house"
+          intro="Our pastors carry a heart to see every believer walk in purpose."
+        />
+        <div className="mt-10 grid gap-6 lg:grid-cols-2">
+          <Card className="flex flex-col gap-6 sm:flex-row sm:items-center">
+            <img
+              src={pastorChukz}
+              alt="Pastor Chukz, Senior Pastor of Fountain of Life Church USA"
+              className="size-24 shrink-0 rounded-3xl object-cover object-top"
+            />
+            <div>
+              <blockquote className="text-base leading-relaxed">
+                “Pray and listen to God. At Fountain of Life Church we are here to strengthen your
+                spiritual and prayer life. Let's grow together in faith.”
+              </blockquote>
+              <p className="mt-4 font-display font-bold">Pastor Chukz</p>
+              <p className="text-sm text-muted-foreground">Senior Pastor</p>
+            </div>
+          </Card>
+          <Card className="flex flex-col gap-6 sm:flex-row sm:items-center">
+            <img
+              src={pastors}
+              alt="The senior pastors of Fountain of Life Church USA"
+              className="size-24 shrink-0 rounded-3xl object-cover object-top"
+            />
+            <div>
+              <blockquote className="text-base leading-relaxed">
+                “We welcome you with great joy. Come as you are — there is room for your family in
+                this house.”
+              </blockquote>
+              <p className="mt-4 font-display font-bold">Our Senior Pastors</p>
+              <p className="text-sm text-muted-foreground">Fountain of Life Church USA</p>
+            </div>
+          </Card>
+        </div>
+      </Section>
+
+      <section className="bg-accent py-14 text-accent-foreground">
+        <div className="container-flc grid gap-6 md:grid-cols-[1.4fr_auto] md:items-center">
+          <div>
+            <h2 className="font-display text-3xl font-black sm:text-4xl">
+              There is a place for you this Sunday
+            </h2>
+            <p className="mt-2 max-w-xl text-sm">
+              Plan your visit to {SITE.address}, or partner with the work of the ministry through
+              your giving.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <PillLink to="/contact" variant="primary">
+              Plan a Visit
+            </PillLink>
+            <PillLink to="/give" variant="outline">
+              Give Now
+            </PillLink>
+          </div>
+        </div>
+      </section>
+
+      <Section tone="cream">
+        <div className="grid gap-6 rounded-[2rem] border border-border bg-card p-8 md:grid-cols-2 md:items-center">
+          <div>
+            <Eyebrow>Free monthly devotional</Eyebrow>
+            <h2 className="mt-4 text-2xl font-bold sm:text-3xl">Every month you will receive</h2>
+            <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
+              <li>A daily, uplifting devotional to meditate on and personalise.</li>
+              <li>Inspiring Bible quotations to deepen the day's message.</li>
+              <li>Prayers and declarations to boldly speak over your life.</li>
+              <li>A Bible reading plan to guide you through the Bible in one year.</li>
+            </ul>
+            <PillLink to="/devotional" className="mt-6">
+              <BookOpen className="size-4" aria-hidden="true" /> Read today's devotional
+            </PillLink>
+          </div>
+          <img
+            src={PLACEHOLDER.bible}
+            alt="An open Bible on a wooden table"
+            loading="lazy"
+            className="aspect-[4/3] w-full rounded-3xl object-cover"
+          />
+        </div>
+      </Section>
+    </>
   );
 }
