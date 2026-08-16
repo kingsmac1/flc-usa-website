@@ -10,33 +10,167 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as BooksRouteImport } from './routes/books'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as GiveRouteImport } from './routes/give'
+import { Route as LivestreamRouteImport } from './routes/livestream'
+import { Route as MinistriesRouteImport } from './routes/ministries'
+import { Route as DevotionalIndexRouteImport } from './routes/devotional.index'
+import { Route as DevotionalDateRouteImport } from './routes/devotional.$date'
+import { Route as TeachingsIndexRouteImport } from './routes/teachings.index'
+import { Route as TeachingsSeriesRouteImport } from './routes/teachings.$series'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BooksRoute = BooksRouteImport.update({
+  id: '/books',
+  path: '/books',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GiveRoute = GiveRouteImport.update({
+  id: '/give',
+  path: '/give',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LivestreamRoute = LivestreamRouteImport.update({
+  id: '/livestream',
+  path: '/livestream',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MinistriesRoute = MinistriesRouteImport.update({
+  id: '/ministries',
+  path: '/ministries',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DevotionalIndexRoute = DevotionalIndexRouteImport.update({
+  id: '/devotional/',
+  path: '/devotional/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DevotionalDateRoute = DevotionalDateRouteImport.update({
+  id: '/devotional/$date',
+  path: '/devotional/$date',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TeachingsIndexRoute = TeachingsIndexRouteImport.update({
+  id: '/teachings/',
+  path: '/teachings/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TeachingsSeriesRoute = TeachingsSeriesRouteImport.update({
+  id: '/teachings/$series',
+  path: '/teachings/$series',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/books': typeof BooksRoute
+  '/contact': typeof ContactRoute
+  '/give': typeof GiveRoute
+  '/livestream': typeof LivestreamRoute
+  '/ministries': typeof MinistriesRoute
+  '/devotional/$date': typeof DevotionalDateRoute
+  '/teachings/$series': typeof TeachingsSeriesRoute
+  '/devotional/': typeof DevotionalIndexRoute
+  '/teachings/': typeof TeachingsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/books': typeof BooksRoute
+  '/contact': typeof ContactRoute
+  '/give': typeof GiveRoute
+  '/livestream': typeof LivestreamRoute
+  '/ministries': typeof MinistriesRoute
+  '/devotional/$date': typeof DevotionalDateRoute
+  '/teachings/$series': typeof TeachingsSeriesRoute
+  '/devotional': typeof DevotionalIndexRoute
+  '/teachings': typeof TeachingsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/books': typeof BooksRoute
+  '/contact': typeof ContactRoute
+  '/give': typeof GiveRoute
+  '/livestream': typeof LivestreamRoute
+  '/ministries': typeof MinistriesRoute
+  '/devotional/$date': typeof DevotionalDateRoute
+  '/teachings/$series': typeof TeachingsSeriesRoute
+  '/devotional/': typeof DevotionalIndexRoute
+  '/teachings/': typeof TeachingsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/books'
+    | '/contact'
+    | '/give'
+    | '/livestream'
+    | '/ministries'
+    | '/devotional/$date'
+    | '/teachings/$series'
+    | '/devotional/'
+    | '/teachings/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/about'
+    | '/books'
+    | '/contact'
+    | '/give'
+    | '/livestream'
+    | '/ministries'
+    | '/devotional/$date'
+    | '/teachings/$series'
+    | '/devotional'
+    | '/teachings'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/books'
+    | '/contact'
+    | '/give'
+    | '/livestream'
+    | '/ministries'
+    | '/devotional/$date'
+    | '/teachings/$series'
+    | '/devotional/'
+    | '/teachings/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  BooksRoute: typeof BooksRoute
+  ContactRoute: typeof ContactRoute
+  GiveRoute: typeof GiveRoute
+  LivestreamRoute: typeof LivestreamRoute
+  MinistriesRoute: typeof MinistriesRoute
+  DevotionalDateRoute: typeof DevotionalDateRoute
+  TeachingsSeriesRoute: typeof TeachingsSeriesRoute
+  DevotionalIndexRoute: typeof DevotionalIndexRoute
+  TeachingsIndexRoute: typeof TeachingsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +182,91 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/books': {
+      id: '/books'
+      path: '/books'
+      fullPath: '/books'
+      preLoaderRoute: typeof BooksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/give': {
+      id: '/give'
+      path: '/give'
+      fullPath: '/give'
+      preLoaderRoute: typeof GiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/livestream': {
+      id: '/livestream'
+      path: '/livestream'
+      fullPath: '/livestream'
+      preLoaderRoute: typeof LivestreamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ministries': {
+      id: '/ministries'
+      path: '/ministries'
+      fullPath: '/ministries'
+      preLoaderRoute: typeof MinistriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/devotional/': {
+      id: '/devotional/'
+      path: '/devotional'
+      fullPath: '/devotional/'
+      preLoaderRoute: typeof DevotionalIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/devotional/$date': {
+      id: '/devotional/$date'
+      path: '/devotional/$date'
+      fullPath: '/devotional/$date'
+      preLoaderRoute: typeof DevotionalDateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/teachings/': {
+      id: '/teachings/'
+      path: '/teachings'
+      fullPath: '/teachings/'
+      preLoaderRoute: typeof TeachingsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/teachings/$series': {
+      id: '/teachings/$series'
+      path: '/teachings/$series'
+      fullPath: '/teachings/$series'
+      preLoaderRoute: typeof TeachingsSeriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  BooksRoute: BooksRoute,
+  ContactRoute: ContactRoute,
+  GiveRoute: GiveRoute,
+  LivestreamRoute: LivestreamRoute,
+  MinistriesRoute: MinistriesRoute,
+  DevotionalDateRoute: DevotionalDateRoute,
+  TeachingsSeriesRoute: TeachingsSeriesRoute,
+  DevotionalIndexRoute: DevotionalIndexRoute,
+  TeachingsIndexRoute: TeachingsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
