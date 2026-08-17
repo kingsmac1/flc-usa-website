@@ -2,7 +2,7 @@ export type GiftIntentInput = {
   amount: number;
   frequency: "One-time" | "Weekly" | "Monthly";
   fund: string;
-  email?: string;
+  email?: string | undefined;
   origin: string;
 };
 

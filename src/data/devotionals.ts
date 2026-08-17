@@ -66,7 +66,7 @@ export function getDevotional(date: string): Devotional {
   const exact = DEVOTIONALS.find((d) => d.date === date);
   if (exact) return exact;
   const sorted = [...DEVOTIONALS].sort((a, b) => (a.date < b.date ? 1 : -1));
-  const previous = sorted.find((d) => d.date <= date) ?? sorted[0];
+  const previous = (sorted.find((d) => d.date <= date) ?? sorted[0]) as Devotional;
   return { ...previous, date };
 }
 
