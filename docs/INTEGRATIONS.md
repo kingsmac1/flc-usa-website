@@ -44,3 +44,4 @@ Never put these keys in the React components.
 - Add one line to `DEVOTIONAL_PDFS` in `src/data/devotionals.ts`:
   `{ month: "2026-08", label: "August 2026", file: "/devotional-pdfs/2026-08.pdf" }`.
 - The download button on the devotional page enables itself for that month.
+- Nothing
