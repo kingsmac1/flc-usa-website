@@ -216,8 +216,8 @@ function HomePage() {
 
       <Section tone="white">
         <SectionHeading
-          eyebrow="From our leaders"
-          title="A word from our lead pastors"
+          eyebrow="Our Lead Pastors"
+          title="A word about our Lead Pastors"
           intro="Pastor Chukz and Pastor Mrs. Chukz carry a heart to see every believer walk in purpose."
         />
         <div className="mt-10 grid gap-6 lg:grid-cols-2">
@@ -227,7 +227,7 @@ function HomePage() {
                 src={l.img}
                 alt={`${l.name}, ${l.role} of Fountain of Life Church USA`}
                 loading="lazy"
-                className="size-24 shrink-0 rounded-3xl object-cover object-top"
+                className="size-80 shrink-0 rounded-3xl object-cover object-top sm:size-64 lg:size-48"
               />
               <div>
                 <p className="text-base leading-relaxed">{l.bio[0]}</p>
