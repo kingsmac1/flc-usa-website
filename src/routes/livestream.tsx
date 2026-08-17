@@ -1,13 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { BiblePanel } from "@/components/site/BiblePanel";
 import { CommentFeed } from "@/components/site/CommentFeed";
 import { EventCountdown, NEXT_SERVICE } from "@/components/site/EventCountdown";
+import { GiveWidget } from "@/components/site/GiveWidget";
 import { LivestreamPlayer } from "@/components/site/LivestreamPlayer";
 import { Section, SectionHeading } from "@/components/site/ui";
+import { getLiveStatus } from "@/lib/youtube.functions";
 
 const title = "Watch Live | Fountain of Life Church USA";
 const description =
-  "Join Fountain of Life Church USA live online. Follow the scripture alongside the stream and worship with the family from anywhere.";
+  "Join Fountain of Life Church USA live online. Follow the scripture alongside the stream, give, and worship with the family from anywhere.";
 
 export const Route = createFileRoute("/livestream")({
   head: () => ({
@@ -27,6 +31,13 @@ export const Route = createFileRoute("/livestream")({
 });
 
 function LivestreamPage() {
+  const fetchStatus = useServerFn(getLiveStatus);
+  const { data } = useQuery({
+    queryKey: ["youtube-live"],
+    queryFn: () => fetchStatus({}),
+    refetchInterval: 60_000,
+  });
+
   return (
     <>
       <Section tone="deep">
@@ -40,11 +51,16 @@ function LivestreamPage() {
 
       <Section tone="cream">
         <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
-          <LivestreamPlayer isLive={false} videoId={null} />
+          <LivestreamPlayer
+            isLive={data?.isLive ?? false}
+            videoId={data?.videoId ?? null}
+            title={data?.title}
+          />
           <BiblePanel />
         </div>
-        <div className="mt-6">
+        <div className="mt-6 grid gap-6 lg:grid-cols-[1.6fr_1fr]">
           <CommentFeed />
+          <GiveWidget compact />
         </div>
       </Section>
 
