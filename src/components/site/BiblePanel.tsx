@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { BookOpen, Loader2 } from "lucide-react";
@@ -29,6 +29,12 @@ export function BiblePanel() {
     queryFn: () => fetchPassage({ data: { reference } }),
     staleTime: 5 * 60 * 1000,
   });
+
+  const selectedRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    selectedRef.current?.scrollIntoView({ block: "center", behavior: "smooth" });
+  }, [data]);
 
   const selectClass =
     "min-h-11 w-full rounded-full border border-border bg-card px-4 text-sm focus-visible:outline-2 focus-visible:outline-accent";
@@ -78,14 +84,27 @@ export function BiblePanel() {
           {data?.reference ?? reference}
           {isFetching ? <Loader2 className="size-3.5 animate-spin" aria-hidden="true" /> : null}
         </p>
-        <blockquote aria-live="polite" className="mt-2 text-base leading-relaxed">
-          {data?.text ?? "Loading passage…"}
-        </blockquote>
-        {data?.source === "placeholder" ? (
-          <p className="mt-3 text-xs text-muted-foreground">
-            Add your Bible API key to stream live scripture text here.
-          </p>
-        ) : null}
+
+        <div className="mt-2 max-h-[420px] overflow-y-auto pr-1 space-y-2" aria-live="polite">
+          {data ? (
+            data.verses.map((v) => (
+              <p
+                key={v.number}
+                ref={v.number === data.selectedVerse ? selectedRef : undefined}
+                className={
+                  v.number === data.selectedVerse
+                    ? "rounded-xl bg-primary/10 p-2 text-base leading-relaxed font-medium"
+                    : "p-2 text-base leading-relaxed text-muted-foreground"
+                }
+              >
+                <span className="mr-1 text-xs font-semibold align-super">{v.number}</span>
+                {v.text}
+              </p>
+            ))
+          ) : (
+            <p className="text-base leading-relaxed">Loading passage…</p>
+          )}
+        </div>
       </div>
     </aside>
   );
