@@ -35,6 +35,25 @@ export function DevotionalArticle({ date }: { date: string }) {
               <h2 className="font-display text-base font-bold">Prayer</h2>
               <p className="mt-2 text-sm text-muted-foreground">{devotional.prayer}</p>
             </div>
+            {devotional.declarations?.length ? (
+              <div className="mt-4 rounded-3xl border border-accent/40 bg-accent/10 p-5">
+                <h2 className="font-display text-base font-bold">Declarations</h2>
+                <ul className="mt-2 space-y-2 text-sm text-muted-foreground">
+                  {devotional.declarations.map((d) => (
+                    <li key={d}>“{d}”</li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-3 text-sm text-muted-foreground">
+              {devotional.readingPlan ? (
+                <p>
+                  <span className="font-semibold text-foreground">Bible reading plan:</span>{" "}
+                  {devotional.readingPlan}
+                </p>
+              ) : null}
+              {devotional.author ? <p>Written by {devotional.author}</p> : null}
+            </div>
           </article>
           <DevotionalCalendar value={date} />
         </div>

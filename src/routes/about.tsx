@@ -1,8 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import pastors from "@/assets/images/meet-our-pastors.jpg";
-import pastorChukz from "@/assets/images/pastor-chukz.jpeg";
-import { Card, Section, SectionHeading, StatCard } from "@/components/site/ui";
-import { PLACEHOLDER } from "@/data/site";
+import { Card, Section, SectionHeading } from "@/components/site/ui";
+import { LEAD_PASTORS } from "@/data/pastors";
 
 const title = "About Us | Fountain of Life Church USA";
 const description =
@@ -44,13 +42,6 @@ const beliefs = [
   },
 ];
 
-const leaders = [
-  { name: "Pastor Chukz", role: "Senior Pastor", img: pastorChukz },
-  { name: "Our Senior Pastors", role: "Lead Ministers", img: pastors },
-  { name: "Placeholder Name", role: "Associate Pastor", img: PLACEHOLDER.congregation },
-  { name: "Placeholder Name", role: "Worship Pastor", img: PLACEHOLDER.choir },
-];
-
 function AboutPage() {
   return (
     <>
@@ -81,12 +72,6 @@ function AboutPage() {
             </p>
           </Card>
         </div>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <StatCard value="12+" label="Years of ministry" />
-          <StatCard value="14" label="Active ministries" tone="accent" />
-          <StatCard value="6" label="Countries reached" />
-          <StatCard value="2,500+" label="Members & partners" tone="deep" />
-        </div>
       </Section>
 
       <Section tone="white">
@@ -110,21 +95,26 @@ function AboutPage() {
       <Section tone="cream">
         <SectionHeading
           eyebrow="Leadership"
-          title="Meet our pastors and leaders"
-          intro="Placeholder profiles — real photos and bios will be swapped in."
+          title="Meet our lead pastors"
+          intro="Fountain of Life Church USA is led by Pastor Chukz and his wife, Pastor Mrs. Chukz."
         />
-        <ul className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {leaders.map((l, i) => (
-            <li key={`${l.name}-${i}`} className="overflow-hidden rounded-3xl border border-border bg-card">
+        <ul className="mt-10 grid gap-8 lg:grid-cols-2">
+          {LEAD_PASTORS.map((l) => (
+            <li key={l.name} className="overflow-hidden rounded-[2rem] border border-border bg-card">
               <img
                 src={l.img}
-                alt={`${l.name}, ${l.role}`}
+                alt={`${l.name}, ${l.role} of Fountain of Life Church USA`}
                 loading="lazy"
-                className="aspect-[4/5] w-full object-cover object-top"
+                className="aspect-[4/3] w-full object-cover object-top"
               />
-              <div className="p-5">
-                <h3 className="font-display text-lg font-bold">{l.name}</h3>
-                <p className="text-sm text-muted-foreground">{l.role}</p>
+              <div className="p-7">
+                <h3 className="font-display text-2xl font-bold">{l.name}</h3>
+                <p className="text-sm font-semibold text-muted-foreground">{l.role}</p>
+                <div className="mt-4 space-y-3 text-sm leading-relaxed text-muted-foreground">
+                  {l.bio.map((para) => (
+                    <p key={para.slice(0, 32)}>{para}</p>
+                  ))}
+                </div>
               </div>
             </li>
           ))}

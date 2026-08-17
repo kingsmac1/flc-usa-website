@@ -17,7 +17,9 @@ function nextSundayAt(hour: number) {
 }
 
 export const NEXT_SERVICE: EventCountdownProps = {
-  target: nextSundayAt(10),
+  get target() {
+    return nextSundayAt(10);
+  },
   title: "Sunday Celebration Service",
   type: "Weekly Service",
 };
@@ -33,25 +35,64 @@ function diff(target: Date) {
   };
 }
 
-export function EventCountdown({ target, title, type }: EventCountdownProps) {
+function useCountdown(target: Date) {
   const [remaining, setRemaining] = useState<ReturnType<typeof diff>>(null);
   const [mounted, setMounted] = useState(false);
+  const time = target.getTime();
 
   useEffect(() => {
     setMounted(true);
-    setRemaining(diff(target));
-    const id = window.setInterval(() => setRemaining(diff(target)), 1000);
+    setRemaining(diff(new Date(time)));
+    const id = window.setInterval(() => setRemaining(diff(new Date(time))), 1000);
     return () => window.clearInterval(id);
-  }, [target]);
+  }, [time]);
 
-  const units = remaining
-    ? [
-        { label: "Days", value: remaining.days },
-        { label: "Hours", value: remaining.hours },
-        { label: "Minutes", value: remaining.minutes },
-        { label: "Seconds", value: remaining.seconds },
-      ]
-    : [];
+  return { remaining, mounted };
+}
+
+function units(remaining: NonNullable<ReturnType<typeof diff>>) {
+  return [
+    { label: "Days", value: remaining.days },
+    { label: "Hours", value: remaining.hours },
+    { label: "Minutes", value: remaining.minutes },
+    { label: "Seconds", value: remaining.seconds },
+  ];
+}
+
+/** Compact countdown used inside the hero. */
+export function ServiceCountdownCard({ target, title }: { target: Date; title: string }) {
+  const { remaining, mounted } = useCountdown(target);
+
+  return (
+    <div className="rounded-[2rem] border border-deep-foreground/15 bg-deep/80 p-6 backdrop-blur">
+      <p className="inline-flex items-center gap-2 text-xs font-semibold tracking-wide uppercase text-accent">
+        <CalendarClock className="size-3.5" aria-hidden="true" />
+        Next service starts in
+      </p>
+      <dl className="mt-4 grid grid-cols-4 gap-3 text-center">
+        {(mounted && remaining ? units(remaining) : [
+          { label: "Days", value: 0 },
+          { label: "Hours", value: 0 },
+          { label: "Minutes", value: 0 },
+          { label: "Seconds", value: 0 },
+        ]).map((u) => (
+          <div key={u.label} className="rounded-2xl border border-deep-foreground/15 py-3">
+            <dd className="font-display text-2xl font-black tabular-nums text-accent sm:text-3xl">
+              {mounted && remaining ? String(u.value).padStart(2, "0") : "--"}
+            </dd>
+            <dt className="mt-1 text-[0.65rem] uppercase text-deep-foreground/70">{u.label}</dt>
+          </div>
+        ))}
+      </dl>
+      <p className="mt-4 text-sm text-deep-foreground/75">
+        {mounted && !remaining ? "We are live right now — join the service." : title}
+      </p>
+    </div>
+  );
+}
+
+export function EventCountdown({ target, title, type }: EventCountdownProps) {
+  const { remaining, mounted } = useCountdown(target);
 
   return (
     <section className="bg-deep py-16 text-deep-foreground sm:py-20">
@@ -62,15 +103,11 @@ export function EventCountdown({ target, title, type }: EventCountdownProps) {
             {type}
           </span>
           <h2 className="mt-4 text-3xl font-bold sm:text-4xl">{title}</h2>
-          <p className="mt-3 max-w-md text-sm text-deep-foreground/75">
-            {target.toLocaleDateString(undefined, {
-              weekday: "long",
-              month: "long",
-              day: "numeric",
-            })}{" "}
-            at{" "}
-            {target.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })} — join us
-            in person in Indianapolis or online from anywhere.
+          <p className="mt-3 max-w-md text-sm text-deep-foreground/75" suppressHydrationWarning>
+            {mounted
+              ? `${target.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })} at ${target.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })} — `
+              : "Every Sunday at 10:00 AM — "}
+            join us in person in Indianapolis or online from anywhere.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <PillLink to="/livestream" variant="accent">
@@ -89,11 +126,8 @@ export function EventCountdown({ target, title, type }: EventCountdownProps) {
             </p>
           ) : remaining ? (
             <ul className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-              {units.map((u) => (
-                <li
-                  key={u.label}
-                  className="rounded-3xl border border-deep-foreground/20 bg-deep p-4 text-center"
-                >
+              {units(remaining).map((u) => (
+                <li key={u.label} className="rounded-3xl border border-deep-foreground/20 bg-deep p-4 text-center">
                   <span className="block font-display text-3xl font-black tabular-nums text-accent">
                     {String(u.value).padStart(2, "0")}
                   </span>

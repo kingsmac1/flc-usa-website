@@ -1,9 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { BookOpen, Library, Play, Radio, ShoppingBag, Sunrise } from "lucide-react";
-import pastors from "@/assets/images/meet-our-pastors.jpg";
-import pastorChukz from "@/assets/images/pastor-chukz.jpeg";
-import { EventCountdown, NEXT_SERVICE } from "@/components/site/EventCountdown";
-import { Card, Eyebrow, PillLink, Section, SectionHeading, StatCard } from "@/components/site/ui";
+import { EventCountdown, NEXT_SERVICE, ServiceCountdownCard } from "@/components/site/EventCountdown";
+import { Card, Eyebrow, PillLink, Section, SectionHeading } from "@/components/site/ui";
+import { LEAD_PASTORS, WELCOME } from "@/data/pastors";
 import { PLACEHOLDER, SITE } from "@/data/site";
 
 const title = "Fountain of Life Church USA | Faith, Worship & Purpose";
@@ -123,40 +122,38 @@ function HomePage() {
             </div>
           </div>
 
-          <div className="lg:justify-self-end">
-            <div className="rounded-[2rem] border border-deep-foreground/15 bg-deep/80 p-6 backdrop-blur">
-              <p className="text-xs font-semibold tracking-wide uppercase text-accent">
-                A growing family
-              </p>
-              <dl className="mt-4 grid grid-cols-3 gap-4 text-center">
-                {[
-                  ["12+", "Years active"],
-                  ["2.5K", "Members"],
-                  ["9", "Cities reached"],
-                ].map(([v, l]) => (
-                  <div key={l}>
-                    <dt className="sr-only">{l}</dt>
-                    <dd className="font-display text-3xl font-black text-accent">{v}</dd>
-                    <p className="mt-1 text-xs text-deep-foreground/70">{l}</p>
-                  </div>
-                ))}
-              </dl>
-            </div>
+          <div className="lg:justify-self-end lg:w-full lg:max-w-sm">
+            <ServiceCountdownCard target={NEXT_SERVICE.target} title={NEXT_SERVICE.title} />
           </div>
         </div>
       </section>
 
       <Section tone="cream">
-        <SectionHeading
-          eyebrow="About us"
-          title="God has a clear purpose for you, and we are here to help you discover it"
-          intro="The name of the Lord is a strong tower; the righteous run into it and are safe. At Fountain of Life Church USA we strengthen your spiritual and prayer life so you grow in faith with a family beside you."
-        />
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <StatCard value="12+" label="Years of ministry" />
-          <StatCard value="14" label="Active ministries" tone="accent" />
-          <StatCard value="6" label="Countries reached" />
-          <StatCard value="2,500+" label="Members & partners" tone="deep" />
+        <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+          <img
+            src={WELCOME.image}
+            alt={WELCOME.imageAlt}
+            className="aspect-[4/5] w-full rounded-[2rem] object-cover object-top"
+          />
+          <div>
+            <Eyebrow>{WELCOME.eyebrow}</Eyebrow>
+            <h2 className="mt-5 font-display text-3xl font-black leading-tight sm:text-4xl">
+              {WELCOME.heading}
+            </h2>
+            <div className="mt-5 space-y-4 text-base leading-relaxed text-muted-foreground">
+              {WELCOME.paragraphs.map((p) => (
+                <p key={p.slice(0, 32)}>{p}</p>
+              ))}
+            </div>
+            <p className="mt-6 font-display text-lg font-bold">{WELCOME.signature}</p>
+            <p className="text-sm text-muted-foreground">{WELCOME.role}</p>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <PillLink to="/about">Meet our pastors</PillLink>
+              <PillLink to="/contact" variant="outline">
+                Plan a Visit
+              </PillLink>
+            </div>
+          </div>
         </div>
       </Section>
 
@@ -220,40 +217,25 @@ function HomePage() {
       <Section tone="white">
         <SectionHeading
           eyebrow="From our leaders"
-          title="A word from the house"
-          intro="Our pastors carry a heart to see every believer walk in purpose."
+          title="A word from our lead pastors"
+          intro="Pastor Chukz and Pastor Mrs. Chukz carry a heart to see every believer walk in purpose."
         />
         <div className="mt-10 grid gap-6 lg:grid-cols-2">
-          <Card className="flex flex-col gap-6 sm:flex-row sm:items-center">
-            <img
-              src={pastorChukz}
-              alt="Pastor Chukz, Senior Pastor of Fountain of Life Church USA"
-              className="size-24 shrink-0 rounded-3xl object-cover object-top"
-            />
-            <div>
-              <blockquote className="text-base leading-relaxed">
-                “Pray and listen to God. At Fountain of Life Church we are here to strengthen your
-                spiritual and prayer life. Let's grow together in faith.”
-              </blockquote>
-              <p className="mt-4 font-display font-bold">Pastor Chukz</p>
-              <p className="text-sm text-muted-foreground">Senior Pastor</p>
-            </div>
-          </Card>
-          <Card className="flex flex-col gap-6 sm:flex-row sm:items-center">
-            <img
-              src={pastors}
-              alt="The senior pastors of Fountain of Life Church USA"
-              className="size-24 shrink-0 rounded-3xl object-cover object-top"
-            />
-            <div>
-              <blockquote className="text-base leading-relaxed">
-                “We welcome you with great joy. Come as you are — there is room for your family in
-                this house.”
-              </blockquote>
-              <p className="mt-4 font-display font-bold">Our Senior Pastors</p>
-              <p className="text-sm text-muted-foreground">Fountain of Life Church USA</p>
-            </div>
-          </Card>
+          {LEAD_PASTORS.map((l) => (
+            <Card key={l.name} className="flex flex-col gap-6 sm:flex-row">
+              <img
+                src={l.img}
+                alt={`${l.name}, ${l.role} of Fountain of Life Church USA`}
+                loading="lazy"
+                className="size-24 shrink-0 rounded-3xl object-cover object-top"
+              />
+              <div>
+                <p className="text-base leading-relaxed">{l.bio[0]}</p>
+                <p className="mt-4 font-display font-bold">{l.name}</p>
+                <p className="text-sm text-muted-foreground">{l.role}</p>
+              </div>
+            </Card>
+          ))}
         </div>
       </Section>
 

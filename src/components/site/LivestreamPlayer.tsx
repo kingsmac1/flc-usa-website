@@ -5,7 +5,7 @@ export type LivestreamPlayerProps = {
   /** Set once the YouTube Data API integration lands in Phase 2. */
   isLive?: boolean;
   videoId?: string | null;
-  title?: string;
+  title?: string | undefined;
 };
 
 export function LivestreamPlayer({

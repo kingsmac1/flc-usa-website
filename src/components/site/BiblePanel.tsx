@@ -1,13 +1,34 @@
 import { useState } from "react";
-import { BookOpen } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { BookOpen, Loader2 } from "lucide-react";
+import { getPassage } from "@/lib/bible.functions";
 
-const BOOKS = ["Genesis", "Psalms", "Proverbs", "Isaiah", "Matthew", "John", "Romans", "Ephesians"];
+const BOOKS = [
+  "Genesis", "Exodus", "Leviticus", "Numbers", "Deuteronomy", "Joshua", "Judges", "Ruth",
+  "1 Samuel", "2 Samuel", "1 Kings", "2 Kings", "Psalms", "Proverbs", "Ecclesiastes", "Isaiah",
+  "Jeremiah", "Ezekiel", "Daniel", "Matthew", "Mark", "Luke", "John", "Acts", "Romans",
+  "1 Corinthians", "2 Corinthians", "Galatians", "Ephesians", "Philippians", "Colossians",
+  "1 Thessalonians", "2 Thessalonians", "1 Timothy", "2 Timothy", "Titus", "Hebrews", "James",
+  "1 Peter", "2 Peter", "1 John", "Revelation",
+];
 
-/** Mocked scripture reader. Wire to a Bible API in Phase 2. */
+/**
+ * Scripture reader. Reads live text through the `getPassage` server function
+ * once BIBLE_API_KEY is configured; otherwise shows placeholder text.
+ */
 export function BiblePanel() {
   const [book, setBook] = useState("John");
   const [chapter, setChapter] = useState("15");
   const [verse, setVerse] = useState("5");
+  const reference = `${book} ${chapter}:${verse}`;
+
+  const fetchPassage = useServerFn(getPassage);
+  const { data, isFetching } = useQuery({
+    queryKey: ["passage", reference],
+    queryFn: () => fetchPassage({ data: { reference } }),
+    staleTime: 5 * 60 * 1000,
+  });
 
   const selectClass =
     "min-h-11 w-full rounded-full border border-border bg-card px-4 text-sm focus-visible:outline-2 focus-visible:outline-accent";
@@ -34,13 +55,8 @@ export function BiblePanel() {
           <label className="text-xs font-semibold uppercase text-muted-foreground" htmlFor="bible-chapter">
             Chapter
           </label>
-          <select
-            id="bible-chapter"
-            className={selectClass}
-            value={chapter}
-            onChange={(e) => setChapter(e.target.value)}
-          >
-            {Array.from({ length: 21 }, (_, i) => String(i + 1)).map((c) => (
+          <select id="bible-chapter" className={selectClass} value={chapter} onChange={(e) => setChapter(e.target.value)}>
+            {Array.from({ length: 150 }, (_, i) => String(i + 1)).map((c) => (
               <option key={c}>{c}</option>
             ))}
           </select>
@@ -50,7 +66,7 @@ export function BiblePanel() {
             Verse
           </label>
           <select id="bible-verse" className={selectClass} value={verse} onChange={(e) => setVerse(e.target.value)}>
-            {Array.from({ length: 27 }, (_, i) => String(i + 1)).map((v) => (
+            {Array.from({ length: 176 }, (_, i) => String(i + 1)).map((v) => (
               <option key={v}>{v}</option>
             ))}
           </select>
@@ -58,16 +74,18 @@ export function BiblePanel() {
       </div>
 
       <div className="mt-6 rounded-3xl bg-secondary p-5">
-        <p className="text-xs font-semibold uppercase text-muted-foreground">
-          {book} {chapter}:{verse}
+        <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase text-muted-foreground">
+          {data?.reference ?? reference}
+          {isFetching ? <Loader2 className="size-3.5 animate-spin" aria-hidden="true" /> : null}
         </p>
-        <blockquote className="mt-2 text-base leading-relaxed">
-          “I am the vine; you are the branches. If you remain in me and I in you, you will bear much
-          fruit; apart from me you can do nothing.”
+        <blockquote aria-live="polite" className="mt-2 text-base leading-relaxed">
+          {data?.text ?? "Loading passage…"}
         </blockquote>
-        <p className="mt-3 text-xs text-muted-foreground">
-          Placeholder passage — live scripture text arrives with the Bible API integration.
-        </p>
+        {data?.source === "placeholder" ? (
+          <p className="mt-3 text-xs text-muted-foreground">
+            Add your Bible API key to stream live scripture text here.
+          </p>
+        ) : null}
       </div>
     </aside>
   );
