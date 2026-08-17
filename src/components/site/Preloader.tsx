@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import logo from "@/assets/images/flcusa-logo.png";
 
 /**
- * Shows a breathing white logo on deep green with a loading bar, then wipes
+ * Shows a breathing logo on deep green with a loading bar, then wipes
  * away vertically to reveal the page.
  */
 export function Preloader() {
@@ -34,7 +34,7 @@ export function Preloader() {
       <img
         src={logo}
         alt=""
-        className="animate-breathe w-40 brightness-0 invert sm:w-52"
+        className="animate-breathe w-40 sm:w-52"
       />
       <div className="mt-8 h-[3px] w-48 overflow-hidden rounded-full bg-deep-foreground/20">
         <div

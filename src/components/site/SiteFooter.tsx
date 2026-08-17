@@ -39,7 +39,7 @@ export function SiteFooter() {
       <div className="container-flc grid gap-12 py-16 lg:grid-cols-[1.3fr_2fr]">
         <div>
           <div className="flex items-center gap-3">
-            <img src={logo} alt={`${SITE.short} logo`} className="size-12 object-contain brightness-0 invert" />
+            <img src={logo} alt={`${SITE.short} logo`} className="size-12 object-contain" />
             <span className="font-display text-lg font-black">Fountain of Life Church USA</span>
           </div>
           <p className="mt-4 max-w-sm text-sm text-deep-foreground/75">{SITE.tagline}</p>
