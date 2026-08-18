@@ -1,6 +1,6 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { PillLink, Section, SectionHeading } from "@/components/site/ui";
-import { getSeries } from "@/data/teachings";
+import { getSeries, youtubeId } from "@/data/teachings";
 
 export const Route = createFileRoute("/teachings/$series")({
   loader: ({ params }) => {

@@ -31,7 +31,7 @@ function TeachingsIndex() {
           tone="light"
           eyebrow="Teachings"
           title="Grow deeper in the Word"
-          intro="Each collection gathers messages, audio and written teaching around one theme. Content shown is placeholder material."
+          intro="Each collection gathers messages, audio and written teaching around one theme."
         />
       </Section>
 

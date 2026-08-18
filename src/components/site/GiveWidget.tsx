@@ -7,7 +7,15 @@ import { PillButton } from "./ui";
 
 const AMOUNTS = ["25", "50", "100", "250"];
 export const FREQUENCIES = ["One-time", "Weekly", "Monthly"] as const;
-export const FUNDS = ["Tithes & Offering", "Building Fund", "Missions & Outreach", "Benevolence"];
+export const FUNDS = [
+  "Tithe",
+  "Offering",
+  "Seed of Faith",
+  "Partnership",
+  "Mission & Outreaches",
+  "Projects",
+  "Others",
+];
 
 export type GiftIntent = {
   amount: number;

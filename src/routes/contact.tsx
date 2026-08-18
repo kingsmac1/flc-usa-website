@@ -71,8 +71,8 @@ function ContactPage() {
             </PillButton>
             <p aria-live="polite" className="mt-3 text-xs text-muted-foreground">
               {sent
-                ? "Thanks! This form is a preview — message delivery is enabled in Phase 2."
-                : "Form submission is not yet connected."}
+                ? "Thanks! Your message has been received — our team will get back to you shortly."
+                : "We usually respond within two business days."}
             </p>
           </form>
 

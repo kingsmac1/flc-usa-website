@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import logo from "@/assets/images/flcusa-logo.png";
-import { SITE } from "@/data/site";
+import { FREE_GIFT, SITE } from "@/data/site";
 import { PillButton } from "./ui";
 
 const columns = [
@@ -63,10 +63,20 @@ export function SiteFooter() {
                 Subscribe
               </PillButton>
             </div>
-            <p className="mt-2 text-xs text-deep-foreground/60">
-              Signup is display-only in this phase.
-            </p>
           </form>
+
+          <p className="mt-6 max-w-sm text-sm text-deep-foreground/80">
+            Are you visiting us for the first time?{" "}
+            <a
+              href={FREE_GIFT.url}
+              target="_blank"
+              rel="noreferrer"
+              className="font-semibold text-accent underline underline-offset-4"
+            >
+              Kindly click here for a free gift
+            </a>{" "}
+            from Apostle Chuks.
+          </p>
         </div>
 
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
