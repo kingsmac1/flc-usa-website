@@ -33,7 +33,7 @@ const MOCK_COMMENTS: Comment[] = [
   },
 ];
 
-/** UI-only comment feed. Real posting arrives with auth in Phase 2. */
+/** Comment feed UI. */
 export function CommentFeed({
   title = "Live conversation",
   comments = MOCK_COMMENTS,
@@ -49,7 +49,7 @@ export function CommentFeed({
           {title}
         </h2>
         <span className="rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-muted-foreground">
-          Sign-in required in Phase 2
+          Sign in to comment
         </span>
       </div>
 

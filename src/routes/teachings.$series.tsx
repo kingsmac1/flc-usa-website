@@ -1,6 +1,6 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { PillLink, Section, SectionHeading } from "@/components/site/ui";
-import { getSeries } from "@/data/teachings";
+import { getSeries, youtubeId } from "@/data/teachings";
 
 export const Route = createFileRoute("/teachings/$series")({
   loader: ({ params }) => {
@@ -61,30 +61,30 @@ function SeriesDetail() {
           />
           <ul className="grid gap-4">
             {series.items.map((item) => (
-              <li
-                key={item.title}
-                className="flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-border bg-card p-5"
-              >
-                <div>
+              <li key={item.title} className="overflow-hidden rounded-3xl border border-border bg-card">
+                <div className="aspect-video w-full bg-deep">
+                  <iframe
+                    className="size-full"
+                    src={`https://www.youtube.com/embed/${youtubeId(item.youtube)}`}
+                    title={item.title}
+                    loading="lazy"
+                    allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+                <div className="p-5">
                   <p className="text-xs font-semibold tracking-wide uppercase text-muted-foreground">
-                    {item.format} · {item.duration}
+                    {item.speaker} · {item.duration}
                   </p>
                   <h2 className="mt-1 font-display text-lg font-bold">{item.title}</h2>
+                  {item.summary ? (
+                    <p className="mt-2 text-sm text-muted-foreground">{item.summary}</p>
+                  ) : null}
                 </div>
-                <button
-                  type="button"
-                  disabled
-                  className="inline-flex min-h-11 items-center rounded-full bg-accent px-5 text-sm font-semibold text-accent-foreground opacity-70"
-                >
-                  Play
-                </button>
               </li>
             ))}
           </ul>
         </div>
-        <p className="mt-6 text-xs text-muted-foreground">
-          Media playback connects to the church media library in Phase 2.
-        </p>
       </Section>
     </>
   );

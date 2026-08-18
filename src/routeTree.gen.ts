@@ -16,8 +16,14 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as GiveRouteImport } from './routes/give'
 import { Route as LivestreamRouteImport } from './routes/livestream'
 import { Route as MinistriesRouteImport } from './routes/ministries'
+import { Route as PrayerRequestRouteImport } from './routes/prayer-request'
+import { Route as SalvationRouteImport } from './routes/salvation'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as DevotionalIndexRouteImport } from './routes/devotional.index'
 import { Route as DevotionalDateRouteImport } from './routes/devotional.$date'
+import { Route as EventsIndexRouteImport } from './routes/events.index'
+import { Route as EventsSlugRouteImport } from './routes/events.$slug'
 import { Route as TeachingsIndexRouteImport } from './routes/teachings.index'
 import { Route as TeachingsSeriesRouteImport } from './routes/teachings.$series'
 
@@ -56,6 +62,26 @@ const MinistriesRoute = MinistriesRouteImport.update({
   path: '/ministries',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrayerRequestRoute = PrayerRequestRouteImport.update({
+  id: '/prayer-request',
+  path: '/prayer-request',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SalvationRoute = SalvationRouteImport.update({
+  id: '/salvation',
+  path: '/salvation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DevotionalIndexRoute = DevotionalIndexRouteImport.update({
   id: '/devotional/',
   path: '/devotional/',
@@ -64,6 +90,16 @@ const DevotionalIndexRoute = DevotionalIndexRouteImport.update({
 const DevotionalDateRoute = DevotionalDateRouteImport.update({
   id: '/devotional/$date',
   path: '/devotional/$date',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventsIndexRoute = EventsIndexRouteImport.update({
+  id: '/events/',
+  path: '/events/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventsSlugRoute = EventsSlugRouteImport.update({
+  id: '/events/$slug',
+  path: '/events/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TeachingsIndexRoute = TeachingsIndexRouteImport.update({
@@ -85,9 +121,15 @@ export interface FileRoutesByFullPath {
   '/give': typeof GiveRoute
   '/livestream': typeof LivestreamRoute
   '/ministries': typeof MinistriesRoute
+  '/prayer-request': typeof PrayerRequestRoute
+  '/salvation': typeof SalvationRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/devotional/$date': typeof DevotionalDateRoute
+  '/events/$slug': typeof EventsSlugRoute
   '/teachings/$series': typeof TeachingsSeriesRoute
+  '/blog/': typeof BlogIndexRoute
   '/devotional/': typeof DevotionalIndexRoute
+  '/events/': typeof EventsIndexRoute
   '/teachings/': typeof TeachingsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -98,9 +140,15 @@ export interface FileRoutesByTo {
   '/give': typeof GiveRoute
   '/livestream': typeof LivestreamRoute
   '/ministries': typeof MinistriesRoute
+  '/prayer-request': typeof PrayerRequestRoute
+  '/salvation': typeof SalvationRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/devotional/$date': typeof DevotionalDateRoute
+  '/events/$slug': typeof EventsSlugRoute
   '/teachings/$series': typeof TeachingsSeriesRoute
+  '/blog': typeof BlogIndexRoute
   '/devotional': typeof DevotionalIndexRoute
+  '/events': typeof EventsIndexRoute
   '/teachings': typeof TeachingsIndexRoute
 }
 export interface FileRoutesById {
@@ -112,9 +160,15 @@ export interface FileRoutesById {
   '/give': typeof GiveRoute
   '/livestream': typeof LivestreamRoute
   '/ministries': typeof MinistriesRoute
+  '/prayer-request': typeof PrayerRequestRoute
+  '/salvation': typeof SalvationRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/devotional/$date': typeof DevotionalDateRoute
+  '/events/$slug': typeof EventsSlugRoute
   '/teachings/$series': typeof TeachingsSeriesRoute
+  '/blog/': typeof BlogIndexRoute
   '/devotional/': typeof DevotionalIndexRoute
+  '/events/': typeof EventsIndexRoute
   '/teachings/': typeof TeachingsIndexRoute
 }
 export interface FileRouteTypes {
@@ -127,9 +181,15 @@ export interface FileRouteTypes {
     | '/give'
     | '/livestream'
     | '/ministries'
+    | '/prayer-request'
+    | '/salvation'
+    | '/blog/$slug'
     | '/devotional/$date'
+    | '/events/$slug'
     | '/teachings/$series'
+    | '/blog/'
     | '/devotional/'
+    | '/events/'
     | '/teachings/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -140,9 +200,15 @@ export interface FileRouteTypes {
     | '/give'
     | '/livestream'
     | '/ministries'
+    | '/prayer-request'
+    | '/salvation'
+    | '/blog/$slug'
     | '/devotional/$date'
+    | '/events/$slug'
     | '/teachings/$series'
+    | '/blog'
     | '/devotional'
+    | '/events'
     | '/teachings'
   id:
     | '__root__'
@@ -153,9 +219,15 @@ export interface FileRouteTypes {
     | '/give'
     | '/livestream'
     | '/ministries'
+    | '/prayer-request'
+    | '/salvation'
+    | '/blog/$slug'
     | '/devotional/$date'
+    | '/events/$slug'
     | '/teachings/$series'
+    | '/blog/'
     | '/devotional/'
+    | '/events/'
     | '/teachings/'
   fileRoutesById: FileRoutesById
 }
@@ -167,9 +239,15 @@ export interface RootRouteChildren {
   GiveRoute: typeof GiveRoute
   LivestreamRoute: typeof LivestreamRoute
   MinistriesRoute: typeof MinistriesRoute
+  PrayerRequestRoute: typeof PrayerRequestRoute
+  SalvationRoute: typeof SalvationRoute
+  BlogSlugRoute: typeof BlogSlugRoute
   DevotionalDateRoute: typeof DevotionalDateRoute
+  EventsSlugRoute: typeof EventsSlugRoute
   TeachingsSeriesRoute: typeof TeachingsSeriesRoute
+  BlogIndexRoute: typeof BlogIndexRoute
   DevotionalIndexRoute: typeof DevotionalIndexRoute
+  EventsIndexRoute: typeof EventsIndexRoute
   TeachingsIndexRoute: typeof TeachingsIndexRoute
 }
 
@@ -224,6 +302,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MinistriesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/prayer-request': {
+      id: '/prayer-request'
+      path: '/prayer-request'
+      fullPath: '/prayer-request'
+      preLoaderRoute: typeof PrayerRequestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/salvation': {
+      id: '/salvation'
+      path: '/salvation'
+      fullPath: '/salvation'
+      preLoaderRoute: typeof SalvationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/': {
+      id: '/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/devotional/': {
       id: '/devotional/'
       path: '/devotional'
@@ -236,6 +342,20 @@ declare module '@tanstack/react-router' {
       path: '/devotional/$date'
       fullPath: '/devotional/$date'
       preLoaderRoute: typeof DevotionalDateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events/': {
+      id: '/events/'
+      path: '/events'
+      fullPath: '/events/'
+      preLoaderRoute: typeof EventsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events/$slug': {
+      id: '/events/$slug'
+      path: '/events/$slug'
+      fullPath: '/events/$slug'
+      preLoaderRoute: typeof EventsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/teachings/': {
@@ -263,9 +383,15 @@ const rootRouteChildren: RootRouteChildren = {
   GiveRoute: GiveRoute,
   LivestreamRoute: LivestreamRoute,
   MinistriesRoute: MinistriesRoute,
+  PrayerRequestRoute: PrayerRequestRoute,
+  SalvationRoute: SalvationRoute,
+  BlogSlugRoute: BlogSlugRoute,
   DevotionalDateRoute: DevotionalDateRoute,
+  EventsSlugRoute: EventsSlugRoute,
   TeachingsSeriesRoute: TeachingsSeriesRoute,
+  BlogIndexRoute: BlogIndexRoute,
   DevotionalIndexRoute: DevotionalIndexRoute,
+  EventsIndexRoute: EventsIndexRoute,
   TeachingsIndexRoute: TeachingsIndexRoute,
 }
 export const routeTree = rootRouteImport

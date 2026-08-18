@@ -2,7 +2,7 @@ import { Play, Radio } from "lucide-react";
 import { PLACEHOLDER } from "@/data/site";
 
 export type LivestreamPlayerProps = {
-  /** Set once the YouTube Data API integration lands in Phase 2. */
+  /** Set by the YouTube live-status check. */
   isLive?: boolean;
   videoId?: string | null;
   title?: string | undefined;

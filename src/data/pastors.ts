@@ -1,14 +1,15 @@
 import pastors from "@/assets/images/meet-our-pastors.jpg";
-import pastorChukz from "@/assets/images/pastor-chukz.jpeg";
+import apostleChuks from "@/assets/images/pastor-chukz.jpeg";
+import evangJosephine from "@/assets/images/evang-josephine-akuma.jpg";
 
 /** Edit the welcome note and pastor bios here. */
 export const WELCOME = {
   eyebrow: "Welcome home",
   heading: "You are welcome to Fountain of Life Church USA",
-  signature: "Pastor Chukz & Pastor Mrs. Chukz",
+  signature: "Apostle Chuks & Evang. Josephine Akuma",
   role: "Lead Pastors, Fountain of Life Church USA",
   image: pastors,
-  imageAlt: "The lead pastors of Fountain of Life Church USA",
+  imageAlt: "Apostle Chuks and Evang. Josephine Akuma, lead pastors of Fountain of Life Church USA",
   paragraphs: [
     "Thank you for finding us. Whether you are searching, returning, or simply looking for a family to grow with, we want you to know that this house was built with you in mind. Fountain of Life Church USA is a place where the Word of God is taught plainly, where prayer is a lifestyle, and where ordinary people discover the extraordinary purpose God has written over their lives.",
     "We believe church is far more than a Sunday gathering. It is a family that walks with you through the seasons — the celebrations, the waiting rooms, the fresh starts. So when you come, come as you are. You will find warm faces, honest teaching, worship that lifts your heart, and people who will genuinely pray with you.",
@@ -23,23 +24,23 @@ export type Leader = {
   bio: string[];
 };
 
-/** The lead pastor and his wife. */
+/** The lead pastors. */
 export const LEAD_PASTORS: Leader[] = [
   {
-    name: "Pastor Chukz",
+    name: "Apostle Chuks",
     role: "Lead Pastor",
-    img: pastorChukz,
+    img: apostleChuks,
     bio: [
-      "Pastor Chukz is the Lead Pastor of Fountain of Life Church USA in Indianapolis, Indiana. He carries a deep passion for teaching the Word of God with clarity and for raising believers who are grounded in prayer and confident in their identity in Christ.",
+      "Apostle Chuks is the Lead Pastor of Fountain of Life Church USA in Indianapolis, Indiana. He carries a deep passion for teaching the Word of God with clarity and for raising believers who are grounded in prayer and confident in their identity in Christ.",
       "His ministry is marked by a pastoral heart — patient with people, unwavering on the Word, and committed to seeing every member discover and fulfil their God-given destiny.",
     ],
   },
   {
-    name: "Pastor Mrs. Chukz",
+    name: "Evang. Josephine Akuma",
     role: "Lead Pastor",
-    img: pastors,
+    img: evangJosephine,
     bio: [
-      "Pastor Mrs. Chukz serves alongside her husband as Lead Pastor, with a special grace for women, families and the next generation. She leads with warmth, wisdom and a genuine love for people.",
+      "Evang. Josephine Akuma serves alongside her husband as Lead Pastor, with a special grace for women, families and the next generation. She leads with warmth, wisdom and a genuine love for people.",
       "Through counselling, mentoring and the ministry of intercession, she nurtures a culture of care in the house — helping wives, mothers and young women stand strong in faith and purpose.",
     ],
   },

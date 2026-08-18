@@ -133,7 +133,7 @@ function HomePage() {
           <img
             src={WELCOME.image}
             alt={WELCOME.imageAlt}
-            className="aspect-[4/5] w-full rounded-[2rem] object-cover object-top"
+            className="mx-auto aspect-[4/5] w-full max-w-md rounded-[2rem] object-cover object-top md:max-w-[62%] lg:max-w-none"
           />
           <div>
             <Eyebrow>{WELCOME.eyebrow}</Eyebrow>
@@ -218,7 +218,7 @@ function HomePage() {
         <SectionHeading
           eyebrow="Our Lead Pastors"
           title="A word about our Lead Pastors"
-          intro="Pastor Chukz and Pastor Mrs. Chukz carry a heart to see every believer walk in purpose."
+          intro="Apostle Chuks and Evang. Josephine Akuma carry a heart to see every believer walk in purpose."
         />
         <div className="mt-10 grid gap-6 lg:grid-cols-2">
           {LEAD_PASTORS.map((l) => (

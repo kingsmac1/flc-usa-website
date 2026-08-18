@@ -64,8 +64,8 @@ export async function fetchPassage(
     const verses: Verse[] = [];
     const verseRegex = /<span[^>]*data-number="(\d+)"[^>]*>.*?<\/span>([\s\S]*?)(?=<span[^>]*data-number="|$)/g;
     for (const m of html.matchAll(verseRegex)) {
-      const text = m[2].replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
-      if (text) verses.push({ number: m[1], text });
+      const text = (m[2] ?? "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+      if (text) verses.push({ number: m[1] ?? "", text });
     }
 
     if (verses.length === 0) throw new Error("no verses parsed");
