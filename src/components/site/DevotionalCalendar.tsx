@@ -38,7 +38,7 @@ export function DevotionalCalendar({ value }: { value: string }) {
         }}
         className="mt-4 min-h-11 w-full rounded-full border border-border bg-secondary px-4 text-sm focus-visible:outline-2 focus-visible:outline-accent"
       />
-      {pdf ? (
+      {pdf?.available ? (
         <a
           href={pdf.file}
           download
