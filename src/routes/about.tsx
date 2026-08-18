@@ -96,7 +96,7 @@ function AboutPage() {
         <SectionHeading
           eyebrow="Leadership"
           title="Meet our lead pastors"
-          intro="Fountain of Life Church USA is led by Pastor Chukz and his wife, Pastor Mrs. Chukz."
+          intro="Fountain of Life Church USA is led by Apostle Chuks and his wife, Evang. Josephine Akuma."
         />
         <ul className="mt-10 grid gap-8 lg:grid-cols-2">
           {LEAD_PASTORS.map((l) => (
