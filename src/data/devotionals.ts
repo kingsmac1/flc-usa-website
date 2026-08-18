@@ -12,6 +12,7 @@
  *   body       Array of paragraphs — one string per paragraph
  *   prayer     Closing prayer
  *   declarations  Optional array of confessions/declarations
+ *   furtherStudies Optional related scripture references for deeper study
  *   readingPlan   Optional Bible reading plan line
  *   author     Optional writer name
  */
@@ -24,6 +25,7 @@ export type Devotional = {
   body: string[];
   prayer: string;
   declarations?: string[];
+  furtherStudies?: string;
   readingPlan?: string;
   author?: string;
 };
@@ -46,6 +48,7 @@ export const DEVOTIONALS: Devotional[] = [
     ],
     prayer:
       "Father, teach me to walk in love, wisdom, discernment and humility. I declare that my heart will remain pure, tender, and sensitive to the Holy Spirit. Bitterness, pride, offense, and hardness will not rule my life in Jesus' Name. Amen.",
+    furtherStudies: "Philippians 1:9–11; 1 Corinthians 13:4–7; Galatians 5:22-23",
     readingPlan: "1 Kgs 11-12",
     author: "Apostle Chuks",
   },
@@ -66,6 +69,7 @@ export const DEVOTIONALS: Devotional[] = [
     ],
     prayer:
       "Father, thank You for the authority given to me in the Name of Jesus. I walk in boldness, victory, and dominion over every work of darkness. Through the power in the Name of Jesus, I declare healing, peace, strength, and victory in every area of my life in Jesus' Name, Amen.",
+    furtherStudies: "Mark 16:17–18; Acts 3:6–8; Luke 10:19",
     readingPlan: "1 Kgs 13; John 12",
     author: "Apostle Chuks",
   },
@@ -84,6 +88,7 @@ export const DEVOTIONALS: Devotional[] = [
     ],
     prayer:
       "Dear Lord, teach me self-control over my thoughts, actions, and desires. Strengthen me to persevere in discipline and live a life that honors You. Let my habits, choices, and priorities reflect my pursuit of mastery in Your kingdom. In Jesus' Name, Amen.",
+    furtherStudies: "1 Timothy 2:5; Luke 13:24; Proverbs 25:28",
     readingPlan: "1 Kgs 14-15",
     author: "Apostle Chuks",
   },
@@ -105,6 +110,7 @@ export const DEVOTIONALS: Devotional[] = [
     ],
     prayer:
       "Lord Jesus, cause my heart to remain conscious of You every day. Help me to walk in Your wisdom, love, purity, and strength. I declare that fear, guilt, insecurity, and condemnation will not control my life. Christ lives in me, and His nature is revealed through me daily. Amen!",
+    furtherStudies: "John 15:4–5 NIV; Galatians 2:20 ESV; Colossians 3:1–3",
     readingPlan: "1 Kgs 16-17; John 13",
     author: "Apostle Chuks",
   },
@@ -123,6 +129,7 @@ export const DEVOTIONALS: Devotional[] = [
     ],
     prayer:
       "Father, thank You for the promise of Christ's return. Thank You because Your Spirit continually keeps my heart watchful and prepared. My life will remain focused on you in obedience and devotion in Jesus' Name, Amen.",
+    furtherStudies: "John 14:1–3; Matthew 24:42–44; 1 Thessalonians 4:16–18",
     readingPlan: "1 Kgs 18; John 14",
     author: "Apostle Chuks",
   },
@@ -141,6 +148,7 @@ export const DEVOTIONALS: Devotional[] = [
     ],
     prayer:
       "I declare that my life reflects the nature of Christ. My words, attitudes, and actions will honor God daily. The Holy Spirit is shaping my character and teaching me to respond according to God's will. Everywhere I go, I carry the light of God and reveal His nature through my life. In Jesus' Name. Amen.",
+    furtherStudies: "Philippians 1:27; Galatians 5:22-23; Colossians 3:12-14; Matthew 5:16",
     readingPlan: "1 Kgs 19-20",
     author: "Apostle Chuks",
   },
@@ -159,6 +167,7 @@ export const DEVOTIONALS: Devotional[] = [
     ],
     prayer:
       "I declare that my life belongs completely to God. I am set apart for God's purpose and His glory. My heart, mind, desires, and decisions are surrendered to Him. I will not be ruled by compromise, distraction, or worldly influences. The Holy Spirit is helping me walk in purity, obedience, and holiness daily in Jesus' Name. Amen.",
+    furtherStudies: "Romans 12:1; Joshua 3:5; 1 Peter 1:15-16; 2 Timothy 2:21",
     readingPlan: "1 Kgs 21; John 15",
     author: "Apostle Chuks",
   },
@@ -176,6 +185,7 @@ export const DEVOTIONALS: Devotional[] = [
     ],
     prayer:
       "Father, I dedicate every part of my life to You. My words, my work, my relationships, and my resources are Yours. Guide me in holiness and integrity. I declare that my life will always reflect Your glory. All my actions and thought will honor You and draw others into Your Kingdom, in Jesus' Name. Amen.",
+    furtherStudies: "Proverbs 3:5-6; Matthew 5:16; Romans 6:13 John 16",
     readingPlan: "1 Kgs 22; 2 Kgs 1;",
     author: "Apostle Chuks",
   },
@@ -195,6 +205,7 @@ export const DEVOTIONALS: Devotional[] = [
     ],
     prayer:
       "Father, thank You for the gift of the Holy Spirit. Stir a deeper hunger within me for spiritual growth and sensitivity to Your voice. Teach me to walk in love and make me a vessel through which Your gifts can flow to bless others and glorify Christ. I yield myself completely to Your Spirit. In Jesus' Name, Amen.",
+    furtherStudies: "1 Corinthians 12:4–11; Romans 12:6–8 RSV; 2 Timothy 1:6",
     readingPlan: "2 Kgs 2-3",
     author: "Apostle Chuks",
   },
@@ -215,6 +226,7 @@ export const DEVOTIONALS: Devotional[] = [
     ],
     prayer:
       "I will not fear. God is with me, strengthening and guiding me. My heart is steady, and my trust is in Him. The shackles of fear are broken off from me in Jesus' Name. Amen!",
+    furtherStudies: "2 Timothy 1:7; Psalm 27:1",
     readingPlan: "2 Kgs 4; John 17",
     author: "Apostle Chuks",
   },
@@ -235,6 +247,7 @@ export const DEVOTIONALS: Devotional[] = [
     ],
     prayer:
       "Father, thank You for loving me through Christ Jesus. Help me to live free from condemnation and fear. Teach me to rest in Your love and to walk closely with You daily. Let my heart remain open before You, and help me grow in faith and obedience. I declare that my confidence is rooted in what Christ has done for me. In Jesus' Name, Amen. FURTHER",
+    furtherStudies: "Zephaniah 3:17; Romans 8:15–16; Ephesians 1:5–6 ESV",
     readingPlan: "2 Kgs 5-6; John 18",
     author: "Apostle Chuks",
   },
@@ -254,6 +267,7 @@ export const DEVOTIONALS: Devotional[] = [
     ],
     prayer:
       "I declare that I am loved by God and accepted through Jesus Christ. God delights in me and rejoices over my life with joy. I reject every voice of condemnation, guilt, and rejection. I walk confidently in the love of the Father in Jesus' Name. Amen.",
+    furtherStudies: "Zephaniah 3:17; Romans 8:1; Ephesians 1:6",
     readingPlan: "2 Kgs 7-8",
     author: "Apostle Chuks",
   },
@@ -274,6 +288,7 @@ export const DEVOTIONALS: Devotional[] = [
     ],
     prayer:
       "Father, fill me with the knowledge of Your will in all wisdom and spiritual understanding. I declare that my heart is sensitive to the leading of the Holy Spirit. My mind is being renewed, and my discernment is becoming sharper through God's Word, in Jesus' Name. Amen.",
+    furtherStudies: "Colossians 1:9–14; Romans 12:2; Psalm 143:10",
     readingPlan: "2 Kgs 9; John 19",
     author: "Apostle Chuks",
   },
@@ -293,6 +308,7 @@ export const DEVOTIONALS: Devotional[] = [
     ],
     prayer:
       "I declare that my mind belongs to God. Every thought that opposes the truth of God is cast down and brought into obedience to Christ. Fear, condemnation, confusion, lust, anxiety, and bitterness will not rule my mind. My heart is guarded by the peace of God in Jesus' Name. Amen.",
+    furtherStudies: "Proverbs 4:23; Romans 12:2; 2 Corinthians 10:5; Philippians 4:8",
     readingPlan: "2 Kgs 10-11",
     author: "Apostle Chuks",
   },
@@ -313,6 +329,7 @@ export const DEVOTIONALS: Devotional[] = [
     ],
     prayer:
       "Father, help me to guard the voices I allow into my heart. Grant me discernment concerning conversations, influences, and teachings around me. Let my soul be strengthened by Your Word and not weakened by fear or unbelief in Jesus' Name, Amen.",
+    furtherStudies: "Romans 10:17; Mark 4:24; Proverbs 18:21",
     readingPlan: "2 Kgs 12-13; John 20",
     author: "Apostle Chuks",
   },
@@ -332,6 +349,7 @@ export const DEVOTIONALS: Devotional[] = [
     ],
     prayer:
       "Father, help me to guard my heart and my eyes carefully. At all times, cause me to walk in wisdom and discernment concerning the things I allow into my life. I declare that my mind will not be shaped by corruption or compromise. My eyes will remain focused on things that strengthen my walk with You. In Jesus' Name, Amen.",
+    furtherStudies: "Matthew 6:22–23; Psalm 101:3 AMP; Job 31:1",
     readingPlan: "2 Kgs 14-15; John 21",
     author: "Apostle Chuks",
   },
@@ -350,6 +368,7 @@ export const DEVOTIONALS: Devotional[] = [
     ],
     prayer:
       "Father, thank You for the power of Your Word working within me. Thank You because the Holy Spirit continually teaches my heart to speak with wisdom, faith, and truth. My mouth will not release fear, bitterness, defeat, or corruption. My heart remains established in truth, and my confession will continually align with Your Word. In Jesus' Name, Amen.",
+    furtherStudies: "Proverbs 18:21; Matthew 12:34–37; Psalm 141:3",
     readingPlan: "2 Kgs 16-17",
     author: "Apostle Chuks",
   },
@@ -369,6 +388,7 @@ export const DEVOTIONALS: Devotional[] = [
     ],
     prayer:
       "The glory of God is evident in my life, and I walk in continual increase and advancement. I refuse stagnation or limitation, because my path shines brighter and brighter. I grow in wisdom, strength, prosperity, and righteousness every day. Hallelujah!",
+    furtherStudies: "2 Corinthians 3:18 ESV; Haggai 2:9; Proverbs 4:18 NIV",
     readingPlan: "2 Kgs 18; Acts 1",
     author: "Apostle Chuks",
   },
@@ -389,6 +409,7 @@ export const DEVOTIONALS: Devotional[] = [
     ],
     prayer:
       "I refuse to walk in shame, defeat, or confusion, because the Lord has given me beauty for ashes and joy instead of mourning. I walk in divine favour, restoration, honour, and increase. Hallelujah!",
+    furtherStudies: "Romans 8:28; Joel 2:25–26; Jeremiah 30:17",
     readingPlan: "2 Kgs 19-20",
     author: "Apostle Chuks",
   },
@@ -408,6 +429,7 @@ export const DEVOTIONALS: Devotional[] = [
     ],
     prayer:
       "Father, thank You that Your Spirit dwells in me. I yield myself completely to You. As I behold Your glory, transform me from glory to glory. Let Your presence be evident in my life: through my words, actions, and character. Manifest Yourself through me for Your glory, in Jesus' Name. Amen.",
+    furtherStudies: "Acts 2:1–4; Exodus 33:14 ISV; Psalm 16:11",
     readingPlan: "2 Kgs 21-22; Acts 2",
     author: "Apostle Chuks",
   },
@@ -426,6 +448,7 @@ export const DEVOTIONALS: Devotional[] = [
     ],
     prayer:
       "Father, strengthen my heart to seek You sincerely through prayer and fasting. Help me grow in spiritual discipline, sensitivity, and obedience. I declare that distractions, spiritual laziness, and fleshly desires will not control my life. Lead me into deeper fellowship through the power of the Holy Spirit. In Jesus' Name, Amen.",
+    furtherStudies: "Matthew 17:19–21; Isaiah 58:6; Acts 14:23 NLT",
     readingPlan: "2 Kgs 23-24; Acts 3",
     author: "Apostle Chuks",
   },
@@ -446,6 +469,7 @@ export const DEVOTIONALS: Devotional[] = [
     ],
     prayer:
       "Father, thank You for the strength and discipline supplied through the Holy Spirit. Thank You because appetite and desire will not rule over my life. My body is under godly control, and my mind is being renewed by Your Word daily. My life will reflect discipline, restraint, and spiritual sensitivity. In Jesus' Name, Amen.",
+    furtherStudies: "Proverbs 23:1–3; Galatians 5:22–23; 1 Corinthians 9:27",
     readingPlan: "2 Kgs 25; 1 Chr 1",
     author: "Apostle Chuks",
   },
@@ -465,6 +489,7 @@ export const DEVOTIONALS: Devotional[] = [
     ],
     prayer:
       "Dear Father, thank You for being my source. I choose to stay connected to You every day. I draw strength, peace, and wisdom from Your presence. I refuse to rely on my own understanding, and I remain rooted in You. My life is fruitful, stable, and full of Your grace, in Jesus' Name. Amen.",
+    furtherStudies: "John 15:4–5; Psalm 1:2–3; Jeremiah 17:7–8",
     readingPlan: "1 Chr 2-3; Acts 4",
     author: "Apostle Chuks",
   },
@@ -485,6 +510,7 @@ export const DEVOTIONALS: Devotional[] = [
     ],
     prayer:
       "Father, thank You for being my strength in every season of life. I declare that I will not be overcome by fear, pressure, discouragement, or weariness. Your grace sustains me daily. My heart is strengthened, my mind is renewed, and my faith remains steady. In Jesus' Name, Amen.",
+    furtherStudies: "Isaiah 40:29–31; Philippians 4:13; Psalm 46:1",
     readingPlan: "1 Chr 4-5",
     author: "Apostle Chuks",
   },
@@ -505,6 +531,7 @@ export const DEVOTIONALS: Devotional[] = [
     ],
     prayer:
       "Dear Father, thank You for Your grace that strengthens and sustains me daily. I declare that I will not be overwhelmed by challenges, fear or limitation, because Your power is working in me. I walk in confidence today, knowing You are with me and helping me every step of the way, in Jesus' Name. Amen.",
+    furtherStudies: "Hebrews 4:16; Ephesians 2:8; 1 Corinthians 15:10",
     readingPlan: "1 Chr 6-7; Acts 5",
     author: "Apostle Chuks",
   },
@@ -524,6 +551,7 @@ export const DEVOTIONALS: Devotional[] = [
     ],
     prayer:
       "Father, thank You for your word that has come to me today. Help me to grow in spiritual discipline, sensitivity, and hunger for Your presence. As I seek You through prayer and fasting, strengthen my spirit and align my heart with Your will, in Jesus' Name, Amen.",
+    furtherStudies: "Isaiah 58:6–9; Matthew 6:16–18; Acts 13:2–3",
     readingPlan: "1 Chr 8-9; Acts 6",
     author: "Apostle Chuks",
   },
@@ -543,6 +571,7 @@ export const DEVOTIONALS: Devotional[] = [
     ],
     prayer:
       "Father, teach me to trust You in every waiting season. I declare that discouragement, fear, frustration, and doubt will not rule my heart. My strength is being renewed as I wait upon the Lord, in Jesus' Name. Amen.",
+    furtherStudies: "Isaiah 40:31; Psalm 27:14; Hebrews 10:35-36",
     readingPlan: "1 Chr 10-11",
     author: "Apostle Chuks",
   },
@@ -562,6 +591,7 @@ export const DEVOTIONALS: Devotional[] = [
     ],
     prayer:
       "Father, let my heart remain tender to Your presence. I declare that I will walk closely with you and grow in spiritual understanding. Teach me Your ways and help me recognize Your voice clearly. Every distraction that weakens my fellowship with You loses its hold over my life. In Jesus' Name. Amen.",
+    furtherStudies: "Psalm 25:14; Jeremiah 33:3; John 15:15",
     readingPlan: "1 Chr 12-14; Acts 7",
     author: "Apostle Chuks",
   },
@@ -581,6 +611,7 @@ export const DEVOTIONALS: Devotional[] = [
     ],
     prayer:
       "Father, thank You for the gift of the Holy Spirit who lives in me. I honor Him as a divine Person and yield to His leading daily. Let Your anointing flow freely through my life as I grow in fellowship and yeildedness to your Spirit. In Jesus' Name, Amen.",
+    furtherStudies: "John 14:16–17; Acts 10:38; 1 John 2:20:27 NKJV",
     readingPlan: "1 Chr 15-16",
     author: "Apostle Chuks",
   },
@@ -600,6 +631,7 @@ export const DEVOTIONALS: Devotional[] = [
     ],
     prayer:
       "Father, thank You for giving me wisdom through Your Word and by Your Spirit. I declare that my mind is guided by truth and understanding. I will not be ruled by confusion, pride, or impulse. My decisions will reflect godly discernment, patience, and sound judgment. In Jesus' Name, Amen.",
+    furtherStudies: "Proverbs 9:10 AMP; Colossians 3:16; Ephesians 1:17–18 ESV",
     readingPlan: "1 Chr 17-20; Acts 8",
     author: "Apostle Chuks",
   },
@@ -611,6 +643,11 @@ export const DEVOTIONALS: Devotional[] = [
  * populated. Delete or shrink this once real content fills the array above.
  * ---------------------------------------------------------------------- */
 export const DEVOTIONAL_YEAR = 2026;
+
+const MONTH_NAMES = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+];
 
 const TEMPLATES = [
   {
@@ -702,12 +739,19 @@ export const ALL_DEVOTIONALS: Devotional[] = (() => {
 /**
  * MONTHLY PDF ARCHIVE
  * Upload the PDF into `public/devotional-pdfs/` using the filename below,
- * then set `available: true` so the download link activates.
+ * then add its month to AVAILABLE_PDF_MONTHS so the download link activates.
+ *
+ * Filename format: Awake-Devotional-<Month>-<Year>.pdf
+ *   e.g. Awake-Devotional-June-2026.pdf, Awake-Devotional-July-2026.pdf
  */
 export type DevotionalPdf = { month: string; label: string; file: string; available: boolean };
 
+/** Months that currently have a real PDF uploaded to public/devotional-pdfs/. */
+const AVAILABLE_PDF_MONTHS = new Set<string>(["2026-06"]);
+
 export const DEVOTIONAL_PDFS: DevotionalPdf[] = Array.from({ length: 12 }, (_, i) => {
   const month = `${DEVOTIONAL_YEAR}-${pad(i + 1)}`;
+  const monthName = MONTH_NAMES[i];
   return {
     month,
     label: new Date(Date.UTC(DEVOTIONAL_YEAR, i, 1)).toLocaleDateString("en-US", {
@@ -715,8 +759,8 @@ export const DEVOTIONAL_PDFS: DevotionalPdf[] = Array.from({ length: 12 }, (_, i
       month: "long",
       year: "numeric",
     }),
-    file: `/devotional-pdfs/${month}.pdf`,
-    available: month === "2026-06",
+    file: `/devotional-pdfs/Awake-Devotional-${monthName}-${DEVOTIONAL_YEAR}.pdf`,
+    available: AVAILABLE_PDF_MONTHS.has(month),
   };
 });
 

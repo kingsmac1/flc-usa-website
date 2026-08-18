@@ -46,6 +46,12 @@ export function DevotionalArticle({ date }: { date: string }) {
               </div>
             ) : null}
             <div className="mt-6 flex flex-wrap items-center justify-between gap-3 text-sm text-muted-foreground">
+              {devotional.furtherStudies ? (
+                <p>
+                  <span className="font-semibold text-foreground">Further studies:</span>{" "}
+                  {devotional.furtherStudies}
+                </p>
+              ) : null}
               {devotional.readingPlan ? (
                 <p>
                   <span className="font-semibold text-foreground">Bible reading plan:</span>{" "}
