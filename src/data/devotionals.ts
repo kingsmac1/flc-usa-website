@@ -744,25 +744,36 @@ export const ALL_DEVOTIONALS: Devotional[] = (() => {
  * Filename format: Awake-Devotional-<Month>-<Year>.pdf
  *   e.g. Awake-Devotional-June-2026.pdf, Awake-Devotional-July-2026.pdf
  */
-export type DevotionalPdf = { month: string; label: string; file: string; available: boolean };
+export type DevotionalPdf = { month: string; label: string; file: string; available: boolean; year: number };
+
+/** Years the monthly PDF archive covers. Only these years show in the year dropdown. */
+export const ARCHIVE_YEARS = [2025, 2026] as const;
 
 /** Months that currently have a real PDF uploaded to public/devotional-pdfs/. */
 const AVAILABLE_PDF_MONTHS = new Set<string>(["2026-06"]);
 
-export const DEVOTIONAL_PDFS: DevotionalPdf[] = Array.from({ length: 12 }, (_, i) => {
-  const month = `${DEVOTIONAL_YEAR}-${pad(i + 1)}`;
-  const monthName = MONTH_NAMES[i];
-  return {
-    month,
-    label: new Date(Date.UTC(DEVOTIONAL_YEAR, i, 1)).toLocaleDateString("en-US", {
-      timeZone: "UTC",
-      month: "long",
-      year: "numeric",
-    }),
-    file: `/devotional-pdfs/Awake-Devotional-${monthName}-${DEVOTIONAL_YEAR}.pdf`,
-    available: AVAILABLE_PDF_MONTHS.has(month),
-  };
-});
+export const DEVOTIONAL_PDFS: DevotionalPdf[] = ARCHIVE_YEARS.flatMap((year) =>
+  Array.from({ length: 12 }, (_, i) => {
+    const month = `${year}-${pad(i + 1)}`;
+    const monthName = MONTH_NAMES[i];
+    return {
+      month,
+      year,
+      label: new Date(Date.UTC(year, i, 1)).toLocaleDateString("en-US", {
+        timeZone: "UTC",
+        month: "long",
+        year: "numeric",
+      }),
+      file: `/devotional-pdfs/Awake-Devotional-${monthName}-${year}.pdf`,
+      available: AVAILABLE_PDF_MONTHS.has(month),
+    };
+  }),
+);
+
+/** All 12 months' PDFs for a given year. */
+export function pdfsForYear(year: number): DevotionalPdf[] {
+  return DEVOTIONAL_PDFS.filter((p) => p.year === year);
+}
 
 /** The devotional for a date, falling back to the most recent one available. */
 export function getDevotional(date: string): Devotional {

@@ -5,10 +5,12 @@ import { DevotionalArticle } from "@/components/site/DevotionalArticle";
 import { toISODate } from "@/components/site/DevotionalCalendar";
 import { Section, SectionHeading } from "@/components/site/ui";
 import {
-  DEVOTIONAL_PDFS,
+  ARCHIVE_YEARS,
+  DEVOTIONAL_YEAR,
   devotionalsForMonth,
   formatShortDate,
   monthLabel,
+  pdfsForYear,
 } from "@/data/devotionals";
 import { cn } from "@/lib/utils";
 
@@ -34,10 +36,23 @@ export const Route = createFileRoute("/devotional/")({
   component: DevotionalIndex,
 });
 
+/** Month keys ("YYYY-MM") for the daily-article browser — independent of the PDF archive's years. */
+const ARTICLE_MONTHS = Array.from(
+  { length: 12 },
+  (_, i) => `${DEVOTIONAL_YEAR}-${String(i + 1).padStart(2, "0")}`,
+);
+
 function DevotionalIndex() {
   const today = toISODate(new Date());
   const [month, setMonth] = useState(today.slice(0, 7));
   const days = devotionalsForMonth(month);
+
+  const currentYear = new Date().getFullYear();
+  const defaultYear = ARCHIVE_YEARS.includes(currentYear as (typeof ARCHIVE_YEARS)[number])
+    ? currentYear
+    : ARCHIVE_YEARS[ARCHIVE_YEARS.length - 1];
+  const [pdfYear, setPdfYear] = useState<number>(defaultYear);
+  const yearPdfs = pdfsForYear(pdfYear);
 
   return (
     <>
@@ -51,20 +66,20 @@ function DevotionalIndex() {
         />
 
         <div className="mt-8 flex gap-2 overflow-x-auto pb-2" role="group" aria-label="Choose a month">
-          {DEVOTIONAL_PDFS.map((m) => (
+          {ARTICLE_MONTHS.map((m) => (
             <button
-              key={m.month}
+              key={m}
               type="button"
-              aria-pressed={month === m.month}
-              onClick={() => setMonth(m.month)}
+              aria-pressed={month === m}
+              onClick={() => setMonth(m)}
               className={cn(
                 "min-h-11 shrink-0 rounded-full border px-5 text-sm font-semibold transition-colors",
-                month === m.month
+                month === m
                   ? "border-primary bg-primary text-primary-foreground"
                   : "border-border bg-card text-foreground hover:bg-secondary",
               )}
             >
-              {m.label}
+              {monthLabel(m)}
             </button>
           ))}
         </div>
@@ -94,10 +109,29 @@ function DevotionalIndex() {
         <SectionHeading
           eyebrow="Monthly archives"
           title="Download the devotional PDFs"
-          intro={`Monthly PDFs for ${monthLabel(month).split(" ")[1]}. Files are added to the archive as each month is published.`}
+          intro="Choose a year to see every month's devotional available for download."
         />
+
+        <div className="mt-6 max-w-xs">
+          <label className="text-xs font-semibold uppercase text-muted-foreground" htmlFor="pdf-archive-year">
+            Year
+          </label>
+          <select
+            id="pdf-archive-year"
+            value={pdfYear}
+            onChange={(e) => setPdfYear(Number(e.target.value))}
+            className="mt-2 min-h-11 w-full rounded-full border border-border bg-card px-4 text-sm focus-visible:outline-2 focus-visible:outline-accent"
+          >
+            {ARCHIVE_YEARS.map((y) => (
+              <option key={y} value={y}>
+                {y}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {DEVOTIONAL_PDFS.map((pdf) => (
+          {yearPdfs.map((pdf) => (
             <li key={pdf.month} className="rounded-3xl border border-border bg-card p-6">
               <h3 className="font-display text-lg font-bold">{pdf.label}</h3>
               {pdf.available ? (

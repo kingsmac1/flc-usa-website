@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { BookOpen, Loader2 } from "lucide-react";
 import { getPassage } from "@/lib/bible.functions";
+import { chapterCount, verseCount } from "@/data/bible-structure";
 
 const BOOKS = [
   "Genesis", "Exodus", "Leviticus", "Numbers", "Deuteronomy", "Joshua", "Judges", "Ruth",
@@ -13,15 +14,28 @@ const BOOKS = [
   "1 Peter", "2 Peter", "1 John", "Revelation",
 ];
 
-/**
- * Scripture reader. Reads live text through the `getPassage` server function
- * once BIBLE_API_KEY is configured; otherwise shows placeholder text.
- */
 export function BiblePanel() {
   const [book, setBook] = useState("John");
   const [chapter, setChapter] = useState("15");
   const [verse, setVerse] = useState("5");
   const reference = `${book} ${chapter}:${verse}`;
+
+  const totalChapters = chapterCount(book);
+  const totalVerses = verseCount(book, Number(chapter));
+
+  // If the book changes and the current chapter no longer exists in it, clamp to the last valid chapter.
+  useEffect(() => {
+    if (Number(chapter) > totalChapters) {
+      setChapter(String(totalChapters));
+    }
+  }, [book, totalChapters, chapter]);
+
+  // If the chapter changes and the current verse no longer exists in it, clamp to the last valid verse.
+  useEffect(() => {
+    if (Number(verse) > totalVerses) {
+      setVerse(String(totalVerses));
+    }
+  }, [chapter, totalVerses, verse]);
 
   const fetchPassage = useServerFn(getPassage);
   const { data, isFetching } = useQuery({
@@ -51,7 +65,16 @@ export function BiblePanel() {
           <label className="text-xs font-semibold uppercase text-muted-foreground" htmlFor="bible-book">
             Book
           </label>
-          <select id="bible-book" className={selectClass} value={book} onChange={(e) => setBook(e.target.value)}>
+          <select
+            id="bible-book"
+            className={selectClass}
+            value={book}
+            onChange={(e) => {
+              setBook(e.target.value);
+              setChapter("1");
+              setVerse("1");
+            }}
+          >
             {BOOKS.map((b) => (
               <option key={b}>{b}</option>
             ))}
@@ -61,8 +84,16 @@ export function BiblePanel() {
           <label className="text-xs font-semibold uppercase text-muted-foreground" htmlFor="bible-chapter">
             Chapter
           </label>
-          <select id="bible-chapter" className={selectClass} value={chapter} onChange={(e) => setChapter(e.target.value)}>
-            {Array.from({ length: 150 }, (_, i) => String(i + 1)).map((c) => (
+          <select
+            id="bible-chapter"
+            className={selectClass}
+            value={chapter}
+            onChange={(e) => {
+              setChapter(e.target.value);
+              setVerse("1");
+            }}
+          >
+            {Array.from({ length: totalChapters }, (_, i) => String(i + 1)).map((c) => (
               <option key={c}>{c}</option>
             ))}
           </select>
@@ -72,7 +103,7 @@ export function BiblePanel() {
             Verse
           </label>
           <select id="bible-verse" className={selectClass} value={verse} onChange={(e) => setVerse(e.target.value)}>
-            {Array.from({ length: 176 }, (_, i) => String(i + 1)).map((v) => (
+            {Array.from({ length: totalVerses }, (_, i) => String(i + 1)).map((v) => (
               <option key={v}>{v}</option>
             ))}
           </select>
