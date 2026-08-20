@@ -4,7 +4,7 @@ backend:
   name: github
   repo: kingsmac1/flc-usa-website
   branch: main
-  base_url: sveltia-cms-auth.emkaydigitals.workers.dev
+  base_url: https://sveltia-cms-auth.emkaydigitals.workers.dev
 
 media_folder: "public/uploads"
 public_folder: "/uploads"
@@ -26,4 +26,3 @@ collections:
       - { label: Further Studies, name: furtherStudies, widget: string, required: false }
       - { label: Reading Plan, name: readingPlan, widget: string, required: false }
       - { label: Author, name: author, widget: string, required: false }
-      
