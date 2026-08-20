@@ -1,0 +1,28 @@
+# yaml-language-server: $schema=https://unpkg.com/@sveltia/cms/schema/sveltia-cms.json
+
+backend:
+  name: github
+  repo: kingsmac1/flc-usa-website
+  branch: main
+  base_url: sveltia-cms-auth.emkaydigitals.workers.dev
+
+media_folder: "public/uploads"
+public_folder: "/uploads"
+
+collections:
+  - name: devotionals
+    label: Daily Devotionals
+    folder: content/devotionals
+    create: true
+    slug: "{{fields.date}}"
+    fields:
+      - { label: Date, name: date, widget: date, format: "YYYY-MM-DD" }
+      - { label: Title, name: title, widget: string }
+      - { label: Scripture Reference, name: scripture, widget: string }
+      - { label: Verse Text, name: verse, widget: text }
+      - { label: Body, name: body, widget: list, field: { label: Paragraph, name: paragraph, widget: text } }
+      - { label: Prayer, name: prayer, widget: text }
+      - { label: Declarations, name: declarations, widget: list, required: false }
+      - { label: Further Studies, name: furtherStudies, widget: string, required: false }
+      - { label: Reading Plan, name: readingPlan, widget: string, required: false }
+      - { label: Author, name: author, widget: string, required: false }

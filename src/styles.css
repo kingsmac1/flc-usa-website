@@ -214,3 +214,27 @@
 @utility animate-overlay-out {
   animation: flc-overlay-out 0.5s cubic-bezier(0.65, 0, 0.35, 1) both;
 }
+
+/*
+ * Custom select dropdown arrow.
+ * Native <select> arrows are drawn by the browser and sit flush against
+ * the border with no way to reposition them via Tailwind classes. This
+ * removes the native arrow and draws our own via background-image, which
+ * we can inset properly.
+ *
+ * To move the arrow: adjust the "right" value in background-position
+ * (bigger = further from the edge). Keep padding-right a little larger
+ * than that value so the dropdown text never runs into the arrow.
+ */
+@layer base {
+  select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23667085' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+    background-repeat: no-repeat;
+    background-position: right 1.1rem center;
+    background-size: 1rem;
+    padding-right: 2.75rem;
+  }
+}
