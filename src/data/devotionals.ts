@@ -22,7 +22,14 @@
  *   author     Optional writer name
  */
 
-import matter from "gray-matter";
+import { load as parseYaml } from "js-yaml";
+
+/** Reads the YAML frontmatter block at the top of a markdown file. */
+function frontmatter(raw: string): Record<string, unknown> {
+  const match = /^---\r?\n([\s\S]*?)\r?\n---/.exec(raw.trim());
+  if (!match) return {};
+  return (parseYaml(match[1] ?? "") as Record<string, unknown>) ?? {};
+}
 
 export type Devotional = {
   date: string;
