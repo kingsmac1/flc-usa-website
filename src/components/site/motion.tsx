@@ -24,8 +24,8 @@ export function Reveal({
   return (
     <Tag
       className={className}
-      initial={reduce ? undefined : { opacity: 0, y }}
-      whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+      initial={reduce ? false : { opacity: 0, y }}
+      whileInView={reduce ? {} : { opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2, margin: "0px 0px -60px 0px" }}
       transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
     >
