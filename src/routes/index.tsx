@@ -4,6 +4,7 @@ import { EventCountdown, NEXT_SERVICE, ServiceCountdownCard } from "@/components
 import { Card, Eyebrow, PillLink, Section, SectionHeading } from "@/components/site/ui";
 import { LEAD_PASTORS, WELCOME } from "@/data/pastors";
 import { PLACEHOLDER, SITE } from "@/data/site";
+import { CtaBand } from "@/components/site/CtaBand";
 
 const title = "Fountain of Life Church USA | Faith, Worship & Purpose";
 const description =
@@ -284,6 +285,8 @@ function HomePage() {
           />
         </div>
       </Section>
+
+       <CtaBand items={["salvation", "prayer"]} tone="white" />
     </>
   );
 }
