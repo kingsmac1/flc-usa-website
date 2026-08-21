@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { BiblePanel } from "@/components/site/BiblePanel";
+import { CtaBand } from "@/components/site/CtaBand";
 import { CommentFeed } from "@/components/site/CommentFeed";
 import { EventCountdown, NEXT_SERVICE } from "@/components/site/EventCountdown";
 import { GiveWidget } from "@/components/site/GiveWidget";
@@ -63,6 +64,8 @@ function LivestreamPage() {
           <GiveWidget compact />
         </div>
       </Section>
+
+      <CtaBand items={["salvation", "prayer"]} tone="white" />
 
       <EventCountdown {...NEXT_SERVICE} />
     </>
