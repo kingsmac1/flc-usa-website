@@ -50,7 +50,7 @@ function DevotionalIndex() {
   const currentYear = new Date().getFullYear();
   const defaultYear = ARCHIVE_YEARS.includes(currentYear as (typeof ARCHIVE_YEARS)[number])
     ? currentYear
-    : ARCHIVE_YEARS[ARCHIVE_YEARS.length - 1];
+    : ARCHIVE_YEARS[ARCHIVE_YEARS.length - 1]!;
   const [pdfYear, setPdfYear] = useState<number>(defaultYear);
   const yearPdfs = pdfsForYear(pdfYear);
 

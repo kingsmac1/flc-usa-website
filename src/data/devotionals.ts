@@ -202,7 +202,7 @@ export function pdfsForYear(year: number): DevotionalPdf[] {
 export const DEVOTIONAL_PDFS: DevotionalPdf[] = ARCHIVE_YEARS.flatMap((y) => pdfsFor(y));
 
 /** Previous / next devotional relative to a date (chronological order). */
-export function adjacentDevotionals(date: string): { prev?: Devotional; next?: Devotional } {
+export function adjacentDevotionals(date: string): { prev?: Devotional | undefined; next?: Devotional | undefined } {
   const sorted = [...ALL_DEVOTIONALS].sort((a, b) => (a.date < b.date ? -1 : 1));
   const i = sorted.findIndex((d) => d.date === date);
   if (i === -1) return {};
