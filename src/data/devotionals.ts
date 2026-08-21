@@ -175,20 +175,39 @@ export type DevotionalPdf = { month: string; label: string; file: string; availa
 /** Months that currently have a real PDF uploaded to public/devotional-pdfs/. */
 const AVAILABLE_PDF_MONTHS = new Set<string>(["2026-06"]);
 
-export const DEVOTIONAL_PDFS: DevotionalPdf[] = Array.from({ length: 12 }, (_, i) => {
-  const month = `${DEVOTIONAL_YEAR}-${pad(i + 1)}`;
-  const monthName = MONTH_NAMES[i];
-  return {
-    month,
-    label: new Date(Date.UTC(DEVOTIONAL_YEAR, i, 1)).toLocaleDateString("en-US", {
-      timeZone: "UTC",
-      month: "long",
-      year: "numeric",
-    }),
-    file: `/devotional-pdfs/Awake-Devotional-${monthName}-${DEVOTIONAL_YEAR}.pdf`,
-    available: AVAILABLE_PDF_MONTHS.has(month),
-  };
-});
+/** Years offered in the PDF archive year dropdown. */
+export const ARCHIVE_YEARS = [2024, 2025, 2026, 2027] as const;
+
+function pdfsFor(year: number): DevotionalPdf[] {
+  return Array.from({ length: 12 }, (_, i) => {
+    const month = `${year}-${pad(i + 1)}`;
+    const monthName = MONTH_NAMES[i];
+    return {
+      month,
+      label: new Date(Date.UTC(year, i, 1)).toLocaleDateString("en-US", {
+        timeZone: "UTC",
+        month: "long",
+        year: "numeric",
+      }),
+      file: `/devotional-pdfs/Awake-Devotional-${monthName}-${year}.pdf`,
+      available: AVAILABLE_PDF_MONTHS.has(month),
+    };
+  });
+}
+
+export function pdfsForYear(year: number): DevotionalPdf[] {
+  return pdfsFor(year);
+}
+
+export const DEVOTIONAL_PDFS: DevotionalPdf[] = ARCHIVE_YEARS.flatMap((y) => pdfsFor(y));
+
+/** Previous / next devotional relative to a date (chronological order). */
+export function adjacentDevotionals(date: string): { prev?: Devotional; next?: Devotional } {
+  const sorted = [...ALL_DEVOTIONALS].sort((a, b) => (a.date < b.date ? -1 : 1));
+  const i = sorted.findIndex((d) => d.date === date);
+  if (i === -1) return {};
+  return { prev: sorted[i - 1], next: sorted[i + 1] };
+}
 
 /** The devotional for a date, falling back to the most recent one available. */
 export function getDevotional(date: string): Devotional {
