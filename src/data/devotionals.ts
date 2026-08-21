@@ -59,10 +59,9 @@ const devotionalFiles = import.meta.glob("/content/devotionals/*.md", {
   eager: true,
 }) as Record<string, string>;
 
-export const DEVOTIONALS: Devotional[] = Object.values(devotionalFiles).map((raw) => {
-  const { data } = matter(raw);
-  return data as Devotional;
-});
+export const DEVOTIONALS: Devotional[] = Object.values(devotionalFiles).map(
+  (raw) => frontmatter(raw) as unknown as Devotional,
+);
 
 /* -------------------------------------------------------------------------
  * PLACEHOLDER LIBRARY
