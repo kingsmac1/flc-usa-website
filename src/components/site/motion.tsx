@@ -52,7 +52,7 @@ export function Parallax({
   const y = useTransform(scrollYProgress, [0, 1], [-strength, strength]);
 
   return (
-    <motion.div ref={ref} className={cn("will-change-transform", className)} style={reduce ? undefined : { y }} {...rest}>
+    <motion.div ref={ref} className={cn("will-change-transform", className)} style={reduce ? {} : { y }} {...rest}>
       {children}
     </motion.div>
   );
