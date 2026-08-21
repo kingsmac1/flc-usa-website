@@ -31,6 +31,15 @@ const columns = [
       { label: "Plan a Visit", to: "/contact" as const },
     ],
   },
+  {
+    title: "Next Steps",
+    links: [
+      { label: "Prayer of Salvation", to: "/salvation" as const },
+      { label: "Prayer Request", to: "/prayer-request" as const },
+      { label: "Upcoming Events", to: "/events" as const },
+      { label: "Blog", to: "/blog" as const },
+    ],
+  },
 ];
 
 export function SiteFooter() {

@@ -37,7 +37,7 @@ const CTAS: Record<
     eyebrow: "Plan a visit",
     title: "There is a place for you this Sunday",
     body: "Tell us when you are coming and we will be ready to welcome you personally.",
-    to: "/plan-a-visit",
+    to: "/contact",
     action: "Plan your visit",
   },
 };
