@@ -1,14 +1,10 @@
-import { Link } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight } from "lucide-react";
 import { CommentFeed } from "./CommentFeed";
-import { DevotionalArchives } from "./DevotionalArchives";
 import { DevotionalCalendar } from "./DevotionalCalendar";
 import { Section, SectionHeading } from "./ui";
-import { adjacentDevotionals, formatDevotionalDate, formatShortDate, getDevotional } from "@/data/devotionals";
+import { formatDevotionalDate, getDevotional } from "@/data/devotionals";
 
-export function DevotionalArticle({ date, showArchives = true }: { date: string; showArchives?: boolean }) {
+export function DevotionalArticle({ date }: { date: string }) {
   const devotional = getDevotional(date);
-  const { prev, next } = adjacentDevotionals(date);
 
   return (
     <>
@@ -30,7 +26,7 @@ export function DevotionalArticle({ date, showArchives = true }: { date: string;
             <blockquote className="mt-3 border-l-4 border-accent pl-4 text-lg leading-relaxed">
               “{devotional.verse}”
             </blockquote>
-            {devotional.body.map((p) => (
+            {(devotional.body ?? []).map((p) => (
               <p key={p.slice(0, 24)} className="mt-5 text-base leading-relaxed text-muted-foreground">
                 {p}
               </p>
@@ -67,50 +63,10 @@ export function DevotionalArticle({ date, showArchives = true }: { date: string;
           </article>
           <DevotionalCalendar value={date} />
         </div>
-        <nav
-          aria-label="Devotional navigation"
-          className="mt-6 grid gap-3 sm:grid-cols-2"
-        >
-          {prev ? (
-            <Link
-              to="/devotional/$date"
-              params={{ date: prev.date }}
-              className="flex items-center gap-3 rounded-2xl border border-border bg-card px-5 py-4 transition-colors hover:bg-secondary"
-            >
-              <ArrowLeft className="size-5 shrink-0 text-primary" aria-hidden="true" />
-              <span className="min-w-0">
-                <span className="block text-xs font-semibold tracking-wide uppercase text-muted-foreground">
-                  Previous · {formatShortDate(prev.date)}
-                </span>
-                <span className="mt-1 block truncate font-display text-base font-bold">{prev.title}</span>
-              </span>
-            </Link>
-          ) : (
-            <span />
-          )}
-          {next ? (
-            <Link
-              to="/devotional/$date"
-              params={{ date: next.date }}
-              className="flex items-center justify-end gap-3 rounded-2xl border border-border bg-card px-5 py-4 text-right transition-colors hover:bg-secondary"
-            >
-              <span className="min-w-0">
-                <span className="block text-xs font-semibold tracking-wide uppercase text-muted-foreground">
-                  Next · {formatShortDate(next.date)}
-                </span>
-                <span className="mt-1 block truncate font-display text-base font-bold">{next.title}</span>
-              </span>
-              <ArrowRight className="size-5 shrink-0 text-primary" aria-hidden="true" />
-            </Link>
-          ) : null}
-        </nav>
-
         <div className="mt-6">
           <CommentFeed title="Share your reflection" />
         </div>
       </Section>
-
-      {showArchives ? <DevotionalArchives activeDate={date} /> : null}
     </>
   );
 }

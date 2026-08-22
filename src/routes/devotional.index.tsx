@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { DevotionalArticle } from "@/components/site/DevotionalArticle";
 import { toISODate } from "@/components/site/DevotionalCalendar";
+import { CtaBand } from "@/components/site/CtaBand";
 
 const title = "Daily Devotional | Fountain of Life Church USA";
 const description =
@@ -28,3 +29,5 @@ function DevotionalIndex() {
   const today = toISODate(new Date());
   return <DevotionalArticle date={today} />;
 }
+
+<CtaBand items={["salvation", "prayer"]} tone="white" />

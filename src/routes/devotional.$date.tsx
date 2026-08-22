@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { DevotionalArticle } from "@/components/site/DevotionalArticle";
 import { formatDevotionalDate } from "@/data/devotionals";
+import { CtaBand } from "@/components/site/CtaBand";
 
 export const Route = createFileRoute("/devotional/$date")({
   head: ({ params }) => {
@@ -27,3 +28,5 @@ function DevotionalByDate() {
   const { date } = Route.useParams();
   return <DevotionalArticle date={date} />;
 }
+
+<CtaBand items={["salvation", "prayer"]} tone="white" />
