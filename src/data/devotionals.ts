@@ -262,7 +262,7 @@ export const ALL_DEVOTIONALS: Devotional[] = (() => {
 export type DevotionalPdf = { month: string; label: string; file: string; available: boolean };
 
 /** Months that currently have a real PDF uploaded to public/devotional-pdfs/. */
-const AVAILABLE_PDF_MONTHS = new Set<string>(["2026-06"]);
+const AVAILABLE_PDF_MONTHS = new Set<string>(["2026-06", "2026-08"]);
 
 /** Years offered in the PDF archive year dropdown. */
 export const ARCHIVE_YEARS = [2024, 2025, 2026, 2027] as const;
