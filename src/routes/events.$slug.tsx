@@ -75,7 +75,7 @@ function EventDetail() {
             <img
               src={event.flyer}
               alt={`${event.title} flyer`}
-              className="aspect-[16/10] w-full rounded-3xl object-cover"
+              className="mx-auto max-h-[640px] w-auto max-w-full rounded-3xl object-contain"
             />
             <div className="mt-6 grid gap-3 rounded-3xl border border-border bg-card p-6 text-sm">
               <p className="inline-flex items-center gap-2">
