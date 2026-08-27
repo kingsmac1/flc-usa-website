@@ -25,11 +25,26 @@
 
 import { load as parseYaml } from "js-yaml";
 
-/** Reads the YAML frontmatter block at the top of a markdown file. */
+/**
+ * Reads a markdown file with YAML frontmatter, returning both the
+ * frontmatter data and the markdown content below it.
+ *
+ * Important: CMSs built on this pattern treat a field literally named
+ * "body" specially — instead of writing it into the frontmatter block,
+ * they write it as the file's actual Markdown body (the text below the
+ * closing `---`). That's intentional CMS behavior, not a bug, but it means
+ * this loader has to check both places for the body content.
+ */
+function parseFile(raw: string): { data: Record<string, unknown>; content: string } {
+  const match = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/.exec(raw.trim());
+  if (!match) return { data: {}, content: raw.trim() };
+  const data = (parseYaml(match[1] ?? "") as Record<string, unknown>) ?? {};
+  return { data, content: (match[2] ?? "").trim() };
+}
+
+/** Reads only the YAML frontmatter block (kept for anything that doesn't need the body/content). */
 function frontmatter(raw: string): Record<string, unknown> {
-  const match = /^---\r?\n([\s\S]*?)\r?\n---/.exec(raw.trim());
-  if (!match) return {};
-  return (parseYaml(match[1] ?? "") as Record<string, unknown>) ?? {};
+  return parseFile(raw).data;
 }
 
 /**
@@ -48,16 +63,15 @@ function normalizeDate(value: unknown): string {
 }
 
 /**
- * Normalizes a "body" value that came back from YAML parsing.
- * Body is now a plain multi-line text field in the CMS (paragraphs
- * separated by a blank line) rather than a list widget — Sveltia's simple
- * list widget was found to silently drop its content on save. This
- * function still accepts the older array shape too, for backward
- * compatibility with entries saved before this change.
+ * Normalizes a "body" value into a flat array of paragraphs.
+ * Checks the frontmatter's `body` property first (older entries, or an
+ * array); if that's empty, falls back to the file's actual Markdown
+ * content (newer entries saved via the CMS's plain-text Body field, which
+ * writes there instead of into frontmatter — see parseFile() above).
  */
-function normalizeBody(value: unknown): string[] {
-  if (Array.isArray(value)) {
-    return value
+function normalizeBody(frontmatterValue: unknown, markdownContent: string): string[] {
+  if (Array.isArray(frontmatterValue)) {
+    const fromArray = frontmatterValue
       .map((item) => {
         if (typeof item === "string") return item;
         if (item && typeof item === "object" && "paragraph" in item) {
@@ -66,9 +80,16 @@ function normalizeBody(value: unknown): string[] {
         return "";
       })
       .filter(Boolean);
+    if (fromArray.length) return fromArray;
   }
-  if (typeof value === "string") {
-    return value
+  if (typeof frontmatterValue === "string" && frontmatterValue.trim()) {
+    return frontmatterValue
+      .split(/\r?\n\s*\r?\n/)
+      .map((p) => p.trim())
+      .filter(Boolean);
+  }
+  if (markdownContent.trim()) {
+    return markdownContent
       .split(/\r?\n\s*\r?\n/)
       .map((p) => p.trim())
       .filter(Boolean);
@@ -122,11 +143,11 @@ const devotionalFiles = import.meta.glob("/content/devotionals/**/*.md", {
 }) as Record<string, string>;
 
 export const DEVOTIONALS: Devotional[] = Object.values(devotionalFiles).map((raw) => {
-  const data = frontmatter(raw) as Record<string, unknown>;
+  const { data, content } = parseFile(raw);
   return {
     ...data,
     date: normalizeDate(data.date),
-    body: normalizeBody(data.body),
+    body: normalizeBody(data.body, content),
     declarations: normalizeDeclarations(data.declarations),
   } as Devotional;
 });
