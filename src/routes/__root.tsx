@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { AuthProvider } from "@/lib/auth";
 import { Preloader } from "@/components/site/Preloader";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
@@ -136,16 +137,18 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Preloader />
-      <SmoothScroll />
-      <div className="flex min-h-dvh flex-col">
-        <SiteHeader />
-        <main className="flex-1">
-          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-          <Outlet />
-        </main>
-        <SiteFooter />
-      </div>
+      <AuthProvider>
+        <Preloader />
+        <SmoothScroll />
+        <div className="flex min-h-dvh flex-col">
+          <SiteHeader />
+          <main className="flex-1">
+            {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+            <Outlet />
+          </main>
+          <SiteFooter />
+        </div>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
