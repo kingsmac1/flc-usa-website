@@ -2,7 +2,7 @@
 
 backend:
   name: github
-  repo: kingsmac1/flc-usa-website
+  repo: OWNER/flc-usa-website
   branch: main
   base_url: https://sveltia-cms-auth.emkaydigitals.workers.dev
 
@@ -14,15 +14,96 @@ collections:
     label: Daily Devotionals
     folder: content/devotionals
     create: true
-    slug: "{{fields.date}}"
+    # Files are auto-sorted into year/month subfolders based on the entry's
+    # own "date" field, e.g. content/devotionals/2026/08/2026-08-21.md
+    path: "{{date | date('YYYY')}}/{{date | date('MM')}}/{{date}}"
+    slug: "{{date}}"
     fields:
-      - { label: Date, name: date, widget: datetime, date_format: "YYYY-MM-DD", time_format: false, picker_utc: true }
+      - { label: Date, name: date, widget: date, date_format: "YYYY-MM-DD", picker_utc: true }
       - { label: Title, name: title, widget: string }
       - { label: Scripture Reference, name: scripture, widget: string }
       - { label: Verse Text, name: verse, widget: text }
-      - { label: Body, name: body, widget: list, field: { label: Paragraph, name: paragraph, widget: text } }
+      - { label: Body, name: body, widget: list }
       - { label: Prayer, name: prayer, widget: text }
       - { label: Declarations, name: declarations, widget: list, required: false }
       - { label: Further Studies, name: furtherStudies, widget: string, required: false }
       - { label: Reading Plan, name: readingPlan, widget: string, required: false }
       - { label: Author, name: author, widget: string, required: false }
+
+  - name: books
+    label: Book Store
+    folder: content/books
+    create: true
+    slug: "{{fields.id}}"
+    fields:
+      - { label: ID, name: id, widget: string, hint: "Unique, no spaces — e.g. discovering-your-purpose" }
+      - { label: Title, name: title, widget: string }
+      - { label: Author, name: author, widget: string }
+      - { label: Price, name: price, widget: string, hint: "e.g. $14.99" }
+      - label: Category
+        name: category
+        widget: select
+        options: ["Purpose", "Family", "Discipleship", "Devotional"]
+      - { label: Description, name: description, widget: text }
+      - { label: Cover Image, name: cover, widget: image }
+      - { label: Buy Link, name: buyUrl, widget: string }
+
+  - name: events
+    label: Events
+    folder: content/events
+    create: true
+    slug: "{{fields.slug}}"
+    fields:
+      - { label: Slug, name: slug, widget: string, hint: "Used in the URL — unique, no spaces" }
+      - { label: Title, name: title, widget: string }
+      - label: Type
+        name: type
+        widget: select
+        options: ["Conference", "Prayer", "Women", "Youth", "Men", "Outreach", "Other"]
+      - { label: Start, name: start, widget: datetime, date_format: "YYYY-MM-DD", time_format: "HH:mm" }
+      - { label: End, name: end, widget: datetime, date_format: "YYYY-MM-DD", time_format: "HH:mm", required: false }
+      - { label: Location, name: location, widget: string }
+      - { label: Flyer Image, name: flyer, widget: image }
+      - { label: Summary, name: summary, widget: text }
+      - { label: Details, name: details, widget: list }
+      - { label: Registration Open, name: registration, widget: boolean, default: true, required: false }
+
+  - name: teachings
+    label: Teachings
+    folder: content/teachings
+    create: true
+    slug: "{{fields.slug}}"
+    fields:
+      - { label: Slug, name: slug, widget: string, hint: "Used in the URL — unique, no spaces" }
+      - { label: Series Title, name: title, widget: string }
+      - { label: Series Summary, name: summary, widget: text }
+      - { label: Series Image, name: image, widget: image }
+      - label: Videos in this Series
+        name: items
+        widget: list
+        fields:
+          - { label: Title, name: title, widget: string }
+          - { label: Speaker, name: speaker, widget: string }
+          - { label: Date, name: date, widget: date, date_format: "YYYY-MM-DD" }
+          - { label: Duration, name: duration, widget: string, hint: "e.g. 48 min" }
+          - { label: YouTube Link, name: youtube, widget: string }
+          - { label: Custom Image (optional — falls back to YouTube thumbnail), name: image, widget: image, required: false }
+          - { label: Summary, name: summary, widget: text, required: false }
+
+  - name: blog
+    label: Blog
+    folder: content/blog
+    create: true
+    slug: "{{fields.slug}}"
+    fields:
+      - { label: Slug, name: slug, widget: string, hint: "Used in the URL — unique, no spaces" }
+      - { label: Title, name: title, widget: string }
+      - { label: Excerpt, name: excerpt, widget: text }
+      - { label: Date, name: date, widget: date, date_format: "YYYY-MM-DD" }
+      - { label: Author, name: author, widget: string }
+      - label: Category
+        name: category
+        widget: select
+        options: ["Purpose", "Prayer", "Family", "Church News"]
+      - { label: Featured Image, name: image, widget: image }
+      - { label: Body, name: body, widget: list }

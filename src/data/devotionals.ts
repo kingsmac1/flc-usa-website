@@ -1,9 +1,10 @@
 /**
  * DEVOTIONAL / ARTICLE CONTENT STORE
  * ----------------------------------
- * Real devotionals live as individual Markdown files in content/devotionals/
- * (one file per day, named YYYY-MM-DD.md), managed either by hand or through
- * the Sveltia CMS "Daily Devotionals" collection at /admin. This file loads
+ * Real devotionals live as individual Markdown files in
+ * content/devotionals/YYYY/MM/YYYY-MM-DD.md (one file per day, organized
+ * into year/month subfolders), managed either by hand or through the
+ * Sveltia CMS "Daily Devotionals" collection at /admin. This file loads
  * them all at build time — it no longer holds the data itself.
  *
  * Any date with a real .md file overrides the auto-generated placeholder
@@ -31,6 +32,40 @@ function frontmatter(raw: string): Record<string, unknown> {
   return (parseYaml(match[1] ?? "") as Record<string, unknown>) ?? {};
 }
 
+/**
+ * Normalizes a "date" value that came back from YAML parsing.
+ * Unquoted dates in frontmatter (e.g. `date: 2026-08-21`, written by some
+ * CMS saves) get auto-parsed by YAML into a native JS Date object instead
+ * of staying a plain string — which silently breaks every place in this
+ * file that compares dates as strings. This converts either shape back to
+ * a plain "YYYY-MM-DD" string.
+ */
+function normalizeDate(value: unknown): string {
+  if (value instanceof Date) {
+    return value.toISOString().slice(0, 10);
+  }
+  return String(value ?? "");
+}
+
+/**
+ * Normalizes a "body" value that came back from YAML parsing.
+ * Some CMS field configurations save each paragraph as an object
+ * (e.g. `{ paragraph: "..." }`) instead of a plain string. This accepts
+ * either shape and always returns a flat array of strings.
+ */
+function normalizeBody(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((item) => {
+      if (typeof item === "string") return item;
+      if (item && typeof item === "object" && "paragraph" in item) {
+        return String((item as { paragraph: unknown }).paragraph ?? "");
+      }
+      return "";
+    })
+    .filter(Boolean);
+}
+
 export type Devotional = {
   date: string;
   title: string;
@@ -44,24 +79,27 @@ export type Devotional = {
   author?: string;
 };
 
-/** Real devotionals now live as .md files in content/devotionals/ — see below. */
-
 /**
- * Loads every devotional from content/devotionals/*.md at build time.
- * Each file's YAML frontmatter is parsed into a Devotional object — add,
- * edit, or remove entries by adding/editing/removing .md files in that
- * folder (this is exactly what Sveltia CMS's "Daily Devotionals" collection
- * manages for you once it's wired up).
+ * Loads every devotional from content/devotionals/**\/*.md at build time
+ * (the ** matches the year/month subfolders). Each file's YAML frontmatter
+ * is parsed into a Devotional object — add, edit, or remove entries by
+ * adding/editing/removing .md files in that folder (this is exactly what
+ * Sveltia CMS's "Daily Devotionals" collection manages for you).
  */
-const devotionalFiles = import.meta.glob("/content/devotionals/*.md", {
+const devotionalFiles = import.meta.glob("/content/devotionals/**/*.md", {
   query: "?raw",
   import: "default",
   eager: true,
 }) as Record<string, string>;
 
-export const DEVOTIONALS: Devotional[] = Object.values(devotionalFiles).map(
-  (raw) => frontmatter(raw) as unknown as Devotional,
-);
+export const DEVOTIONALS: Devotional[] = Object.values(devotionalFiles).map((raw) => {
+  const data = frontmatter(raw) as Record<string, unknown>;
+  return {
+    ...data,
+    date: normalizeDate(data.date),
+    body: normalizeBody(data.body),
+  } as Devotional;
+});
 
 /* -------------------------------------------------------------------------
  * PLACEHOLDER LIBRARY
