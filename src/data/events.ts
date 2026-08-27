@@ -19,6 +19,24 @@ function frontmatter(raw: string): Record<string, unknown> {
   return (parseYaml(match[1] ?? "") as Record<string, unknown>) ?? {};
 }
 
+/**
+ * Normalizes "details" — a plain multi-line text field in the CMS (one
+ * point per line) rather than a list widget; also accepts the older array
+ * shape for backward compatibility.
+ */
+function normalizeDetails(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value.map((item) => String(item ?? "")).filter(Boolean);
+  }
+  if (typeof value === "string") {
+    return value
+      .split(/\r?\n/)
+      .map((l) => l.trim())
+      .filter(Boolean);
+  }
+  return [];
+}
+
 export type ChurchEvent = {
   slug: string;
   title: string;
@@ -38,9 +56,10 @@ const eventFiles = import.meta.glob("/content/events/*.md", {
   eager: true,
 }) as Record<string, string>;
 
-export const EVENTS: ChurchEvent[] = Object.values(eventFiles).map(
-  (raw) => frontmatter(raw) as unknown as ChurchEvent,
-);
+export const EVENTS: ChurchEvent[] = Object.values(eventFiles).map((raw) => {
+  const data = frontmatter(raw) as Record<string, unknown>;
+  return { ...data, details: normalizeDetails(data.details) } as ChurchEvent;
+});
 
 export function getEvent(slug: string) {
   return EVENTS.find((e) => e.slug === slug);

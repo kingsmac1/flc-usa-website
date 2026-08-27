@@ -16,6 +16,24 @@ function frontmatter(raw: string): Record<string, unknown> {
   return (parseYaml(match[1] ?? "") as Record<string, unknown>) ?? {};
 }
 
+/**
+ * Normalizes "body" — a plain multi-line text field in the CMS
+ * (paragraphs separated by a blank line) rather than a list widget; also
+ * accepts the older array shape for backward compatibility.
+ */
+function normalizeBody(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value.map((item) => String(item ?? "")).filter(Boolean);
+  }
+  if (typeof value === "string") {
+    return value
+      .split(/\r?\n\s*\r?\n/)
+      .map((p) => p.trim())
+      .filter(Boolean);
+  }
+  return [];
+}
+
 export type BlogPost = {
   slug: string;
   title: string;
@@ -33,9 +51,10 @@ const blogFiles = import.meta.glob("/content/blog/*.md", {
   eager: true,
 }) as Record<string, string>;
 
-export const BLOG_POSTS: BlogPost[] = Object.values(blogFiles).map(
-  (raw) => frontmatter(raw) as unknown as BlogPost,
-);
+export const BLOG_POSTS: BlogPost[] = Object.values(blogFiles).map((raw) => {
+  const data = frontmatter(raw) as Record<string, unknown>;
+  return { ...data, body: normalizeBody(data.body) } as BlogPost;
+});
 
 export function getPost(slug: string) {
   return BLOG_POSTS.find((p) => p.slug === slug);

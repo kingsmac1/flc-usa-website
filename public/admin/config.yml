@@ -2,7 +2,7 @@
 
 backend:
   name: github
-  repo:  kingsmac1/flc-usa-website
+  repo: OWNER/flc-usa-website
   branch: main
   base_url: https://sveltia-cms-auth.emkaydigitals.workers.dev
 
@@ -23,9 +23,9 @@ collections:
       - { label: Title, name: title, widget: string }
       - { label: Scripture Reference, name: scripture, widget: string }
       - { label: Verse Text, name: verse, widget: text }
-      - { label: Body, name: body, widget: list }
+      - { label: "Body (separate paragraphs with a blank line between them)", name: body, widget: text }
       - { label: Prayer, name: prayer, widget: text }
-      - { label: Declarations, name: declarations, widget: list, required: false }
+      - { label: "Declarations (one per line)", name: declarations, widget: text, required: false }
       - { label: Further Studies, name: furtherStudies, widget: string, required: false }
       - { label: Reading Plan, name: readingPlan, widget: string, required: false }
       - { label: Author, name: author, widget: string, required: false }
@@ -65,7 +65,7 @@ collections:
       - { label: Location, name: location, widget: string }
       - { label: Flyer Image, name: flyer, widget: image }
       - { label: Summary, name: summary, widget: text }
-      - { label: Details, name: details, widget: list }
+      - { label: "Details (one point per line)", name: details, widget: text }
       - { label: Registration Open, name: registration, widget: boolean, default: true, required: false }
 
   - name: teachings
@@ -106,4 +106,4 @@ collections:
         widget: select
         options: ["Purpose", "Prayer", "Family", "Church News"]
       - { label: Featured Image, name: image, widget: image }
-      - { label: Body, name: body, widget: list }
+      - { label: "Body (separate paragraphs with a blank line between them)", name: body, widget: text }

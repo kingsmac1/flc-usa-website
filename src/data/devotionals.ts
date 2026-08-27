@@ -49,21 +49,50 @@ function normalizeDate(value: unknown): string {
 
 /**
  * Normalizes a "body" value that came back from YAML parsing.
- * Some CMS field configurations save each paragraph as an object
- * (e.g. `{ paragraph: "..." }`) instead of a plain string. This accepts
- * either shape and always returns a flat array of strings.
+ * Body is now a plain multi-line text field in the CMS (paragraphs
+ * separated by a blank line) rather than a list widget — Sveltia's simple
+ * list widget was found to silently drop its content on save. This
+ * function still accepts the older array shape too, for backward
+ * compatibility with entries saved before this change.
  */
 function normalizeBody(value: unknown): string[] {
-  if (!Array.isArray(value)) return [];
-  return value
-    .map((item) => {
-      if (typeof item === "string") return item;
-      if (item && typeof item === "object" && "paragraph" in item) {
-        return String((item as { paragraph: unknown }).paragraph ?? "");
-      }
-      return "";
-    })
-    .filter(Boolean);
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => {
+        if (typeof item === "string") return item;
+        if (item && typeof item === "object" && "paragraph" in item) {
+          return String((item as { paragraph: unknown }).paragraph ?? "");
+        }
+        return "";
+      })
+      .filter(Boolean);
+  }
+  if (typeof value === "string") {
+    return value
+      .split(/\r?\n\s*\r?\n/)
+      .map((p) => p.trim())
+      .filter(Boolean);
+  }
+  return [];
+}
+
+/**
+ * Normalizes a "declarations" value the same way as body, but splitting on
+ * single newlines (one declaration per line) instead of blank-line
+ * paragraphs, since declarations are short one-liners.
+ */
+function normalizeDeclarations(value: unknown): string[] | undefined {
+  if (Array.isArray(value)) {
+    return value.map((item) => String(item ?? "")).filter(Boolean);
+  }
+  if (typeof value === "string") {
+    const lines = value
+      .split(/\r?\n/)
+      .map((l) => l.trim())
+      .filter(Boolean);
+    return lines.length ? lines : undefined;
+  }
+  return undefined;
 }
 
 export type Devotional = {
@@ -98,6 +127,7 @@ export const DEVOTIONALS: Devotional[] = Object.values(devotionalFiles).map((raw
     ...data,
     date: normalizeDate(data.date),
     body: normalizeBody(data.body),
+    declarations: normalizeDeclarations(data.declarations),
   } as Devotional;
 });
 
