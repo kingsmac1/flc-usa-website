@@ -4,6 +4,7 @@ import { Section, SectionHeading } from "@/components/site/ui";
 import { EVENTS, formatEventDate } from "@/data/events";
 import { Reveal } from "@/components/site/motion";
 import { CtaBand } from "@/components/site/CtaBand";
+import { EventCountdown, NEXT_SERVICE } from "@/components/site/EventCountdown";
 
 const title = "Upcoming Events | Fountain of Life Church USA";
 const description =
@@ -40,6 +41,8 @@ function EventsIndex() {
           intro="Join us in person or online. Click any event for full details and to indicate your interest."
         />
       </Section>
+
+      <EventCountdown {...NEXT_SERVICE} />
 
       <Section tone="cream">
         <ul className="grid gap-6 md:grid-cols-2">

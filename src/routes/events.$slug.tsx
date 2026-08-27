@@ -5,7 +5,6 @@ import { PillButton, PillLink, Section } from "@/components/site/ui";
 import { formatEventDate, getEvent } from "@/data/events";
 import { Reveal } from "@/components/site/motion";
 import { CtaBand } from "@/components/site/CtaBand";
-import { ServiceCountdownCard } from "@/components/site/EventCountdown";
 
 export const Route = createFileRoute("/events/$slug")({
   loader: ({ params }) => {
@@ -78,12 +77,6 @@ function EventDetail() {
               alt={`${event.title} flyer`}
               className="mx-auto max-h-[640px] w-auto max-w-full rounded-3xl object-contain"
             />
-            <div className="mt-6">
-              <ServiceCountdownCard
-                target={new Date(event.start)}
-                title={event.title}
-              />
-            </div>
             <div className="mt-6 grid gap-3 rounded-3xl border border-border bg-card p-6 text-sm">
               <p className="inline-flex items-center gap-2">
                 <CalendarDays className="size-4 text-primary" aria-hidden="true" />
