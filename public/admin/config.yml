@@ -2,12 +2,17 @@
 
 backend:
   name: github
-  repo: kingsmac1/flc-usa-website
+  repo: OWNER/flc-usa-website
   branch: main
   base_url: https://sveltia-cms-auth.emkaydigitals.workers.dev
 
 media_folder: "public/uploads"
 public_folder: "/uploads"
+
+media_libraries:
+  default:
+    config:
+      slugify_filename: true
 
 collections:
   - name: devotionals
