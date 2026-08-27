@@ -114,6 +114,9 @@ export function EventCountdown({ target, title, type }: EventCountdownProps) {
             <PillLink to="/contact" variant="light">
               Plan a Visit
             </PillLink>
+            <PillLink to="/events" variant="light">
+              View all events
+            </PillLink>
           </div>
         </div>
 

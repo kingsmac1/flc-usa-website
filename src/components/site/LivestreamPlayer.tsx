@@ -1,5 +1,6 @@
 import { Play, Radio } from "lucide-react";
 import { PLACEHOLDER } from "@/data/site";
+import { nextUpcomingService } from "@/data/events";
 
 export type LivestreamPlayerProps = {
   /** Set by the YouTube live-status check. */
@@ -11,16 +12,19 @@ export type LivestreamPlayerProps = {
 export function LivestreamPlayer({
   isLive = false,
   videoId = null,
-  title = "Sunday Celebration Service",
+  title,
 }: LivestreamPlayerProps) {
+  const service = nextUpcomingService();
+  const displayTitle = title ?? service.title;
+
   return (
     <div className="overflow-hidden rounded-3xl border border-border bg-card">
-      <div className="relative aspect-video w-full bg-deep">
+      <div className="relative aspect-video min-h-64 w-full bg-deep sm:min-h-0 sm:aspect-video">
         {isLive && videoId ? (
           <iframe
             className="size-full"
             src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
-            title={title}
+            title={displayTitle}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture"
             allowFullScreen
           />
@@ -49,7 +53,7 @@ export function LivestreamPlayer({
                   href="https://www.youtube.com/@fountainoflifechurchusa"
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-6 text-sm font-semibold text-accent-foreground"
+                  className="mt-8 inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-6 text-sm font-semibold text-accent-foreground sm:mt-5"
                 >
                   <Play className="size-4" aria-hidden="true" />
                   Watch past services
@@ -61,7 +65,7 @@ export function LivestreamPlayer({
       </div>
       <div className="flex flex-wrap items-center justify-between gap-3 p-5">
         <div>
-          <h3 className="font-display text-lg font-bold">{title}</h3>
+          <h3 className="font-display text-lg font-bold">{displayTitle}</h3>
           <p className="text-sm text-muted-foreground">Fountain of Life Church USA · Indianapolis</p>
         </div>
         <span className="rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-muted-foreground">

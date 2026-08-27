@@ -1,11 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BookOpen, Library, Play, Radio, ShoppingBag, Sunrise } from "lucide-react";
+import { BookOpen, CalendarDays, Library, MapPin, Play, Radio, ShoppingBag, Sunrise } from "lucide-react";
 import { EventCountdown, NEXT_SERVICE, ServiceCountdownCard } from "@/components/site/EventCountdown";
 import { Card, Eyebrow, PillLink, Section, SectionHeading } from "@/components/site/ui";
 import { LEAD_PASTORS, WELCOME } from "@/data/pastors";
 import { PLACEHOLDER, SITE } from "@/data/site";
 import { CtaBand } from "@/components/site/CtaBand";
 import { Parallax, Reveal } from "@/components/site/motion";
+import { EVENTS, formatEventDate } from "@/data/events";
 
 const title = "Fountain of Life Church USA | Faith, Worship & Purpose";
 const description =
@@ -78,14 +79,6 @@ const offerings = [
     to: "/books" as const,
     tone: "light" as const,
   },
-];
-
-const gallery = [
-  { src: PLACEHOLDER.worship, caption: "Sunday Celebration", span: "sm:col-span-2 sm:row-span-2" },
-  { src: PLACEHOLDER.prayer, caption: "Hour of Prayer", span: "" },
-  { src: PLACEHOLDER.choir, caption: "Worship Team", span: "" },
-  { src: PLACEHOLDER.outreach, caption: "City Outreach", span: "sm:col-span-2" },
-  { src: PLACEHOLDER.youth, caption: "Youth Night", span: "" },
 ];
 
 function HomePage() {
@@ -211,25 +204,55 @@ function HomePage() {
       <Section tone="cream">
         <Reveal>
           <SectionHeading
-            eyebrow="Our gallery"
-            title="Moments from the house of God"
-            intro="Highlights from services, outreaches and gatherings across our church family."
+            eyebrow="Upcoming events"
+            title="What is coming up at the house"
+            intro="Conferences, prayer nights and gatherings we'd love to see you at."
           />
         </Reveal>
-        <ul className="mt-10 grid auto-rows-[180px] grid-cols-1 gap-4 sm:grid-cols-4">
-          {gallery.map((g, i) => (
-            <Reveal key={g.caption} delay={i * 0.06} className={`relative overflow-hidden rounded-3xl ${g.span}`}>
-              <li className="size-full">
-                <Parallax strength={20}>
-                  <img src={g.src} alt={g.caption} loading="lazy" className="size-full object-cover" />
-                </Parallax>
-                <span className="absolute bottom-3 left-3 rounded-full bg-deep/85 px-3 py-1 text-xs font-semibold text-deep-foreground">
-                  {g.caption}
-                </span>
-              </li>
-            </Reveal>
-          ))}
+        <ul className="mt-10 grid gap-6 md:grid-cols-2">
+          {[...EVENTS]
+            .sort((a, b) => (a.start < b.start ? -1 : 1))
+            .slice(0, 2)
+            .map((event, i) => (
+              <Reveal key={event.slug} delay={i * 0.08}>
+                <li className="overflow-hidden rounded-3xl border border-border bg-card">
+                  <Link to="/events/$slug" params={{ slug: event.slug }} className="block">
+                    <img
+                      src={event.flyer}
+                      alt={`${event.title} flyer`}
+                      loading="lazy"
+                      className="aspect-[16/10] w-full object-cover"
+                    />
+                    <div className="p-6">
+                      <span className="rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
+                        {event.type}
+                      </span>
+                      <h2 className="mt-3 font-display text-xl font-bold">{event.title}</h2>
+                      <p className="mt-2 inline-flex items-center gap-2 text-sm text-muted-foreground">
+                        <CalendarDays className="size-4 text-primary" aria-hidden="true" />
+                        {formatEventDate(event.start)}
+                      </p>
+                      <p className="mt-1 inline-flex items-center gap-2 text-sm text-muted-foreground">
+                        <MapPin className="size-4 text-primary" aria-hidden="true" />
+                        {event.location}
+                      </p>
+                      <p className="mt-3 text-sm text-muted-foreground">{event.summary}</p>
+                      <span className="mt-4 inline-block text-sm font-semibold text-primary underline underline-offset-4">
+                        View event
+                      </span>
+                    </div>
+                  </Link>
+                </li>
+              </Reveal>
+            ))}
         </ul>
+        <Reveal delay={0.15}>
+          <div className="mt-8 text-center">
+            <PillLink to="/events" variant="outline">
+              View all events
+            </PillLink>
+          </div>
+        </Reveal>
       </Section>
 
       <EventCountdown {...NEXT_SERVICE} />
