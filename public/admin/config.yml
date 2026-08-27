@@ -19,7 +19,7 @@ collections:
     path: "{{date | date('YYYY')}}/{{date | date('MM')}}/{{date}}"
     slug: "{{date}}"
     fields:
-      - { label: Date, name: date, widget: date, date_format: "YYYY-MM-DD", picker_utc: true }
+      - { label: Date, name: date, widget: datetime, type: date, date_format: "YYYY-MM-DD", picker_utc: true }
       - { label: Title, name: title, widget: string }
       - { label: Scripture Reference, name: scripture, widget: string }
       - { label: Verse Text, name: verse, widget: text }
@@ -84,7 +84,7 @@ collections:
         fields:
           - { label: Title, name: title, widget: string }
           - { label: Speaker, name: speaker, widget: string }
-          - { label: Date, name: date, widget: date, date_format: "YYYY-MM-DD" }
+          - { label: Date, name: date, widget: datetime, type: date, date_format: "YYYY-MM-DD" }
           - { label: Duration, name: duration, widget: string, hint: "e.g. 48 min" }
           - { label: YouTube Link, name: youtube, widget: string }
           - { label: Custom Image (optional — falls back to YouTube thumbnail), name: image, widget: image, required: false }
@@ -99,7 +99,7 @@ collections:
       - { label: Slug, name: slug, widget: string, hint: "Used in the URL — unique, no spaces" }
       - { label: Title, name: title, widget: string }
       - { label: Excerpt, name: excerpt, widget: text }
-      - { label: Date, name: date, widget: date, date_format: "YYYY-MM-DD" }
+      - { label: Date, name: date, widget: datetime, type: date, date_format: "YYYY-MM-DD" }
       - { label: Author, name: author, widget: string }
       - label: Category
         name: category
