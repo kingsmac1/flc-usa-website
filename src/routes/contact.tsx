@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { PillButton, PillLink, Section, SectionHeading } from "@/components/site/ui";
 import { SITE } from "@/data/site";
+import { CtaBand } from "@/components/site/CtaBand";
 
 const title = "Contact Us | Fountain of Life Church USA";
 const description =
@@ -109,6 +110,8 @@ function ContactPage() {
           </div>
         </div>
       </Section>
+
+      <CtaBand items={["prayer", "give"]} tone="white" />
     </>
   );
 }

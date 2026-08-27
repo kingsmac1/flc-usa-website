@@ -67,3 +67,18 @@ export const BLOG_POSTS: BlogPost[] = Object.values(blogFiles).map((raw) => {
 export function getPost(slug: string) {
   return BLOG_POSTS.find((p) => p.slug === slug);
 }
+
+/** Previous / next blog post relative to a date (chronological order). */
+export function adjacentPosts(slug: string): { prev?: BlogPost | undefined; next?: BlogPost | undefined } {
+  const sorted = [...BLOG_POSTS].sort((a, b) => new Date(b.date).valueOf() - new Date(a.date).valueOf());
+  const i = sorted.findIndex((p) => p.slug === slug);
+  if (i === -1) return {};
+  return { prev: sorted[i - 1], next: sorted[i + 1] };
+}
+
+/** Related blog posts excluding the current one, sorted by date descending. */
+export function getRelatedPosts(excludeSlug: string, limit = 3): BlogPost[] {
+  const others = BLOG_POSTS.filter((p) => p.slug !== excludeSlug);
+  const sorted = [...others].sort((a, b) => new Date(b.date).valueOf() - new Date(a.date).valueOf());
+  return sorted.slice(0, limit);
+}

@@ -14,6 +14,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Preloader } from "@/components/site/Preloader";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
+import { SmoothScroll } from "@/components/site/motion";
 
 function NotFoundComponent() {
   return (
@@ -136,6 +137,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <Preloader />
+      <SmoothScroll />
       <div className="flex min-h-dvh flex-col">
         <SiteHeader />
         <main className="flex-1">

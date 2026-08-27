@@ -5,6 +5,7 @@ import { Card, Eyebrow, PillLink, Section, SectionHeading } from "@/components/s
 import { LEAD_PASTORS, WELCOME } from "@/data/pastors";
 import { PLACEHOLDER, SITE } from "@/data/site";
 import { CtaBand } from "@/components/site/CtaBand";
+import { Parallax, Reveal } from "@/components/site/motion";
 
 const title = "Fountain of Life Church USA | Faith, Worship & Purpose";
 const description =
@@ -91,11 +92,13 @@ function HomePage() {
   return (
     <>
       <section className="relative isolate overflow-hidden bg-deep text-deep-foreground">
-        <img
-          src={PLACEHOLDER.worship}
-          alt="Worshippers with hands raised during a church service"
-          className="absolute inset-0 -z-10 size-full object-cover opacity-30"
-        />
+        <Parallax strength={40} className="absolute inset-0 -z-10">
+          <img
+            src={PLACEHOLDER.worship}
+            alt="Worshippers with hands raised during a church service"
+            className="size-full object-cover opacity-15"
+          />
+        </Parallax>
         <div className="container-flc grid gap-10 py-20 sm:py-28 lg:grid-cols-[1.15fr_1fr] lg:items-center">
           <div>
             <Eyebrow tone="light">Indianapolis · Sundays 10:00 AM</Eyebrow>
@@ -131,11 +134,16 @@ function HomePage() {
 
       <Section tone="cream">
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-          <img
-            src={WELCOME.image}
-            alt={WELCOME.imageAlt}
-            className="mx-auto aspect-[4/5] w-full max-w-md rounded-[2rem] object-cover object-top md:max-w-[62%] lg:max-w-none"
-          />
+          <Reveal>
+            <Parallax strength={30}>
+              <img
+                src={WELCOME.image}
+                alt={WELCOME.imageAlt}
+                className="mx-auto aspect-[4/5] w-full max-w-md rounded-[2rem] object-cover object-top md:max-w-[62%] lg:max-w-none"
+              />
+            </Parallax>
+          </Reveal>
+          <Reveal delay={0.1}>
           <div>
             <Eyebrow>{WELCOME.eyebrow}</Eyebrow>
             <h2 className="mt-5 font-display text-3xl font-black leading-tight sm:text-4xl">
@@ -155,60 +163,71 @@ function HomePage() {
               </PillLink>
             </div>
           </div>
+          </Reveal>
         </div>
       </Section>
 
       <Section tone="white">
-        <SectionHeading
-          eyebrow="What we offer"
-          title="Everything you need to grow, all in one place"
-          intro="Whether you gather with us in Indianapolis or online, these are the doors into the life of the church."
-        />
+        <Reveal>
+          <SectionHeading
+            eyebrow="What we offer"
+            title="Everything you need to grow, all in one place"
+            intro="Whether you gather with us in Indianapolis or online, these are the doors into the life of the church."
+          />
+        </Reveal>
         <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {offerings.map((o) => {
+          {offerings.map((o, i) => {
             const Icon = o.icon;
             return (
-              <li key={o.title}>
-                <div
-                  className={[
-                    "flex h-full flex-col rounded-3xl p-6",
-                    o.tone === "light" && "border border-border bg-card",
-                    o.tone === "accent" && "bg-accent text-accent-foreground",
-                    o.tone === "deep" && "bg-deep text-deep-foreground",
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
-                >
-                  <Icon className="size-8" aria-hidden="true" />
-                  <h3 className="mt-6 font-display text-lg font-bold">{o.title}</h3>
-                  <p className="mt-2 text-sm opacity-80">{o.body}</p>
-                  <Link
-                    to={o.to}
-                    className="mt-6 inline-flex min-h-11 w-fit items-center gap-2 rounded-full border border-current/30 px-4 text-sm font-semibold"
+              <Reveal key={o.title} delay={i * 0.08}>
+                <li>
+                  <div
+                    className={[
+                      "flex h-full flex-col rounded-3xl p-6",
+                      o.tone === "light" && "border border-border bg-card",
+                      o.tone === "accent" && "bg-accent text-accent-foreground",
+                      o.tone === "deep" && "bg-deep text-deep-foreground",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
                   >
-                    Learn more <span aria-hidden="true">→</span>
-                  </Link>
-                </div>
-              </li>
+                    <Icon className="size-8" aria-hidden="true" />
+                    <h3 className="mt-6 font-display text-lg font-bold">{o.title}</h3>
+                    <p className="mt-2 text-sm opacity-80">{o.body}</p>
+                    <Link
+                      to={o.to}
+                      className="mt-6 inline-flex min-h-11 w-fit items-center gap-2 rounded-full border border-current/30 px-4 text-sm font-semibold"
+                    >
+                      Learn more <span aria-hidden="true">→</span>
+                    </Link>
+                  </div>
+                </li>
+              </Reveal>
             );
           })}
         </ul>
       </Section>
 
       <Section tone="cream">
-        <SectionHeading
-          eyebrow="Our gallery"
-          title="Moments from the house of God"
-          intro="Highlights from services, outreaches and gatherings across our church family."
-        />
+        <Reveal>
+          <SectionHeading
+            eyebrow="Our gallery"
+            title="Moments from the house of God"
+            intro="Highlights from services, outreaches and gatherings across our church family."
+          />
+        </Reveal>
         <ul className="mt-10 grid auto-rows-[180px] grid-cols-1 gap-4 sm:grid-cols-4">
-          {gallery.map((g) => (
-            <li key={g.caption} className={`relative overflow-hidden rounded-3xl ${g.span}`}>
-              <img src={g.src} alt={g.caption} loading="lazy" className="size-full object-cover" />
-              <span className="absolute bottom-3 left-3 rounded-full bg-deep/85 px-3 py-1 text-xs font-semibold text-deep-foreground">
-                {g.caption}
-              </span>
-            </li>
+          {gallery.map((g, i) => (
+            <Reveal key={g.caption} delay={i * 0.06} className={`relative overflow-hidden rounded-3xl ${g.span}`}>
+              <li className="size-full">
+                <Parallax strength={20}>
+                  <img src={g.src} alt={g.caption} loading="lazy" className="size-full object-cover" />
+                </Parallax>
+                <span className="absolute bottom-3 left-3 rounded-full bg-deep/85 px-3 py-1 text-xs font-semibold text-deep-foreground">
+                  {g.caption}
+                </span>
+              </li>
+            </Reveal>
           ))}
         </ul>
       </Section>
@@ -216,26 +235,30 @@ function HomePage() {
       <EventCountdown {...NEXT_SERVICE} />
 
       <Section tone="white">
-        <SectionHeading
-          eyebrow="Our Lead Pastors"
-          title="A word about our Lead Pastors"
-          intro="Apostle Chuks and Evang. Josephine Akuma carry a heart to see every believer walk in purpose."
-        />
+        <Reveal>
+          <SectionHeading
+            eyebrow="Our Lead Pastors"
+            title="A word about our Lead Pastors"
+            intro="Apostle Chuks and Evang. Josephine Akuma carry a heart to see every believer walk in purpose."
+          />
+        </Reveal>
         <div className="mt-10 grid gap-6 lg:grid-cols-2">
-          {LEAD_PASTORS.map((l) => (
-            <Card key={l.name} className="flex flex-col gap-6 sm:flex-row">
-              <img
-                src={l.img}
-                alt={`${l.name}, ${l.role} of Fountain of Life Church USA`}
-                loading="lazy"
-                className="size-80 shrink-0 rounded-3xl object-cover object-top sm:size-64 lg:size-48"
-              />
-              <div>
-                <p className="text-base leading-relaxed">{l.bio[0]}</p>
-                <p className="mt-4 font-display font-bold">{l.name}</p>
-                <p className="text-sm text-muted-foreground">{l.role}</p>
-              </div>
-            </Card>
+          {LEAD_PASTORS.map((l, i) => (
+            <Reveal key={l.name} delay={i * 0.1}>
+              <Card className="flex flex-col gap-6 sm:flex-row">
+                <img
+                  src={l.img}
+                  alt={`${l.name}, ${l.role} of Fountain of Life Church USA`}
+                  loading="lazy"
+                  className="size-80 shrink-0 rounded-3xl object-cover object-top sm:size-64 lg:size-48"
+                />
+                <div>
+                  <p className="text-base leading-relaxed">{l.bio[0]}</p>
+                  <p className="mt-4 font-display font-bold">{l.name}</p>
+                  <p className="text-sm text-muted-foreground">{l.role}</p>
+                </div>
+              </Card>
+            </Reveal>
           ))}
         </div>
       </Section>

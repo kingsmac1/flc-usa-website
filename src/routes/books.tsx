@@ -4,6 +4,7 @@ import { ExternalLink } from "lucide-react";
 import { Section, SectionHeading } from "@/components/site/ui";
 import { BOOKS, BOOK_CATEGORIES } from "@/data/books";
 import { cn } from "@/lib/utils";
+import { CtaBand } from "@/components/site/CtaBand";
 
 const title = "Book Store | Fountain of Life Church USA";
 const description =
@@ -95,6 +96,8 @@ function BooksPage() {
           ))}
         </ul>
       </Section>
+
+      <CtaBand items={["give", "prayer"]} tone="white" />
     </>
   );
 }

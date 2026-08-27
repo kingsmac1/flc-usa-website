@@ -138,7 +138,7 @@ export function SiteHeader() {
         >
           <div className="container-flc flex items-center justify-between py-4">
             <Link to="/" onClick={close} className="flex items-center gap-3" aria-label={`${SITE.name} home`}>
-              <img src={logo} alt={`${SITE.short} logo`} className="size-11 object-contain brightness-0 invert" />
+              <img src={logo} alt={`${SITE.short} logo`} className="size-11 object-contain" />
               <span className="font-display text-base font-black">
                 Fountain of Life Church <span className="text-accent">USA</span>
               </span>

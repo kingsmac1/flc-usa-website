@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { CalendarClock } from "lucide-react";
 import { PillLink } from "./ui";
+import { nextUpcomingService } from "@/data/events";
 
 export type EventCountdownProps = {
   /** Target datetime for the upcoming service. */
@@ -9,19 +10,16 @@ export type EventCountdownProps = {
   type: string;
 };
 
-function nextSundayAt(hour: number) {
-  const d = new Date();
-  d.setDate(d.getDate() + ((7 - d.getDay()) % 7 || 7));
-  d.setHours(hour, 0, 0, 0);
-  return d;
-}
-
 export const NEXT_SERVICE: EventCountdownProps = {
   get target() {
-    return nextSundayAt(10);
+    return nextUpcomingService().target;
   },
-  title: "Sunday Celebration Service",
-  type: "Weekly Service",
+  get title() {
+    return nextUpcomingService().title;
+  },
+  get type() {
+    return nextUpcomingService().type;
+  },
 };
 
 function diff(target: Date) {

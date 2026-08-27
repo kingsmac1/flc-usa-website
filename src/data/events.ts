@@ -77,3 +77,43 @@ export function formatEventDate(iso: string) {
     minute: "2-digit",
   });
 }
+
+/** Next Sunday at the given hour (falls back to following Sunday if today is Sunday). */
+function nextSundayAt(hour: number) {
+  const d = new Date();
+  d.setDate(d.getDate() + ((7 - d.getDay()) % 7 || 7));
+  d.setHours(hour, 0, 0, 0);
+  return d;
+}
+
+/**
+ * Determines the next upcoming service/event to count down to.
+ *
+ * Looks at all future events and picks the closest one — but only up to
+ * the next Sunday Celebration Service. If no event falls before the next
+ * Sunday, it falls back to the normal Sunday Celebration Service at 10:00 AM.
+ */
+export function nextUpcomingService(): { target: Date; title: string; type: string } {
+  const nextServiceDate = nextSundayAt(10);
+  const now = new Date();
+
+  const upcomingEvents = EVENTS
+    .filter((e) => new Date(e.start) > now)
+    .sort((a, b) => new Date(a.start).valueOf() - new Date(b.start).valueOf());
+
+  const closestEvent = upcomingEvents.find((e) => new Date(e.start) <= nextServiceDate);
+
+  if (closestEvent) {
+    return {
+      target: new Date(closestEvent.start),
+      title: closestEvent.title,
+      type: closestEvent.type,
+    };
+  }
+
+  return {
+    target: nextServiceDate,
+    title: "Sunday Celebration Service",
+    type: "Weekly Service",
+  };
+}

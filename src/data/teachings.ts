@@ -65,3 +65,22 @@ export const SERIES: Series[] = Object.values(teachingFiles).map(
 export function getSeries(slug: string) {
   return SERIES.find((s) => s.slug === slug);
 }
+
+/** Previous / next teaching series relative to a series (sorted by first item date). */
+export function adjacentSeries(slug: string): { prev?: Series | undefined; next?: Series | undefined } {
+  const sorted = [...SERIES].sort(
+    (a, b) => new Date(b.items[0]?.date ?? "").valueOf() - new Date(a.items[0]?.date ?? "").valueOf(),
+  );
+  const i = sorted.findIndex((s) => s.slug === slug);
+  if (i === -1) return {};
+  return { prev: sorted[i - 1], next: sorted[i + 1] };
+}
+
+/** Related teaching series excluding the current one, sorted by first item date descending. */
+export function getRelatedSeries(excludeSlug: string, limit = 3): Series[] {
+  const others = SERIES.filter((s) => s.slug !== excludeSlug);
+  const sorted = [...others].sort(
+    (a, b) => new Date(b.items[0]?.date ?? "").valueOf() - new Date(a.items[0]?.date ?? "").valueOf(),
+  );
+  return sorted.slice(0, limit);
+}

@@ -5,6 +5,8 @@ import { DevotionalArchives } from "./DevotionalArchives";
 import { DevotionalCalendar } from "./DevotionalCalendar";
 import { Section, SectionHeading } from "./ui";
 import { adjacentDevotionals, formatDevotionalDate, formatShortDate, getDevotional } from "@/data/devotionals";
+import { Reveal } from "./motion";
+import { CtaBand } from "./CtaBand";
 
 export function DevotionalArticle({ date, showArchives = true }: { date: string; showArchives?: boolean }) {
   const devotional = getDevotional(date);
@@ -22,6 +24,7 @@ export function DevotionalArticle({ date, showArchives = true }: { date: string;
       </Section>
 
       <Section tone="cream">
+        <Reveal>
         <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
           <article className="rounded-3xl border border-border bg-card p-7">
             <p className="text-xs font-semibold tracking-wide uppercase text-muted-foreground">
@@ -67,6 +70,7 @@ export function DevotionalArticle({ date, showArchives = true }: { date: string;
           </article>
           <DevotionalCalendar value={date} />
         </div>
+        </Reveal>
         <nav
           aria-label="Devotional navigation"
           className="mt-6 grid gap-3 sm:grid-cols-2"
@@ -111,6 +115,8 @@ export function DevotionalArticle({ date, showArchives = true }: { date: string;
       </Section>
 
       {showArchives ? <DevotionalArchives activeDate={date} /> : null}
+
+      <CtaBand items={["salvation", "give"]} tone="white" />
     </>
   );
 }

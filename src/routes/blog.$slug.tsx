@@ -1,6 +1,10 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { PillLink, Section } from "@/components/site/ui";
-import { getPost } from "@/data/blog";
+import { getPost, adjacentPosts, getRelatedPosts } from "@/data/blog";
+import { PostNavigation } from "@/components/site/PostNavigation";
+import { RelatedPosts } from "@/components/site/RelatedPosts";
+import { Reveal } from "@/components/site/motion";
+import { CtaBand } from "@/components/site/CtaBand";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: ({ params }) => {
@@ -49,6 +53,26 @@ function PostNotFound() {
 
 function BlogPostPage() {
   const { post } = Route.useLoaderData();
+  const { prev, next } = adjacentPosts(post.slug);
+  const related = getRelatedPosts(post.slug, 3);
+
+  const relatedItems = related.map((p) => ({
+    slug: p.slug,
+    title: p.title,
+    subtitle: `${p.category} · ${new Date(`${p.date}T00:00:00Z`).toLocaleDateString("en-US", {
+      timeZone: "UTC",
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    })}`,
+    summary: p.excerpt,
+    image: p.image,
+  }));
+
+  const navItems = {
+    prev: prev ? { slug: prev.slug, title: prev.title, date: prev.date } : undefined,
+    next: next ? { slug: next.slug, title: next.title, date: next.date } : undefined,
+  };
 
   return (
     <>
@@ -67,22 +91,25 @@ function BlogPostPage() {
       </Section>
 
       <Section tone="cream">
+        <Reveal>
         <article className="mx-auto max-w-3xl">
-          <img
-            src={post.image}
-            alt={post.title}
-            className="aspect-[16/9] w-full rounded-3xl object-cover"
-          />
+          <img src={post.image} alt={post.title} className="aspect-[16/9] w-full rounded-3xl object-cover" />
           <div className="mt-8 space-y-5 text-base leading-relaxed text-foreground/90">
             {post.body.map((p) => (
               <p key={p.slice(0, 24)}>{p}</p>
             ))}
           </div>
+          <PostNavigation {...navItems} route="/blog/$slug" />
           <PillLink to="/blog" variant="outline" className="mt-10">
             Back to all articles
           </PillLink>
         </article>
+        </Reveal>
       </Section>
+
+      <RelatedPosts items={relatedItems} route="/blog/$slug" />
+
+      <CtaBand items={["prayer", "salvation"]} tone="white" />
     </>
   );
 }

@@ -3,6 +3,8 @@ import { useState } from "react";
 import { CalendarDays, MapPin } from "lucide-react";
 import { PillButton, PillLink, Section } from "@/components/site/ui";
 import { formatEventDate, getEvent } from "@/data/events";
+import { Reveal } from "@/components/site/motion";
+import { CtaBand } from "@/components/site/CtaBand";
 
 export const Route = createFileRoute("/events/$slug")({
   loader: ({ params }) => {
@@ -68,6 +70,7 @@ function EventDetail() {
 
       <Section tone="cream">
         <div className="grid gap-6 lg:grid-cols-[1.3fr_1fr]">
+          <Reveal>
           <div>
             <img
               src={event.flyer}
@@ -93,7 +96,9 @@ function EventDetail() {
               ))}
             </div>
           </div>
+          </Reveal>
 
+          <Reveal delay={0.1}>
           <form
             className="h-fit rounded-3xl border border-border bg-card p-7"
             onSubmit={(e) => {
@@ -142,8 +147,11 @@ function EventDetail() {
                 : "We'll only use your details to contact you about this event."}
             </p>
           </form>
+          </Reveal>
         </div>
       </Section>
+
+      <CtaBand items={["salvation", "prayer"]} tone="white" />
     </>
   );
 }

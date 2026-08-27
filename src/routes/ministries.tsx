@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PillLink, Section, SectionHeading } from "@/components/site/ui";
 import { PLACEHOLDER } from "@/data/site";
+import { Reveal } from "@/components/site/motion";
 
 const title = "Ministries | Fountain of Life Church USA";
 const description =
@@ -46,17 +47,19 @@ function MinistriesPage() {
 
       <Section tone="cream">
         <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {ministries.map((m) => (
-            <li key={m.name} className="overflow-hidden rounded-3xl border border-border bg-card">
-              <img src={m.img} alt={m.name} loading="lazy" className="aspect-[16/10] w-full object-cover" />
-              <div className="p-6">
-                <h2 className="font-display text-lg font-bold">{m.name}</h2>
-                <p className="mt-2 text-sm text-muted-foreground">{m.body}</p>
-                <PillLink to="/contact" variant="outline" className="mt-5">
-                  Get involved
-                </PillLink>
-              </div>
-            </li>
+          {ministries.map((m, i) => (
+            <Reveal key={m.name} delay={i * 0.07}>
+              <li className="overflow-hidden rounded-3xl border border-border bg-card">
+                <img src={m.img} alt={m.name} loading="lazy" className="aspect-[16/10] w-full object-cover" />
+                <div className="p-6">
+                  <h2 className="font-display text-lg font-bold">{m.name}</h2>
+                  <p className="mt-2 text-sm text-muted-foreground">{m.body}</p>
+                  <PillLink to="/contact" variant="outline" className="mt-5">
+                    Get involved
+                  </PillLink>
+                </div>
+              </li>
+            </Reveal>
           ))}
         </ul>
       </Section>
