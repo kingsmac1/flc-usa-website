@@ -1,13 +1,12 @@
 ---
-slug: night-of-intercession
-title: Night of Intercession
+slug: healing-and-miracle-service
+title: Healing and Miracle Service
 type: Prayer
-start: '2026-08-29T22:00:00'
-location: Church auditorium & online
-flyer: https://images.unsplash.com/photo-1544427920-c49ccfb85579?auto=format&fit=crop&w=1200&q=80
+start: 2026-08-30 10:00
+end: ''
+location: Church Auditorium & Online
+flyer: /uploads/Healingand Miracle Service - Flyer.jpg
 summary: A monthly all-night prayer meeting for the church, the city and the nations.
-details:
-  - We gather on the last Friday of every month to pray through the night.
-  - Join us in person or stream the meeting live from the livestream page.
+details: An event where God's presence will be available to Healing the Sick and set the captives free.
 registration: true
 ---
