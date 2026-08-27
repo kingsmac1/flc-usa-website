@@ -60,7 +60,7 @@ function LivestreamPage() {
           <BiblePanel />
         </div>
         <div className="mt-6 grid gap-6 lg:grid-cols-[1.6fr_1fr]">
-          <CommentFeed />
+          <CommentFeed contentType="livestream" contentId="general" />
           <GiveWidget compact />
         </div>
       </Section>
