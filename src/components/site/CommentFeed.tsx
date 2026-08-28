@@ -1,7 +1,7 @@
 import { LogOut, MessageCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth";
-import { supabase } from "@/lib/supabase";
+import { isSupabaseConfigured, supabase } from "@/lib/supabase";
 import { AuthForm } from "./AuthForm";
 import { PillButton } from "./ui";
 
@@ -55,6 +55,11 @@ export function CommentFeed({
   const [showAuth, setShowAuth] = useState(false);
 
   useEffect(() => {
+    if (!isSupabaseConfigured) {
+      setLoading(false);
+      return;
+    }
+
     let cancelled = false;
 
     async function load() {
@@ -123,7 +128,11 @@ export function CommentFeed({
 
   return (
     <div className="rounded-3xl border border-border bg-card p-6">
-      <div className="flex items-center justify-between gap-3">
+      {!isSupabaseConfigured ? (
+        <p className="text-sm text-muted-foreground">Comments are not available yet.</p>
+      ) : (
+        <>
+          <div className="flex items-center justify-between gap-3">
         <h2 className="inline-flex items-center gap-2 font-display text-lg font-bold">
           <MessageCircle className="size-5 text-primary" aria-hidden="true" />
           {title}
@@ -217,6 +226,8 @@ export function CommentFeed({
             Sign in
           </PillButton>
         </form>
+      )}
+        </>
       )}
     </div>
   );

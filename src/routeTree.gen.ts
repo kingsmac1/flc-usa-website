@@ -15,6 +15,7 @@ import { Route as BooksRouteImport } from './routes/books'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as GiveRouteImport } from './routes/give'
 import { Route as LivestreamRouteImport } from './routes/livestream'
+import { Route as MembershipRouteImport } from './routes/membership'
 import { Route as MinistriesRouteImport } from './routes/ministries'
 import { Route as PrayerRequestRouteImport } from './routes/prayer-request'
 import { Route as SalvationRouteImport } from './routes/salvation'
@@ -55,6 +56,11 @@ const GiveRoute = GiveRouteImport.update({
 const LivestreamRoute = LivestreamRouteImport.update({
   id: '/livestream',
   path: '/livestream',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MembershipRoute = MembershipRouteImport.update({
+  id: '/membership',
+  path: '/membership',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MinistriesRoute = MinistriesRouteImport.update({
@@ -120,6 +126,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/give': typeof GiveRoute
   '/livestream': typeof LivestreamRoute
+  '/membership': typeof MembershipRoute
   '/ministries': typeof MinistriesRoute
   '/prayer-request': typeof PrayerRequestRoute
   '/salvation': typeof SalvationRoute
@@ -139,6 +146,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/give': typeof GiveRoute
   '/livestream': typeof LivestreamRoute
+  '/membership': typeof MembershipRoute
   '/ministries': typeof MinistriesRoute
   '/prayer-request': typeof PrayerRequestRoute
   '/salvation': typeof SalvationRoute
@@ -159,6 +167,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/give': typeof GiveRoute
   '/livestream': typeof LivestreamRoute
+  '/membership': typeof MembershipRoute
   '/ministries': typeof MinistriesRoute
   '/prayer-request': typeof PrayerRequestRoute
   '/salvation': typeof SalvationRoute
@@ -180,6 +189,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/give'
     | '/livestream'
+    | '/membership'
     | '/ministries'
     | '/prayer-request'
     | '/salvation'
@@ -199,6 +209,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/give'
     | '/livestream'
+    | '/membership'
     | '/ministries'
     | '/prayer-request'
     | '/salvation'
@@ -218,6 +229,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/give'
     | '/livestream'
+    | '/membership'
     | '/ministries'
     | '/prayer-request'
     | '/salvation'
@@ -238,6 +250,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   GiveRoute: typeof GiveRoute
   LivestreamRoute: typeof LivestreamRoute
+  MembershipRoute: typeof MembershipRoute
   MinistriesRoute: typeof MinistriesRoute
   PrayerRequestRoute: typeof PrayerRequestRoute
   SalvationRoute: typeof SalvationRoute
@@ -293,6 +306,13 @@ declare module '@tanstack/react-router' {
       path: '/livestream'
       fullPath: '/livestream'
       preLoaderRoute: typeof LivestreamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/membership': {
+      id: '/membership'
+      path: '/membership'
+      fullPath: '/membership'
+      preLoaderRoute: typeof MembershipRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ministries': {
@@ -382,6 +402,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   GiveRoute: GiveRoute,
   LivestreamRoute: LivestreamRoute,
+  MembershipRoute: MembershipRoute,
   MinistriesRoute: MinistriesRoute,
   PrayerRequestRoute: PrayerRequestRoute,
   SalvationRoute: SalvationRoute,

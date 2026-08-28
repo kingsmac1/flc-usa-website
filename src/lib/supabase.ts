@@ -1,4 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 
 /**
  * SUPABASE CLIENT
@@ -18,16 +18,23 @@ import { createClient } from "@supabase/supabase-js";
  * For local dev, add both to a .dev.vars or .env.local file (whichever
  * your local setup already uses for the other VITE_ vars, if any).
  */
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
+const supabaseUrl = import.meta.env["VITE_SUPABASE_URL"] as string | undefined;
+const supabaseAnonKey = import.meta.env["VITE_SUPABASE_ANON_KEY"] as string | undefined;
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  // Don't throw — let the app still render with auth/comments simply
-  // non-functional, rather than a hard crash, if these aren't set yet.
+/** True when both env vars are configured. */
+export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
+
+if (!isSupabaseConfigured) {
   console.warn(
     "Supabase env vars are missing (VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY). " +
-      "Sign-in and comments will not work until these are configured.",
+      "Sign-in, comments, and membership will not work until these are configured.",
   );
 }
 
-export const supabase = createClient(supabaseUrl ?? "", supabaseAnonKey ?? "");
+/**
+ * Supabase client — only created when env vars are present.
+ * Components using it should guard with `isSupabaseConfigured` when needed.
+ */
+export const supabase: SupabaseClient = isSupabaseConfigured
+  ? createClient(supabaseUrl!, supabaseAnonKey!)
+  : ({} as SupabaseClient);

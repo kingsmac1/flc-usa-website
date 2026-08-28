@@ -71,6 +71,7 @@ export const MOBILE_NAV_LINKS = [
   { label: "Blog", to: "/blog" },
   { label: "Prayer Request", to: "/prayer-request" },
   { label: "Salvation", to: "/salvation" },
+  { label: "Become a Member", to: "/membership" },
   { label: "Give", to: "/give" },
   { label: "Contact", to: "/contact" },
 ] as const;
