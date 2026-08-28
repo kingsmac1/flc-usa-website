@@ -2,10 +2,12 @@ import { Link } from "@tanstack/react-router";
 import { ChevronDown, Mail, Menu, Phone, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import logo from "@/assets/images/flcusa-logo.png";
+import { useAuth } from "@/lib/auth";
 import { MOBILE_NAV_LINKS, NAV_LINKS, SITE } from "@/data/site";
 import { PillLink } from "./ui";
 
 export function SiteHeader() {
+  const { isAdmin } = useAuth();
   const [open, setOpen] = useState(false);
   const [closing, setClosing] = useState(false);
 
@@ -114,6 +116,15 @@ export function SiteHeader() {
             <PillLink to="/livestream" variant="accent" className="hidden sm:inline-flex">
               Watch Live
             </PillLink>
+            {isAdmin ? (
+              <Link
+                to="/dashboard"
+                className="hidden lg:inline-flex items-center gap-1.5 rounded-full border border-border bg-secondary px-3 py-1.5 text-xs font-semibold text-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
+                aria-label="Open admin dashboard"
+              >
+                Dashboard
+              </Link>
+            ) : null}
             <button
               type="button"
               aria-label="Open menu"
@@ -169,6 +180,17 @@ export function SiteHeader() {
                   </Link>
                 </li>
               ))}
+              {isAdmin ? (
+                <li>
+                  <Link
+                    to="/dashboard"
+                    onClick={close}
+                    className="block py-2.5 font-display text-xl font-black tracking-tight text-accent hover:text-accent/80 sm:text-2xl"
+                  >
+                    Dashboard
+                  </Link>
+                </li>
+              ) : null}
             </ul>
           </nav>
 

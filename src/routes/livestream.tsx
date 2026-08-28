@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
+import { useEffect } from "react";
+import { useAuth } from "@/lib/auth";
+import { isSupabaseConfigured, supabase } from "@/lib/supabase";
 import { BiblePanel } from "@/components/site/BiblePanel";
 import { CtaBand } from "@/components/site/CtaBand";
 import { CommentFeed } from "@/components/site/CommentFeed";
@@ -38,6 +41,20 @@ function LivestreamPage() {
     queryFn: () => fetchStatus({}),
     refetchInterval: 60_000,
   });
+  const { user } = useAuth();
+
+  // Log one row per signed-in visit to the livestream page. Anonymous viewers
+  // are intentionally not counted — the column references auth.users(id) via
+  // FK, and a row with viewer_id=null would either fail the FK or skew counts.
+  useEffect(() => {
+    if (!user || !isSupabaseConfigured) return;
+    supabase
+      .from("livestream_views")
+      .insert({ viewer_id: user.id })
+      .then(({ error }) => {
+        if (error) console.error("Failed to log livestream view:", error.message);
+      });
+  }, [user?.id]);
 
   return (
     <>
