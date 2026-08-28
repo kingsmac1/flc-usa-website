@@ -3,22 +3,30 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { CommentFeed } from "./CommentFeed";
 import { DevotionalArchives } from "./DevotionalArchives";
 import { DevotionalCalendar } from "./DevotionalCalendar";
-import { Section, SectionHeading } from "./ui";
+import { Section } from "./ui";
+import { ShareButtons } from "./ShareButtons";
+import { HeroReveal } from "./motion";
 import { adjacentDevotionals, formatDevotionalDate, formatShortDate, getDevotional } from "@/data/devotionals";
+import { SITE } from "@/data/site";
 
 export function DevotionalArticle({ date, showArchives = true }: { date: string; showArchives?: boolean }) {
   const devotional = getDevotional(date);
   const { prev, next } = adjacentDevotionals(date);
+  const shareUrl = `${SITE.domain}/devotional/${date}`;
 
   return (
     <>
       <Section tone="deep">
-        <SectionHeading
-          tone="light"
-          eyebrow="Daily devotional"
-          title={devotional.title}
-          intro={formatDevotionalDate(date)}
-        />
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <HeroReveal
+              eyebrow="Daily devotional"
+              heading={<h1 className="mt-3 max-w-3xl text-3xl font-bold sm:text-5xl">{devotional.title}</h1>}
+              body={<p className="mt-3 text-sm text-deep-foreground/75">{formatDevotionalDate(date)}</p>}
+            />
+          </div>
+          <ShareButtons url={shareUrl} title={devotional.title} />
+        </div>
       </Section>
 
       <Section tone="cream">

@@ -53,6 +53,7 @@ function AboutPage() {
           eyebrow="About FLC USA"
           title="A house built on purpose, prayer and the Word"
           intro="We are here to share the good news of Jesus Christ with all who will listen, and to guide men and women into their God-given destiny."
+          animated
         />
       </Section>
 

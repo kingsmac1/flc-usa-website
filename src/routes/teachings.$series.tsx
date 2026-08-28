@@ -1,10 +1,12 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
-import { PillLink, Section, SectionHeading } from "@/components/site/ui";
+import { PillLink, Section } from "@/components/site/ui";
 import { getSeries, youtubeId, adjacentSeries, getRelatedSeries } from "@/data/teachings";
 import { PostNavigation } from "@/components/site/PostNavigation";
 import { RelatedPosts } from "@/components/site/RelatedPosts";
-import { Reveal } from "@/components/site/motion";
+import { Reveal, HeroReveal } from "@/components/site/motion";
 import { CtaBand } from "@/components/site/CtaBand";
+import { ShareButtons } from "@/components/site/ShareButtons";
+import { SITE } from "@/data/site";
 
 export const Route = createFileRoute("/teachings/$series")({
   loader: ({ params }) => {
@@ -70,7 +72,16 @@ function TeachingsIndex() {
   return (
     <>
       <Section tone="deep">
-        <SectionHeading tone="light" eyebrow="Teaching series" title={series.title} intro={series.summary} />
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <HeroReveal
+              eyebrow="Teaching series"
+              heading={<h1 className="mt-3 max-w-3xl text-3xl font-bold sm:text-5xl">{series.title}</h1>}
+              body={<p className="mt-3 max-w-2xl text-sm text-deep-foreground/75">{series.summary}</p>}
+            />
+          </div>
+          <ShareButtons url={`${SITE.domain}/teachings/${series.slug}`} title={series.title} description={series.summary} />
+        </div>
       </Section>
 
       <Section tone="cream">

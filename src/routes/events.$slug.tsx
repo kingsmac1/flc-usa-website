@@ -3,8 +3,10 @@ import { useState } from "react";
 import { CalendarDays, MapPin } from "lucide-react";
 import { PillButton, PillLink, Section } from "@/components/site/ui";
 import { formatEventDate, getEvent } from "@/data/events";
-import { Reveal } from "@/components/site/motion";
+import { Reveal, HeroReveal } from "@/components/site/motion";
 import { CtaBand } from "@/components/site/CtaBand";
+import { ShareButtons } from "@/components/site/ShareButtons";
+import { SITE } from "@/data/site";
 
 export const Route = createFileRoute("/events/$slug")({
   loader: ({ params }) => {
@@ -61,11 +63,20 @@ function EventDetail() {
   return (
     <>
       <Section tone="deep">
-        <span className="rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
-          {event.type}
-        </span>
-        <h1 className="mt-4 max-w-3xl text-3xl font-bold sm:text-5xl">{event.title}</h1>
-        <p className="mt-4 max-w-2xl text-sm text-deep-foreground/75">{event.summary}</p>
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <HeroReveal
+              eyebrow={
+                <span className="rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
+                  {event.type}
+                </span>
+              }
+              heading={<h1 className="mt-4 max-w-3xl text-3xl font-bold sm:text-5xl">{event.title}</h1>}
+              body={<p className="mt-4 max-w-2xl text-sm text-deep-foreground/75">{event.summary}</p>}
+            />
+          </div>
+          <ShareButtons url={`${SITE.domain}/events/${event.slug}`} title={event.title} description={event.summary} />
+        </div>
       </Section>
 
       <Section tone="cream">

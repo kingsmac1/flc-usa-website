@@ -58,6 +58,57 @@ export function Parallax({
   );
 }
 
+/** Page-hero entrance: eyebrow → heading → body, each staggered upward. */
+export function HeroReveal({
+  eyebrow,
+  heading,
+  body,
+  headingClassName,
+}: {
+  eyebrow?: ReactNode;
+  heading: ReactNode;
+  body?: ReactNode;
+  headingClassName?: string;
+}) {
+  const reduce = useReducedMotion();
+
+  const fadeUp = {
+    initial: reduce ? {} : { opacity: 0, y: 22 },
+    animate: reduce ? {} : { opacity: 1, y: 0 },
+  };
+
+  const ease = [0.22, 1, 0.36, 1] as const;
+
+  return (
+    <>
+      {eyebrow && (
+        <motion.p
+          {...fadeUp}
+          transition={{ duration: 0.5, ease }}
+          className="text-xs font-semibold tracking-wide uppercase text-accent"
+        >
+          {eyebrow}
+        </motion.p>
+      )}
+      <motion.h1
+        {...fadeUp}
+        transition={{ duration: 0.7, delay: 0.1, ease }}
+        className={headingClassName}
+      >
+        {heading}
+      </motion.h1>
+      {body && (
+        <motion.div
+          {...fadeUp}
+          transition={{ duration: 0.6, delay: 0.25, ease }}
+        >
+          {body}
+        </motion.div>
+      )}
+    </>
+  );
+}
+
 /** Enables Lenis smooth scrolling for the whole document. */
 export function SmoothScroll() {
   useEffect(() => {

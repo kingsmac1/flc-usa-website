@@ -42,6 +42,7 @@ function MinistriesPage() {
           eyebrow="Our ministries"
           title="Find your place in the family"
           intro="Every ministry is a doorway into community, service and growth. Placeholder descriptions can be replaced with real ministry copy."
+          animated
         />
       </Section>
 

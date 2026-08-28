@@ -40,6 +40,7 @@ function ContactPage() {
           eyebrow="Contact"
           title="We would love to hear from you"
           intro="Send a message, request prayer, or plan your first visit with us in Indianapolis."
+          animated
         />
       </Section>
 

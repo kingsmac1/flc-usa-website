@@ -3,8 +3,10 @@ import { PillLink, Section } from "@/components/site/ui";
 import { getPost, adjacentPosts, getRelatedPosts } from "@/data/blog";
 import { PostNavigation } from "@/components/site/PostNavigation";
 import { RelatedPosts } from "@/components/site/RelatedPosts";
-import { Reveal } from "@/components/site/motion";
+import { Reveal, HeroReveal } from "@/components/site/motion";
 import { CtaBand } from "@/components/site/CtaBand";
+import { ShareButtons } from "@/components/site/ShareButtons";
+import { SITE } from "@/data/site";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: ({ params }) => {
@@ -77,17 +79,26 @@ function BlogPostPage() {
   return (
     <>
       <Section tone="deep">
-        <p className="text-xs font-semibold tracking-wide uppercase text-accent">
-          {post.category} ·{" "}
-          {new Date(`${post.date}T00:00:00Z`).toLocaleDateString("en-US", {
-            timeZone: "UTC",
-            month: "long",
-            day: "numeric",
-            year: "numeric",
-          })}
-        </p>
-        <h1 className="mt-3 max-w-3xl text-3xl font-bold sm:text-5xl">{post.title}</h1>
-        <p className="mt-4 text-sm text-deep-foreground/75">By {post.author}</p>
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <HeroReveal
+              eyebrow={
+                <p className="text-xs font-semibold tracking-wide uppercase text-accent">
+                  {post.category} ·{" "}
+                  {new Date(`${post.date}T00:00:00Z`).toLocaleDateString("en-US", {
+                    timeZone: "UTC",
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </p>
+              }
+              heading={<h1 className="mt-3 max-w-3xl text-3xl font-bold sm:text-5xl">{post.title}</h1>}
+              body={<p className="mt-4 text-sm text-deep-foreground/75">By {post.author}</p>}
+            />
+          </div>
+          <ShareButtons url={`${SITE.domain}/blog/${post.slug}`} title={post.title} description={post.excerpt} />
+        </div>
       </Section>
 
       <Section tone="cream">

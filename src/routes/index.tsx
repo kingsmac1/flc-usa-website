@@ -5,7 +5,7 @@ import { Card, Eyebrow, PillLink, Section, SectionHeading } from "@/components/s
 import { LEAD_PASTORS, WELCOME } from "@/data/pastors";
 import { PLACEHOLDER, SITE } from "@/data/site";
 import { CtaBand } from "@/components/site/CtaBand";
-import { Parallax, Reveal } from "@/components/site/motion";
+import { Parallax, Reveal, HeroReveal } from "@/components/site/motion";
 import { EVENTS, formatEventDate } from "@/data/events";
 
 const title = "Fountain of Life Church USA | Faith, Worship & Purpose";
@@ -84,7 +84,7 @@ const offerings = [
 function HomePage() {
   return (
     <>
-      <section className="relative isolate overflow-hidden bg-deep text-deep-foreground">
+      <section className="relative isolate flex h-[100dvh] min-h-[640px] items-center overflow-hidden bg-deep text-deep-foreground">
         <Parallax strength={40} className="absolute inset-0 -z-10">
           <img
             src={PLACEHOLDER.worship}
@@ -92,40 +92,56 @@ function HomePage() {
             className="size-full object-cover opacity-15"
           />
         </Parallax>
-        <div className="container-flc grid gap-10 py-20 sm:py-28 lg:grid-cols-[1.15fr_1fr] lg:items-center">
+        <div className="container-flc grid w-full gap-10 lg:grid-cols-[1.15fr_1fr] lg:items-center">
           <div>
-            <Eyebrow tone="light">Indianapolis · Sundays 10:00 AM</Eyebrow>
-            <h1 className="mt-5 font-display text-4xl leading-[1.05] font-black sm:text-6xl">
-              Discover Your <span className="text-accent">Purpose</span>, Inheritance & Destiny in
-              Christ
-            </h1>
-            <p className="mt-5 max-w-xl text-base text-deep-foreground/80">
-              We welcome you with great joy to Fountain of Life Church USA — a family sharing the
-              good news of Jesus Christ with all who will listen.
-            </p>
-            <div className="mt-8 flex flex-wrap items-center gap-4">
-              <PillLink to="/contact" variant="accent">
-                Plan a Visit
-              </PillLink>
-              <Link
-                to="/livestream"
-                className="inline-flex items-center gap-3 text-sm font-semibold text-deep-foreground hover:text-accent"
-              >
-                <span className="grid size-11 place-items-center rounded-full border border-deep-foreground/30">
-                  <Play className="size-4" aria-hidden="true" />
-                </span>
-                Watch Live
-              </Link>
-            </div>
+            <HeroReveal
+              eyebrow={<Eyebrow tone="light">Indianapolis · Sundays 10:00 AM</Eyebrow>}
+              heading={
+                <h1 className="font-display text-4xl leading-[1.05] font-black sm:text-6xl">
+                  Discover Your <span className="text-accent">Purpose</span>, Inheritance & Destiny in
+                  Christ
+                </h1>
+              }
+              body={
+                <>
+                  <p className="mt-5 max-w-xl text-base text-deep-foreground/80">
+                    We welcome you with great joy to Fountain of Life Church USA — a family sharing the
+                    good news of Jesus Christ with all who will listen.
+                  </p>
+                  <div className="mt-8 flex flex-wrap items-center gap-4">
+                    <PillLink to="/contact" variant="accent">
+                      Plan a Visit
+                    </PillLink>
+                    <Link
+                      to="/livestream"
+                      className="inline-flex items-center gap-3 text-sm font-semibold text-deep-foreground hover:text-accent"
+                    >
+                      <span className="grid size-11 place-items-center rounded-full border border-deep-foreground/30">
+                        <Play className="size-4" aria-hidden="true" />
+                      </span>
+                      Watch Live
+                    </Link>
+                  </div>
+                </>
+              }
+            />
           </div>
 
           <div className="lg:justify-self-end lg:w-full lg:max-w-sm">
             <ServiceCountdownCard target={NEXT_SERVICE.target} title={NEXT_SERVICE.title} />
           </div>
         </div>
+        <div className="pointer-events-none absolute inset-x-0 bottom-6 z-10 flex justify-center">
+          <div
+            aria-hidden="true"
+            className="h-10 w-6 rounded-full border border-deep-foreground/30 p-1"
+          >
+            <div className="size-2 animate-bounce rounded-full bg-deep-foreground/60" />
+          </div>
+        </div>
       </section>
 
-      <Section tone="cream">
+      <Section tone="cream" className="relative z-20 -mt-12 rounded-t-[2.5rem] sm:-mt-16 sm:rounded-t-[3rem]">
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <Reveal>
             <Parallax strength={30}>

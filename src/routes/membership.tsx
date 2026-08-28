@@ -243,6 +243,7 @@ function MembershipPage() {
           eyebrow="Membership"
           title="Become a part of our family"
           intro="We are glad you are here. Fill in the form below and a member of our team will be in touch."
+          animated
         />
       </Section>
 

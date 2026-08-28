@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import type { ComponentProps, ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { HeroReveal } from "./motion";
 
 export function Eyebrow({ children, tone = "dark" }: { children: ReactNode; tone?: "dark" | "light" }) {
   return (
@@ -113,12 +114,34 @@ export function SectionHeading({
   title,
   intro,
   tone = "dark",
+  animated = false,
 }: {
   eyebrow: string;
   title: ReactNode;
   intro?: string;
   tone?: "dark" | "light";
+  animated?: boolean;
 }) {
+  if (animated) {
+    return (
+      <div>
+        <HeroReveal
+          eyebrow={<Eyebrow tone={tone}>{eyebrow}</Eyebrow>}
+          heading={
+            <h1 className="mt-4 text-3xl font-bold sm:text-4xl">{title}</h1>
+          }
+          body={
+            intro ? (
+              <p className={cn("mt-4 text-sm sm:text-base", tone === "dark" ? "text-muted-foreground" : "text-deep-foreground/75")}>
+                {intro}
+              </p>
+            ) : undefined
+          }
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:items-end">
       <div>
