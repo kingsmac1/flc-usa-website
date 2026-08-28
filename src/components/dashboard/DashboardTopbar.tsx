@@ -19,9 +19,9 @@ export function DashboardTopbar({
   onSignOut,
 }: Props) {
   return (
-    <header className="sticky top-0 z-20 flex items-center justify-between gap-4 border-b border-border bg-card/90 px-5 py-4 backdrop-blur sm:px-8">
+    <header className="sticky top-0 z-20 flex min-h-[64px] flex-wrap items-center justify-between gap-3 border-b border-border bg-card/90 px-4 py-3 backdrop-blur sm:px-6 lg:flex-nowrap">
       {/* Search */}
-      <div className="relative flex-1 max-w-md">
+      <div className="relative order-3 w-full min-w-0 sm:order-1 sm:max-w-md sm:flex-1">
         <Search
           className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
           aria-hidden="true"
@@ -64,13 +64,13 @@ export function DashboardTopbar({
         </PillButton>
 
         {/* User chip */}
-        <div className="flex items-center gap-3 rounded-2xl border border-border bg-card px-3 py-1.5">
-          <div className="grid size-8 place-items-center rounded-full bg-accent text-xs font-bold text-accent-foreground">
+        <div className="flex items-center gap-2 rounded-2xl border border-border bg-card px-3 py-1.5 sm:gap-3">
+          <div className="grid size-8 shrink-0 place-items-center rounded-full bg-accent text-xs font-bold text-accent-foreground">
             {initialsFor(userName)}
           </div>
-          <div className="hidden sm:block">
-            <p className="text-xs font-semibold leading-tight">{userName}</p>
-            <p className="text-[10px] uppercase tracking-wide text-muted-foreground">
+          <div className="hidden min-w-0 sm:block">
+            <p className="truncate text-xs font-semibold leading-tight">{userName}</p>
+            <p className="truncate text-[10px] uppercase tracking-wide text-muted-foreground">
               {userRole}
             </p>
           </div>

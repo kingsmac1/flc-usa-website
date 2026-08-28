@@ -7,6 +7,7 @@ import { PillButton, Section } from "@/components/site/ui";
 import { DashboardBody } from "@/components/dashboard/DashboardBody";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { DashboardTopbar } from "@/components/dashboard/DashboardTopbar";
+import { DashboardMobileNav } from "@/components/dashboard/DashboardMobileNav";
 import { QUERY_KEYS } from "@/components/dashboard/shared";
 
 const title = "Dashboard | Fountain of Life Church USA";
@@ -91,7 +92,7 @@ export function DashboardPage() {
         isPastor={isPastor}
         signOut={() => void signOut()}
       />
-      <div className="flex min-h-screen flex-1 flex-col">
+      <div className="flex min-h-screen min-w-0 flex-1 flex-col">
         <DashboardTopbar
           userName={userName}
           userRole={userRole}
@@ -100,10 +101,11 @@ export function DashboardPage() {
           onRefresh={invalidateAll}
           onSignOut={() => void signOut()}
         />
-        <main className="flex-1 px-5 py-8 sm:px-8 lg:py-10">
+        <main className="min-w-0 flex-1 overflow-x-hidden px-3 py-6 pb-24 sm:px-6 sm:py-8 sm:pb-8 lg:px-8 lg:py-10">
           <DashboardBody />
         </main>
       </div>
+      <DashboardMobileNav isPastor={isPastor} />
     </div>
   );
 }

@@ -72,7 +72,7 @@ export function Section({
   return (
     <section
       className={cn(
-        "py-16 sm:py-24",
+        "overflow-x-hidden py-16 sm:py-24",
         tone === "cream" && "bg-cream text-foreground",
         tone === "white" && "bg-card text-foreground",
         tone === "deep" && "bg-deep text-deep-foreground",
@@ -80,7 +80,7 @@ export function Section({
       )}
       {...rest}
     >
-      <div className="container-flc">{children}</div>
+      <div className="container-flc min-w-0">{children}</div>
     </section>
   );
 }

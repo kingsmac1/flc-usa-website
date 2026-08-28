@@ -140,9 +140,9 @@ function RootComponent() {
       <AuthProvider>
         <Preloader />
         <SmoothScroll />
-        <div className="flex min-h-dvh flex-col">
+        <div className="flex min-h-dvh flex-col overflow-x-hidden">
           <SiteHeader />
-          <main className="flex-1">
+          <main className="flex-1 overflow-x-hidden">
             {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
             <Outlet />
           </main>

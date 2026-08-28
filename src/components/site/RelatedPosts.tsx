@@ -29,11 +29,11 @@ export function RelatedPosts({ items, route, title = "You might also like" }: Re
             <Link to={route} params={{ [paramKey]: item.slug }} className="block">
               <img src={item.image} alt={item.title} loading="lazy" className="aspect-[16/10] w-full object-cover" />
               <div className="p-6">
-                <p className="text-xs font-semibold tracking-wide uppercase text-muted-foreground">
+                <p className="text-xs font-semibold tracking-wide uppercase text-muted-foreground break-words">
                   {item.subtitle}
                 </p>
-                <h2 className="mt-2 font-display text-xl font-bold">{item.title}</h2>
-                <p className="mt-2 text-sm text-muted-foreground">{item.summary}</p>
+                <h2 className="mt-2 break-words font-display text-xl font-bold">{item.title}</h2>
+                <p className="mt-2 break-words text-sm text-muted-foreground">{item.summary}</p>
                 <span className="mt-4 inline-block text-sm font-semibold text-primary underline underline-offset-4">
                   Read more
                 </span>

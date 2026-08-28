@@ -17,29 +17,31 @@ export function DevotionalArticle({ date, showArchives = true }: { date: string;
   return (
     <>
       <Section tone="deep">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
+        <div className="flex flex-col gap-4 lg:flex-row lg:flex-wrap lg:items-end lg:justify-between">
+          <div className="min-w-0 flex-1">
             <HeroReveal
               eyebrow="Daily devotional"
-              heading={<h1 className="mt-3 max-w-3xl text-3xl font-bold sm:text-5xl">{devotional.title}</h1>}
+              heading={<h1 className="mt-3 max-w-3xl break-words text-3xl font-bold sm:text-5xl">{devotional.title}</h1>}
               body={<p className="mt-3 text-sm text-deep-foreground/75">{formatDevotionalDate(date)}</p>}
             />
           </div>
-          <ShareButtons url={shareUrl} title={devotional.title} />
+          <div className="shrink-0">
+            <ShareButtons url={shareUrl} title={devotional.title} />
+          </div>
         </div>
       </Section>
 
       <Section tone="cream">
         <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
-          <article className="rounded-3xl border border-border bg-card p-7">
-            <p className="text-xs font-semibold tracking-wide uppercase text-muted-foreground">
+          <article className="rounded-3xl border border-border bg-card p-5 sm:p-7">
+            <p className="text-xs font-semibold tracking-wide uppercase text-muted-foreground break-words">
               {devotional.scripture}
             </p>
-            <blockquote className="mt-3 border-l-4 border-accent pl-4 text-lg leading-relaxed">
+            <blockquote className="mt-3 break-words border-l-4 border-accent pl-4 text-lg leading-relaxed">
               “{devotional.verse}”
             </blockquote>
             {(devotional.body ?? []).map((p) => (
-              <p key={p.slice(0, 24)} className="mt-5 text-base leading-relaxed text-muted-foreground">
+              <p key={p.slice(0, 24)} className="mt-5 break-words text-base leading-relaxed text-muted-foreground">
                 {p}
               </p>
             ))}
