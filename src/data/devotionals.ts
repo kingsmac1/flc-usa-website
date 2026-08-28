@@ -159,6 +159,14 @@ export const DEVOTIONALS: Devotional[] = Object.values(devotionalFiles).map((raw
  * ---------------------------------------------------------------------- */
 export const DEVOTIONAL_YEAR = 2026;
 
+/**
+ * Last month (within DEVOTIONAL_YEAR) that placeholder devotionals are
+ * generated for. Real content exists through August 2026 — no placeholder
+ * days, and no month-picker entries, should exist beyond this point.
+ * Update this forward as real months get added (see README-devotional-upload.md).
+ */
+export const PLACEHOLDER_CUTOFF_MONTH = 8; // August
+
 const MONTH_NAMES = [
   "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December",
@@ -215,7 +223,7 @@ function pad(n: number) {
 
 function generated(): Devotional[] {
   const out: Devotional[] = [];
-  for (let m = 1; m <= 12; m += 1) {
+  for (let m = 1; m <= PLACEHOLDER_CUTOFF_MONTH; m += 1) {
     const days = new Date(Date.UTC(DEVOTIONAL_YEAR, m, 0)).getUTCDate();
     for (let d = 1; d <= days; d += 1) {
       const t = TEMPLATES[(m + d) % TEMPLATES.length]!;
