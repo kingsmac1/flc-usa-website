@@ -331,6 +331,22 @@ export function devotionalsForMonth(month: string): Devotional[] {
   );
 }
 
+/**
+ * Distinct "YYYY-MM" months that actually have a devotional (real or
+ * placeholder) for a given year, sorted oldest to newest. Used to build
+ * the Daily Archive's month picker so it only ever shows months that
+ * genuinely have content — no manual list to keep updated as new months
+ * are added.
+ */
+export function monthsWithContent(year: number): string[] {
+  const prefix = `${year}-`;
+  const months = new Set<string>();
+  for (const d of ALL_DEVOTIONALS) {
+    if (d.date.startsWith(prefix)) months.add(d.date.slice(0, 7));
+  }
+  return [...months].sort();
+}
+
 export function monthLabel(month: string) {
   const [y, m] = month.split("-").map(Number);
   return new Date(Date.UTC(y ?? 2026, (m ?? 1) - 1, 1)).toLocaleDateString("en-US", {
