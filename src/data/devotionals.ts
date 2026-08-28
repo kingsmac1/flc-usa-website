@@ -279,7 +279,7 @@ const AVAILABLE_PDF_MONTHS = new Set<string>([
 ]);
 
 /** Years offered in the PDF archive year dropdown. */
-export const ARCHIVE_YEARS = [2024, 2025, 2026, 2027] as const;
+export const ARCHIVE_YEARS = [2025, 2026, 2027] as const;
 
 function pdfsFor(year: number): DevotionalPdf[] {
   return Array.from({ length: 12 }, (_, i) => {
