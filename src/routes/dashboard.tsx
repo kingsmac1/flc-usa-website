@@ -1,10 +1,12 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { ShieldCheck, RefreshCw, Lock, Loader2 } from "lucide-react";
+import { Lock, Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { isSupabaseConfigured } from "@/lib/supabase";
-import { PillButton, Section, SectionHeading } from "@/components/site/ui";
+import { PillButton, Section } from "@/components/site/ui";
 import { DashboardBody } from "@/components/dashboard/DashboardBody";
+import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
+import { DashboardTopbar } from "@/components/dashboard/DashboardTopbar";
 import { QUERY_KEYS } from "@/components/dashboard/shared";
 
 const title = "Dashboard | Fountain of Life Church USA";
@@ -27,7 +29,7 @@ export const Route = createFileRoute("/dashboard")({
 });
 
 export function DashboardPage() {
-  const { user, loading, isAdmin, signOut } = useAuth();
+  const { user, loading, isAdmin, isPastor, signOut } = useAuth();
   const queryClient = useQueryClient();
 
   if (loading || !isSupabaseConfigured) {
@@ -73,53 +75,35 @@ export function DashboardPage() {
 
   const invalidateAll = () => {
     Object.values(QUERY_KEYS).forEach((key) => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.offerings[0]] });
       queryClient.invalidateQueries({ queryKey: key });
     });
   };
 
+  // Any query currently fetching? Used to spin the refresh button.
+  const isRefreshing = queryClient.isFetching() > 0;
+
+  const userName = (user.user_metadata?.["full_name"] as string | undefined) ?? user.email ?? "Signed in";
+  const userRole = isPastor ? "Pastor" : "Admin";
+
   return (
-    <>
-      <Section tone="deep">
-        <SectionHeading
-          tone="light"
-          eyebrow="Admin"
-          title="Dashboard"
-          intro="Internal overview of the church family. Only visible to signed-in staff."
+    <div className="flex min-h-screen bg-cream">
+      <DashboardSidebar
+        isPastor={isPastor}
+        signOut={() => void signOut()}
+      />
+      <div className="flex min-h-screen flex-1 flex-col">
+        <DashboardTopbar
+          userName={userName}
+          userRole={userRole}
+          userEmail={user.email ?? ""}
+          isRefreshing={isRefreshing}
+          onRefresh={invalidateAll}
+          onSignOut={() => void signOut()}
         />
-      </Section>
-
-      <Section tone="cream">
-        <div className="space-y-8">
-          {/* Top bar: user context + refresh */}
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-card px-5 py-4">
-            <div className="flex items-center gap-3">
-              <span className="grid size-10 place-items-center rounded-full bg-accent/15 text-accent">
-                <ShieldCheck className="size-5" aria-hidden="true" />
-              </span>
-              <div>
-                <p className="text-sm font-semibold">
-                  {user.user_metadata?.["full_name"] ?? user.email ?? "Signed in"}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {user.email}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <PillButton type="button" variant="outline" onClick={invalidateAll}>
-                <RefreshCw className="size-4" aria-hidden="true" />
-                Refresh
-              </PillButton>
-              <PillButton type="button" variant="primary" onClick={() => void signOut()}>
-                Sign out
-              </PillButton>
-            </div>
-          </div>
-
+        <main className="flex-1 px-5 py-8 sm:px-8 lg:py-10">
           <DashboardBody />
-        </div>
-      </Section>
-    </>
+        </main>
+      </div>
+    </div>
   );
 }

@@ -50,6 +50,10 @@ export type ReportRow = {
   notes: string | null;
   uploaded_by: string;
   created_at: string;
+  attendance_adults: number | null;
+  attendance_men: number | null;
+  attendance_women: number | null;
+  attendance_children: number | null;
   profiles: { full_name: string | null } | null;
 };
 

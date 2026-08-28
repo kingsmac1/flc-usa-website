@@ -9,6 +9,8 @@ import {
   AccountsSection,
   ServiceReportsSection,
   OfferingsSection,
+  OverviewSection,
+  type OverviewCounts,
 } from "./sections";
 import {
   QUERY_KEYS,
@@ -38,6 +40,13 @@ export function DashboardBody() {
   const [reportUploading, setReportUploading] = useState(false);
   const [reportError, setReportError] = useState<string | null>(null);
   const [reportSuccess, setReportSuccess] = useState(false);
+
+  // Attendance fields — kept as strings so empty inputs stay empty until
+  // the form is submitted. Coerced to numbers (or null) in handleUploadReport.
+  const [reportAdults, setReportAdults] = useState("");
+  const [reportMen, setReportMen] = useState("");
+  const [reportWomen, setReportWomen] = useState("");
+  const [reportChildren, setReportChildren] = useState("");
 
   // Offerings state
   const [offerFrom, setOfferFrom] = useState(() => {
@@ -159,7 +168,7 @@ export function DashboardBody() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("service_reports")
-        .select("id, title, service_date, file_path, notes, uploaded_by, created_at, profiles!service_reports_uploaded_by_fkey(full_name)")
+        .select("id, title, service_date, file_path, notes, uploaded_by, created_at, attendance_adults, attendance_men, attendance_women, attendance_children, profiles!service_reports_uploaded_by_fkey(full_name)")
         .order("created_at", { ascending: false })
         .limit(200);
       if (error) throw new Error(error.message);
@@ -228,6 +237,10 @@ export function DashboardBody() {
       file_path: path,
       notes: reportNotes.trim() || null,
       uploaded_by: user.id,
+      attendance_adults: Number(reportAdults) || 0,
+      attendance_men: reportMen === "" ? null : Number(reportMen),
+      attendance_women: reportWomen === "" ? null : Number(reportWomen),
+      attendance_children: Number(reportChildren) || 0,
     });
     setReportUploading(false);
 
@@ -242,6 +255,10 @@ export function DashboardBody() {
     setReportDate(todayIso());
     setReportNotes("");
     setReportFile(null);
+    setReportAdults("");
+    setReportMen("");
+    setReportWomen("");
+    setReportChildren("");
     setReportSuccess(true);
     queryClient.invalidateQueries({ queryKey: QUERY_KEYS.reports });
   };
@@ -306,43 +323,56 @@ export function DashboardBody() {
 
   const errMsg = (e: unknown) => (e instanceof Error ? e.message : "Something went wrong");
 
+  // Aggregate counts for the overview tiles. Offering total uses today only
+  // so the headline number matches what's on the offering card.
+  const overviewCounts: OverviewCounts | undefined = stats.data
+    ? {
+        members: stats.data.members,
+        profiles: stats.data.profiles,
+        comments: stats.data.comments,
+        viewsLast7: stats.data.viewsLast7,
+        reports: reportsQuery.data?.length ?? 0,
+        offeringsTotal: todayTotal,
+      }
+    : undefined;
+
   return (
-    <>
-      {/* 1. Overview / stats */}
+    <div className="space-y-8">
+      {/* Page header */}
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="font-display text-3xl font-black sm:text-4xl">Dashboard</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            A quick view of your church family and recent activity.
+          </p>
+        </div>
+      </div>
+
+      {/* 1. Overview — comes first so the page reads top-down: summary, detail. */}
       <section aria-labelledby="stats-heading">
         <h2
           id="stats-heading"
-          className="mb-4 font-display text-sm font-bold tracking-wide uppercase text-accent"
+          className="mb-3 font-display text-xs font-bold tracking-wide uppercase text-muted-foreground"
         >
-          1 · Overview
+          Overview
         </h2>
-        {stats.isLoading ? (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div
-                key={i}
-                className="h-24 animate-pulse rounded-3xl border border-border bg-secondary"
-              />
-            ))}
-          </div>
-        ) : stats.isError ? (
-          <p role="alert" className="rounded-2xl border border-destructive/40 bg-destructive/10 px-5 py-4 text-sm text-destructive">
-            {errMsg(stats.error)}
-          </p>
-        ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <StatCard label="Total members" value={stats.data?.members ?? 0} tone="light" />
-            <StatCard label="Registered accounts" value={stats.data?.profiles ?? 0} tone="accent" />
-            <StatCard label="Total comments" value={stats.data?.comments ?? 0} tone="light" />
-            <StatCard label="Livestream views (7d)" value={stats.data?.viewsLast7 ?? 0} tone="deep" />
-          </div>
-        )}
+        <OverviewSection
+          isLoading={stats.isLoading}
+          isError={stats.isError}
+          error={errMsg(stats.error)}
+          counts={overviewCounts}
+          members={membersQuery.data ?? []}
+          comments={commentsQuery.data ?? []}
+          reports={reportsQuery.data ?? []}
+          accounts={accountsQuery.data ?? []}
+          viewers={viewersQuery.data ?? []}
+        />
       </section>
 
       {/* 2. Members */}
-      <section aria-labelledby="members-heading">
-        <h2 id="members-heading" className="mb-4 font-display text-sm font-bold tracking-wide uppercase text-accent">
-          2 · Members
+      <section id="members" aria-labelledby="members-heading">
+        <h2 id="members-heading" className="mb-3 font-display text-xs font-bold tracking-wide uppercase text-muted-foreground scroll-mt-24">
+          Members
         </h2>
         <div className="rounded-3xl border border-border bg-card p-6">
           <MembersSection
@@ -355,9 +385,9 @@ export function DashboardBody() {
       </section>
 
       {/* 3. Livestream Viewers */}
-      <section aria-labelledby="viewers-heading">
-        <h2 id="viewers-heading" className="mb-4 font-display text-sm font-bold tracking-wide uppercase text-accent">
-          3 · Livestream viewers
+      <section id="viewers" aria-labelledby="viewers-heading">
+        <h2 id="viewers-heading" className="mb-3 font-display text-xs font-bold tracking-wide uppercase text-muted-foreground scroll-mt-24">
+          Livestream viewers
         </h2>
         <div className="rounded-3xl border border-border bg-card p-6">
           <ViewersSection
@@ -370,9 +400,9 @@ export function DashboardBody() {
       </section>
 
       {/* 4. Comments */}
-      <section aria-labelledby="comments-heading">
-        <h2 id="comments-heading" className="mb-4 font-display text-sm font-bold tracking-wide uppercase text-accent">
-          4 · Comments
+      <section id="comments" aria-labelledby="comments-heading">
+        <h2 id="comments-heading" className="mb-3 font-display text-xs font-bold tracking-wide uppercase text-muted-foreground scroll-mt-24">
+          Comments
         </h2>
         <div className="rounded-3xl border border-border bg-card p-6">
           <CommentsSection
@@ -386,9 +416,9 @@ export function DashboardBody() {
       </section>
 
       {/* 5. Registered Accounts */}
-      <section aria-labelledby="accounts-heading">
-        <h2 id="accounts-heading" className="mb-4 font-display text-sm font-bold tracking-wide uppercase text-accent">
-          5 · Registered accounts
+      <section id="accounts" aria-labelledby="accounts-heading">
+        <h2 id="accounts-heading" className="mb-3 font-display text-xs font-bold tracking-wide uppercase text-muted-foreground scroll-mt-24">
+          Registered accounts
         </h2>
         <div className="rounded-3xl border border-border bg-card p-6">
           <AccountsSection
@@ -401,9 +431,9 @@ export function DashboardBody() {
       </section>
 
       {/* 6. Service Reports (any admin) */}
-      <section aria-labelledby="reports-heading">
-        <h2 id="reports-heading" className="mb-4 font-display text-sm font-bold tracking-wide uppercase text-accent">
-          6 · Service reports
+      <section id="reports" aria-labelledby="reports-heading">
+        <h2 id="reports-heading" className="mb-3 font-display text-xs font-bold tracking-wide uppercase text-muted-foreground scroll-mt-24">
+          Service reports
         </h2>
         <div className="rounded-3xl border border-border bg-card p-6">
           <ServiceReportsSection
@@ -419,6 +449,14 @@ export function DashboardBody() {
             setNotes={setReportNotes}
             file={reportFile}
             setFile={setReportFile}
+            adults={reportAdults}
+            setAdults={setReportAdults}
+            men={reportMen}
+            setMen={setReportMen}
+            women={reportWomen}
+            setWomen={setReportWomen}
+            children={reportChildren}
+            setChildren={setReportChildren}
             uploading={reportUploading}
             uploadError={reportError}
             uploadSuccess={reportSuccess}
@@ -432,9 +470,9 @@ export function DashboardBody() {
           on isPastor, so a non-pastor admin never sees this section or any
           of the financial data behind it. */}
       {isPastor ? (
-        <section aria-labelledby="offerings-heading">
-          <h2 id="offerings-heading" className="mb-4 font-display text-sm font-bold tracking-wide uppercase text-accent">
-            7 · Offerings
+        <section id="offerings" aria-labelledby="offerings-heading">
+          <h2 id="offerings-heading" className="mb-3 font-display text-xs font-bold tracking-wide uppercase text-muted-foreground scroll-mt-24">
+            Offerings
           </h2>
           <div className="rounded-3xl border border-border bg-card p-6">
             <OfferingsSection
@@ -464,6 +502,6 @@ export function DashboardBody() {
           </div>
         </section>
       ) : null}
-    </>
+    </div>
   );
 }

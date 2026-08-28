@@ -4,3 +4,4 @@ export { CommentsSection } from "./CommentsSection";
 export { AccountsSection } from "./AccountsSection";
 export { ServiceReportsSection } from "./ServiceReportsSection";
 export { OfferingsSection } from "./OfferingsSection";
+export { OverviewSection, type OverviewCounts } from "./OverviewSection";
