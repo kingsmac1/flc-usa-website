@@ -284,7 +284,7 @@ function pdfsFor(year: number): DevotionalPdf[] {
         month: "long",
         year: "numeric",
       }),
-      file: `/devotional-pdfs/${year}/Awake-Devotional-${monthName}-${year}.pdf`,
+      file: `https://raw.githubusercontent.com/kingsmac1/flc-usa-website/main/public/devotional-pdfs/${year}/Awake-Devotional-${monthName}-${year}.pdf`,
       available: AVAILABLE_PDF_MONTHS.has(month),
     };
   });
