@@ -370,7 +370,7 @@ export function DashboardBody() {
       </section>
 
       {/* 2. Members */}
-      <section id="members" aria-labelledby="members-heading">
+      <section id="members" aria-labelledby="members-heading" className="scroll-mt-32">
         <h2 id="members-heading" className="mb-3 font-display text-xs font-bold tracking-wide uppercase text-muted-foreground scroll-mt-24">
           Members
         </h2>
@@ -385,7 +385,7 @@ export function DashboardBody() {
       </section>
 
       {/* 3. Livestream Viewers */}
-      <section id="viewers" aria-labelledby="viewers-heading">
+      <section id="viewers" aria-labelledby="viewers-heading" className="scroll-mt-32">
         <h2 id="viewers-heading" className="mb-3 font-display text-xs font-bold tracking-wide uppercase text-muted-foreground scroll-mt-24">
           Livestream viewers
         </h2>
@@ -400,7 +400,7 @@ export function DashboardBody() {
       </section>
 
       {/* 4. Comments */}
-      <section id="comments" aria-labelledby="comments-heading">
+      <section id="comments" aria-labelledby="comments-heading" className="scroll-mt-32">
         <h2 id="comments-heading" className="mb-3 font-display text-xs font-bold tracking-wide uppercase text-muted-foreground scroll-mt-24">
           Comments
         </h2>
@@ -416,7 +416,7 @@ export function DashboardBody() {
       </section>
 
       {/* 5. Registered Accounts */}
-      <section id="accounts" aria-labelledby="accounts-heading">
+      <section id="accounts" aria-labelledby="accounts-heading" className="scroll-mt-32">
         <h2 id="accounts-heading" className="mb-3 font-display text-xs font-bold tracking-wide uppercase text-muted-foreground scroll-mt-24">
           Registered accounts
         </h2>
@@ -431,7 +431,7 @@ export function DashboardBody() {
       </section>
 
       {/* 6. Service Reports (any admin) */}
-      <section id="reports" aria-labelledby="reports-heading">
+      <section id="reports" aria-labelledby="reports-heading" className="scroll-mt-32">
         <h2 id="reports-heading" className="mb-3 font-display text-xs font-bold tracking-wide uppercase text-muted-foreground scroll-mt-24">
           Service reports
         </h2>
@@ -470,7 +470,7 @@ export function DashboardBody() {
           on isPastor, so a non-pastor admin never sees this section or any
           of the financial data behind it. */}
       {isPastor ? (
-        <section id="offerings" aria-labelledby="offerings-heading">
+        <section id="offerings" aria-labelledby="offerings-heading" className="scroll-mt-32">
           <h2 id="offerings-heading" className="mb-3 font-display text-xs font-bold tracking-wide uppercase text-muted-foreground scroll-mt-24">
             Offerings
           </h2>
