@@ -1,7 +1,7 @@
 import { ArrowUpRight, Eye, MessageCircle, TrendingUp, Users } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Badge } from "./Primitives";
-import { ErrorBanner, TableShell, Td, Th } from "./Table";
+import { ErrorBanner, Td } from "./Table";
 import type {
   AccountRow,
   CommentRow,
@@ -76,15 +76,15 @@ export function OverviewSection({
     <div className="space-y-6">
       {/* Top stat row — one accent tile plus three lighter tiles, like the reference. */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="relative overflow-hidden rounded-3xl border border-accent/40 bg-accent/5 p-5">
+        <div className="relative overflow-hidden rounded-3xl border border-primary/40 bg-deep p-5 text-deep-foreground">
           <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold tracking-wide uppercase text-muted-foreground">
+            <p className="text-xs font-semibold tracking-wide uppercase text-deep-foreground/70">
               Members
             </p>
-            <Users className="size-4 text-accent" aria-hidden="true" />
+            <Users className="size-4 text-gold" aria-hidden="true" />
           </div>
           <p className="mt-2 font-display text-4xl font-black">{counts.members}</p>
-          <p className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-accent-foreground">
+          <p className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-gold">
             <TrendingUp className="size-3" aria-hidden="true" />
             All-time signups
           </p>
@@ -123,55 +123,55 @@ export function OverviewSection({
 
       {/* Secondary row: attendance total + accounts + viewers with quick links */}
       <div className="grid gap-4 lg:grid-cols-3">
-        <div className="rounded-3xl border border-border bg-card p-5">
+        <div className="rounded-3xl border border-primary/25 bg-deep p-5 text-deep-foreground">
           <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold tracking-wide uppercase text-muted-foreground">
+            <p className="text-xs font-semibold tracking-wide uppercase text-deep-foreground/70">
               Total recorded attendance
             </p>
-            <Eye className="size-4 text-muted-foreground" aria-hidden="true" />
+            <Eye className="size-4 text-deep-foreground/60" aria-hidden="true" />
           </div>
           <p className="mt-2 font-display text-3xl font-black">{totalAttendance}</p>
-          <p className="mt-1 text-xs text-muted-foreground">
+          <p className="mt-1 text-xs text-deep-foreground/60">
             Across {reports.length} service {reports.length === 1 ? "report" : "reports"}
           </p>
           <Link
             to="/dashboard"
             hash="reports"
-            className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
+            className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-gold hover:underline"
           >
             View reports
             <ArrowUpRight className="size-3" aria-hidden="true" />
           </Link>
         </div>
-        <div className="rounded-3xl border border-border bg-card p-5">
-          <p className="text-xs font-semibold tracking-wide uppercase text-muted-foreground">
+        <div className="rounded-3xl border border-primary/25 bg-deep p-5 text-deep-foreground">
+          <p className="text-xs font-semibold tracking-wide uppercase text-deep-foreground/70">
             Registered accounts
           </p>
           <p className="mt-2 font-display text-3xl font-black">{counts.profiles}</p>
-          <p className="mt-1 text-xs text-muted-foreground">
+          <p className="mt-1 text-xs text-deep-foreground/60">
             {staffCount} staff · {Math.max(0, counts.profiles - staffCount)} members
           </p>
           <Link
             to="/dashboard"
             hash="accounts"
-            className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
+            className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-gold hover:underline"
           >
             View accounts
             <ArrowUpRight className="size-3" aria-hidden="true" />
           </Link>
         </div>
-        <div className="rounded-3xl border border-border bg-card p-5">
-          <p className="text-xs font-semibold tracking-wide uppercase text-muted-foreground">
+        <div className="rounded-3xl border border-primary/25 bg-deep p-5 text-deep-foreground">
+          <p className="text-xs font-semibold tracking-wide uppercase text-deep-foreground/70">
             Active livestream viewers
           </p>
           <p className="mt-2 font-display text-3xl font-black">{viewers.length}</p>
-          <p className="mt-1 text-xs text-muted-foreground">
+          <p className="mt-1 text-xs text-deep-foreground/60">
             Unique people who watched in the last 7 days
           </p>
           <Link
             to="/dashboard"
             hash="viewers"
-            className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
+            className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-gold hover:underline"
           >
             View viewers
             <ArrowUpRight className="size-3" aria-hidden="true" />
@@ -254,15 +254,15 @@ export function OverviewSection({
       </div>
 
       {/* Recent service reports ticker */}
-      <div className="rounded-3xl border border-border bg-card p-5">
+      <div className="rounded-3xl border border-primary/25 bg-deep p-5 text-deep-foreground">
         <div className="flex items-center justify-between">
-          <h3 className="font-display text-sm font-bold tracking-wide uppercase text-foreground">
+          <h3 className="font-display text-sm font-bold tracking-wide uppercase text-deep-foreground">
             Recent service reports
           </h3>
           <Link
             to="/dashboard"
             hash="reports"
-            className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
+            className="inline-flex items-center gap-1 text-xs font-semibold text-gold hover:underline"
           >
             View all
             <ArrowUpRight className="size-3" aria-hidden="true" />
@@ -270,47 +270,57 @@ export function OverviewSection({
         </div>
         <div className="mt-4">
           {reports.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No reports yet.</p>
+            <p className="text-sm text-deep-foreground/60">No reports yet.</p>
           ) : (
-            <TableShell>
-              <thead>
-                <tr>
-                  <Th>Title</Th>
-                  <Th>Service date</Th>
-                  <Th>Attendance</Th>
-                  <Th>Uploaded by</Th>
-                </tr>
-              </thead>
-              <tbody>
-                {reports.slice(0, 5).map((r) => (
-                  <tr key={r.id} className="border-t border-border">
-                    <Td>
-                      <p className="font-semibold">{r.title}</p>
-                    </Td>
-                    <Td>
-                      <p className="text-sm">
-                        {r.service_date
-                          ? new Date(r.service_date).toLocaleDateString(undefined, {
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric",
-                            })
-                          : "—"}
-                      </p>
-                    </Td>
-                    <Td>
-                      <p className="text-sm font-semibold">
-                        {(r.attendance_adults ?? 0) + (r.attendance_children ?? 0)} total
-                      </p>
-                      <p className="text-[10px] uppercase tracking-wide text-muted-foreground">
-                        {r.attendance_adults ?? 0} adults · {r.attendance_children ?? 0} children
-                      </p>
-                    </Td>
-                    <Td>{r.profiles?.full_name || "—"}</Td>
+            <div className="overflow-x-auto rounded-2xl border border-deep-foreground/15">
+              <table className="min-w-full text-sm text-deep-foreground">
+                <thead>
+                  <tr>
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-deep-foreground/60">
+                      Title
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-deep-foreground/60">
+                      Service date
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-deep-foreground/60">
+                      Attendance
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-deep-foreground/60">
+                      Uploaded by
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </TableShell>
+                </thead>
+                <tbody>
+                  {reports.slice(0, 5).map((r) => (
+                    <tr key={r.id} className="border-t border-deep-foreground/15">
+                      <Td>
+                        <p className="font-semibold">{r.title}</p>
+                      </Td>
+                      <Td>
+                        <p className="text-sm">
+                          {r.service_date
+                            ? new Date(r.service_date).toLocaleDateString(undefined, {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              })
+                            : "—"}
+                        </p>
+                      </Td>
+                      <Td>
+                        <p className="text-sm font-semibold">
+                          {(r.attendance_adults ?? 0) + (r.attendance_children ?? 0)} total
+                        </p>
+                        <p className="text-[10px] uppercase tracking-wide text-deep-foreground/60">
+                          {r.attendance_adults ?? 0} adults · {r.attendance_children ?? 0} children
+                        </p>
+                      </Td>
+                      <Td>{r.profiles?.full_name || "—"}</Td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       </div>
