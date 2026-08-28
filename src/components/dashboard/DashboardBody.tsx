@@ -154,7 +154,7 @@ export function DashboardBody() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("id, full_name, email, created_at, is_admin, role")
+        .select("id, full_name, email, created_at, role")
         .order("created_at", { ascending: false })
         .limit(500);
       if (error) throw new Error(error.message);

@@ -38,7 +38,6 @@ export type AccountRow = {
   full_name: string | null;
   email: string | null;
   created_at: string;
-  is_admin: boolean | null;
   role: string | null;
 };
 

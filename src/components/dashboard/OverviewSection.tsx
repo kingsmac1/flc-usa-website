@@ -69,7 +69,7 @@ export function OverviewSection({
   );
 
   const staffCount = accounts.filter(
-    (a) => a.role === "admin" || a.role === "pastor" || a.is_admin === true
+    (a) => a.role === "admin" || a.role === "pastor"
   ).length;
 
   return (

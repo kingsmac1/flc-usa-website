@@ -13,10 +13,8 @@ type Props = {
 
 function RoleBadge({ account }: { account: AccountRow }) {
   const role = account.role ?? null;
-  const isAdmin = account.is_admin === true || role === "admin" || role === "pastor";
-  const isPastor = role === "pastor";
-  if (isPastor) return <Badge tone="gold">Pastor</Badge>;
-  if (isAdmin) return <Badge tone="accent">Admin</Badge>;
+  if (role === "pastor") return <Badge tone="gold">Pastor</Badge>;
+  if (role === "admin") return <Badge tone="accent">Admin</Badge>;
   return <Badge>Member</Badge>;
 }
 
