@@ -253,16 +253,22 @@ export const ALL_DEVOTIONALS: Devotional[] = (() => {
 
 /**
  * MONTHLY PDF ARCHIVE
- * Upload the PDF into `public/devotional-pdfs/` using the filename below,
- * then add its month to AVAILABLE_PDF_MONTHS so the download link activates.
+ * Upload the PDF into `public/devotional-pdfs/<Year>/` using the filename
+ * below, then add its month to AVAILABLE_PDF_MONTHS so the download link
+ * activates.
  *
  * Filename format: Awake-Devotional-<Month>-<Year>.pdf
- *   e.g. Awake-Devotional-June-2026.pdf, Awake-Devotional-July-2026.pdf
+ *   e.g. public/devotional-pdfs/2026/Awake-Devotional-June-2026.pdf
  */
 export type DevotionalPdf = { month: string; label: string; file: string; available: boolean };
 
-/** Months that currently have a real PDF uploaded to public/devotional-pdfs/. */
-const AVAILABLE_PDF_MONTHS = new Set<string>(["2026-06", "2026-08"]);
+/** Months that currently have a real PDF uploaded to public/devotional-pdfs/<Year>/. */
+const AVAILABLE_PDF_MONTHS = new Set<string>([
+  "2025-01", "2025-02", "2025-03", "2025-04", "2025-05", "2025-06",
+  "2025-07", "2025-08", "2025-09", "2025-10", "2025-11", "2025-12",
+  "2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06",
+  "2026-07", "2026-08",
+]);
 
 /** Years offered in the PDF archive year dropdown. */
 export const ARCHIVE_YEARS = [2024, 2025, 2026, 2027] as const;
@@ -278,7 +284,7 @@ function pdfsFor(year: number): DevotionalPdf[] {
         month: "long",
         year: "numeric",
       }),
-      file: `/devotional-pdfs/Awake-Devotional-${monthName}-${year}.pdf`,
+      file: `/devotional-pdfs/${year}/Awake-Devotional-${monthName}-${year}.pdf`,
       available: AVAILABLE_PDF_MONTHS.has(month),
     };
   });
