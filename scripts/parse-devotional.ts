@@ -41,6 +41,14 @@ const DATE_RE = new RegExp(`(${DAYS}), (${MONTH_PATTERN}) (\\d{1,2}), (\\d{4})`)
 
 const HEADER_WORDS = new Set(["FURTHER", "STUDIES", "DAILY", "BIBLE", "READING", "PLAN"]);
 
+// The "DAILY DEVOTIONAL" header text is letter-spaced inconsistently across
+// different months' PDFs (e.g. "DA ILY DE VOTIONA L" in some,
+// "DA ILY DE VO TIO NA L" in others) — likely different design-tool
+// exports. Matching letter-by-letter with \s* between each one handles any
+// spacing variant rather than hardcoding a specific gap pattern.
+const FLEX_DAILY_DEVOTIONAL = "D\\s*A\\s*I\\s*L\\s*Y\\s*D\\s*E\\s*V\\s*O\\s*T\\s*I\\s*O\\s*N\\s*A\\s*L";
+const FLEX_DAILY_DEVOTIONAL_TEST = new RegExp(FLEX_DAILY_DEVOTIONAL);
+
 function extractLayoutText(pdfPath: string): string {
   return execFileSync("pdftotext", ["-layout", pdfPath, "-"], {
     maxBuffer: 1024 * 1024 * 50,
@@ -76,33 +84,59 @@ function parseDay(chunk: string): ParsedDevotional | null {
 
   const rest = chunk.slice(m.index + m[0].length);
 
-  // Scripture quote + reference. Handles the normal case (closing curly quote,
-  // dash, reference) and PDFs with a missing/typo'd closing quote mark.
+  // Scripture quote + reference. Looks at the first paragraph after the
+  // date line for a "<verse text> <dash> <Book Chapter:Verse (TRANSLATION)>"
+  // pattern. Deliberately dash-agnostic (em dash, en dash, or plain hyphen
+  // all work) and quote-agnostic (works whether or not the verse text is
+  // actually wrapped in quotation marks) — real PDFs from this source have
+  // been seen using all of these variants inconsistently across months.
   let verse = "";
   let scripture = "";
   let bodyStart = 0;
 
-  const normalMatch = /[“"]([\s\S]*?)[”“"]\s*[—-]\s*(.+)/.exec(rest);
-  if (normalMatch) {
-    verse = normalMatch[1].replace(/\s+/g, " ").trim();
-    scripture = normalMatch[2].trim();
-    bodyStart = normalMatch.index + normalMatch[0].length;
-  } else {
-    const openMatch = /[“"]/.exec(rest);
-    if (openMatch) {
-      const afterOpen = rest.slice(openMatch.index + 1);
-      const refMatch = /\n\s*[—-]\s*([A-Z][^\n]{0,60}?\d+:\d+[^\n]{0,20})\s*\n/.exec(afterOpen);
-      if (refMatch) {
-        verse = afterOpen.slice(0, refMatch.index).replace(/\s+/g, " ").trim();
-        scripture = refMatch[1].trim();
-        bodyStart = openMatch.index + 1 + refMatch.index + refMatch[0].length;
-      }
-    }
+  // Skip any leading blank lines before looking for the first real
+  // paragraph — some PDFs have a blank line directly after the date,
+  // before the scripture quote even starts.
+  const leadingWs = rest.length - rest.replace(/^\s+/, "").length;
+  const restTrimmed = rest.slice(leadingWs);
+
+  const firstParaMatch = /^([\s\S]*?)(?:\r?\n\s*\r?\n|$)/.exec(restTrimmed);
+  const firstPara = (firstParaMatch?.[1] ?? "").trim();
+
+  // Book name, chapter:verse (allowing a trailing letter like "16b" for a
+  // half-verse, and a verse range like "2:15-16" with optional spacing
+  // around the dash), then an optional translation code — which itself
+  // may or may not be in parentheses, and real PDFs have been seen with
+  // stray/unbalanced parentheses and/or a trailing period around it.
+  const BOOK = String.raw`(?:[1-3]\s)?[A-Z][a-zA-Z]+(?:\s+(?:of\s+)?[A-Z][a-zA-Z]+)*`;
+  const CHAPTER_VERSE = String.raw`\s*\d+:\d+[a-z]?(?:\s*[-\u2013]\s*\d+[a-z]?)?`;
+  const TRANSLATION = String.raw`(?:,?\s*\(?[A-Z]{2,5}\)?)?`;
+  const TRAILING_JUNK = String.raw`\.?\s*\)?\s*$`;
+  const REF = `(${BOOK}${CHAPTER_VERSE}${TRANSLATION})${TRAILING_JUNK}`;
+
+  // Normal case: "<verse text> <dash> <reference>".
+  let scriptureMatch = new RegExp(String.raw`^([\s\S]*?)\s*[\u2014\u2013-]\s*` + REF).exec(firstPara);
+  // Fallback: some PDFs put the reference directly after the closing quote
+  // with no dash at all — only try this when the text is actually quoted,
+  // to avoid false-positives on ordinary body text.
+  if (!scriptureMatch) {
+    scriptureMatch = new RegExp(String.raw`^[“”"']([\s\S]*?)[“”"']\s*,?\s*` + REF).exec(firstPara);
+  }
+
+  if (scriptureMatch) {
+    let v = scriptureMatch[1].trim();
+    // Strip any wrapping quote characters (curly or straight) left over
+    // from PDFs that do quote the verse — a no-op for PDFs that don't.
+    v = v.replace(/^[“”"']+/, "").replace(/[“”"']+$/, "");
+    verse = v.replace(/\s+/g, " ").trim();
+    scripture = scriptureMatch[2].trim();
+    bodyStart = leadingWs + (firstParaMatch ? firstParaMatch[0].length : 0);
   }
 
   const bodyAndRest = rest.slice(bodyStart);
   const [bodyRaw, ...afterPrayerParts] = bodyAndRest.split(/PRAYER\s*\/\s*DECLARATION/);
   const afterPrayer = afterPrayerParts.join("PRAYER / DECLARATION");
+
 
   // Clean body text: strip page numbers, footer contact line, repeated
   // headers, and the drop-cap artifact; then group into paragraphs.
@@ -117,7 +151,7 @@ function parseDay(chunk: string): ParsedDevotional | null {
     }
     if (/^\d{1,3}$/.test(s)) continue;
     if (s.includes("awakedaily@flcusa.org") || s.startsWith("Å")) continue;
-    if (s === "AWAKE" || /DA ?ILY DE ?VOTIONA ?L/.test(s)) continue;
+    if (s === "AWAKE" || FLEX_DAILY_DEVOTIONAL_TEST.test(s)) continue;
     if (s === title || DATE_RE.test(s)) continue;
     cleaned.push(s);
   }
@@ -173,7 +207,7 @@ function parseDay(chunk: string): ParsedDevotional | null {
 
 function parseDevotionalPdf(pdfPath: string): ParsedDevotional[] {
   const text = extractLayoutText(pdfPath);
-  const chunks = text.split(/\n\s*AWAKE\s*\n\s*DA ?ILY DE ?VOTIONA ?L\s*\n/);
+  const chunks = text.split(new RegExp(`\\n\\s*AWAKE\\s*\\n\\s*${FLEX_DAILY_DEVOTIONAL}\\s*\\n`));
 
   const results: ParsedDevotional[] = [];
   for (const chunk of chunks) {
@@ -198,20 +232,43 @@ function parseDevotionalPdf(pdfPath: string): ParsedDevotional[] {
 }
 
 // ---- CLI entry point ----
-const inputPath = process.argv[2];
-if (!inputPath) {
-  console.error("Usage: npx tsx parse-devotional.ts /path/to/devotional.pdf [output.json]");
+// Accepts one or more PDF paths, in any order, plus one optional output
+// JSON path. Any argument ending in ".json" is treated as the output file
+// (default "output.json" if none given); everything else is treated as a
+// PDF to parse. Every day from every PDF is merged into one combined array.
+const args = process.argv.slice(2);
+const jsonArgs = args.filter((a) => a.toLowerCase().endsWith(".json"));
+const pdfArgs = args.filter((a) => !a.toLowerCase().endsWith(".json"));
+
+if (pdfArgs.length === 0) {
+  console.error(
+    "Usage: npx tsx parse-devotional.ts /path/to/devotional1.pdf [/path/to/devotional2.pdf ...] [output.json]",
+  );
   process.exit(1);
 }
-const outputPath = process.argv[3];
+const outputPath = jsonArgs[0] ?? "output.json";
 
-const parsed = parseDevotionalPdf(inputPath);
-console.error(`Parsed ${parsed.length} day(s) from ${inputPath}`);
-
-const json = JSON.stringify(parsed, null, 2);
-if (outputPath) {
-  writeFileSync(outputPath, json, "utf-8");
-  console.error(`Wrote ${outputPath}`);
-} else {
-  console.log(json);
+let allResults: ParsedDevotional[] = [];
+for (const pdfPath of pdfArgs) {
+  const parsed = parseDevotionalPdf(pdfPath);
+  console.error(`Parsed ${parsed.length} day(s) from ${pdfPath}`);
+  allResults = allResults.concat(parsed);
 }
+
+// Guard against the same date appearing twice across different PDFs
+// (e.g. accidentally passing the same file, or two PDFs covering an
+// overlapping period) — keep the last one seen and warn about it.
+const byDate = new Map<string, ParsedDevotional>();
+for (const entry of allResults) {
+  if (byDate.has(entry.date)) {
+    console.error(`⚠ Duplicate date ${entry.date} found across input files — keeping the later one.`);
+  }
+  byDate.set(entry.date, entry);
+}
+const deduped = [...byDate.values()].sort((a, b) => (a.date < b.date ? -1 : 1));
+
+console.error(`Total: ${deduped.length} day(s) across ${pdfArgs.length} file(s).`);
+
+const json = JSON.stringify(deduped, null, 2);
+writeFileSync(outputPath, json, "utf-8");
+console.error(`Wrote ${outputPath}`);
