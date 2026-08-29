@@ -72,7 +72,10 @@ function LivestreamPage() {
           <LivestreamPlayer
             isLive={data?.isLive ?? false}
             videoId={data?.videoId ?? null}
-            title={data?.title}
+            // Only use the YouTube title when the stream is actually live —
+            // otherwise the YouTube helper's "offline" placeholder would
+            // override the next-event title we just computed locally.
+            title={data?.isLive ? data.title : undefined}
           />
           <BiblePanel />
         </div>
