@@ -47,6 +47,7 @@ export function DashboardBody() {
   const [reportMen, setReportMen] = useState("");
   const [reportWomen, setReportWomen] = useState("");
   const [reportChildren, setReportChildren] = useState("");
+  const [reportFirstTimers, setReportFirstTimers] = useState("");
 
   // Offerings state
   const [offerFrom, setOfferFrom] = useState(() => {
@@ -168,7 +169,7 @@ export function DashboardBody() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("service_reports")
-        .select("id, title, service_date, file_path, notes, uploaded_by, created_at, attendance_adults, attendance_men, attendance_women, attendance_children, profiles!service_reports_uploaded_by_fkey(full_name)")
+        .select("id, title, service_date, file_path, notes, uploaded_by, created_at, attendance_adults, attendance_men, attendance_women, attendance_children, first_timers, profiles!service_reports_uploaded_by_fkey(full_name)")
         .order("created_at", { ascending: false })
         .limit(200);
       if (error) throw new Error(error.message);
@@ -241,6 +242,7 @@ export function DashboardBody() {
       attendance_men: reportMen === "" ? null : Number(reportMen),
       attendance_women: reportWomen === "" ? null : Number(reportWomen),
       attendance_children: Number(reportChildren) || 0,
+      first_timers: reportFirstTimers === "" ? null : Number(reportFirstTimers),
     });
     setReportUploading(false);
 
@@ -259,6 +261,7 @@ export function DashboardBody() {
     setReportMen("");
     setReportWomen("");
     setReportChildren("");
+    setReportFirstTimers("");
     setReportSuccess(true);
     queryClient.invalidateQueries({ queryKey: QUERY_KEYS.reports });
   };
@@ -457,6 +460,8 @@ export function DashboardBody() {
             setWomen={setReportWomen}
             children={reportChildren}
             setChildren={setReportChildren}
+            firstTimers={reportFirstTimers}
+            setFirstTimers={setReportFirstTimers}
             uploading={reportUploading}
             uploadError={reportError}
             uploadSuccess={reportSuccess}

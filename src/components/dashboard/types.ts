@@ -53,6 +53,7 @@ export type ReportRow = {
   attendance_men: number | null;
   attendance_women: number | null;
   attendance_children: number | null;
+  first_timers: number | null;
   profiles: { full_name: string | null } | null;
 };
 

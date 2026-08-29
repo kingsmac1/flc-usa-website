@@ -28,6 +28,8 @@ type Props = {
   setWomen: (v: string) => void;
   children: string;
   setChildren: (v: string) => void;
+  firstTimers: string;
+  setFirstTimers: (v: string) => void;
 
   uploading: boolean;
   uploadError: string | null;
@@ -45,6 +47,7 @@ function formatAttendance(r: ReportRow) {
   const m = r.attendance_men;
   const w = r.attendance_women;
   const c = r.attendance_children;
+  const f = r.first_timers;
   const parts: string[] = [];
   if (a !== null) {
     if (m !== null && w !== null) {
@@ -54,6 +57,7 @@ function formatAttendance(r: ReportRow) {
     }
   }
   if (c !== null) parts.push(`${c} children`);
+  if (f !== null && f !== 0) parts.push(`${f} first-timers`);
   return parts.length > 0 ? parts.join(", ") : "—";
 }
 
@@ -63,6 +67,7 @@ export function ServiceReportsSection(props: Props) {
     title, setTitle, date, setDate, notes, setNotes,
     file, setFile,
     adults, setAdults, men, setMen, women, setWomen, children, setChildren,
+    firstTimers, setFirstTimers,
     uploading, uploadError, uploadSuccess,
     onSubmit, onDownload,
   } = props;
@@ -171,6 +176,17 @@ export function ServiceReportsSection(props: Props) {
                 min="0"
                 value={children}
                 onChange={(e) => setChildren(e.target.value)}
+                placeholder="0"
+                className="mt-1 w-full rounded-2xl border border-border bg-secondary px-4 py-2.5 text-sm focus-visible:outline-2 focus-visible:outline-accent"
+              />
+            </label>
+            <label className="block text-sm font-semibold">
+              First-timers
+              <input
+                type="number"
+                min="0"
+                value={firstTimers}
+                onChange={(e) => setFirstTimers(e.target.value)}
                 placeholder="0"
                 className="mt-1 w-full rounded-2xl border border-border bg-secondary px-4 py-2.5 text-sm focus-visible:outline-2 focus-visible:outline-accent"
               />

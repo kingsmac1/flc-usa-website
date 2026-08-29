@@ -96,13 +96,13 @@ export function DevotionalArchives({ activeDate }: { activeDate: string }) {
 
         <ul className="mt-6 grid gap-3">
           {days.map((d) => (
-            <li key={d.date}>
+            <li key={d.date} className="overflow-hidden">
               <Link
                 to="/devotional/$date"
                 params={{ date: d.date }}
                 aria-current={d.date === activeDate ? "page" : undefined}
                 className={cn(
-                  "flex items-center justify-between gap-4 rounded-2xl border px-5 py-4 transition-colors",
+                  "flex items-center justify-between gap-4 rounded-2xl border px-5 py-4 transition-colors w-full block",
                   d.date === activeDate
                     ? "border-accent bg-accent/10"
                     : "border-border bg-card hover:bg-secondary",

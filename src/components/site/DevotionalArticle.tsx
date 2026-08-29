@@ -85,7 +85,7 @@ export function DevotionalArticle({ date, showArchives = true }: { date: string;
             <Link
               to="/devotional/$date"
               params={{ date: prev.date }}
-              className="flex items-center gap-3 rounded-2xl border border-border bg-card px-5 py-4 transition-colors hover:bg-secondary"
+              className="flex items-center gap-3 rounded-2xl border border-border bg-card px-5 py-4 transition-colors hover:bg-secondary w-full overflow-hidden"
             >
               <ArrowLeft className="size-5 shrink-0 text-primary" aria-hidden="true" />
               <span className="min-w-0">
@@ -102,7 +102,7 @@ export function DevotionalArticle({ date, showArchives = true }: { date: string;
             <Link
               to="/devotional/$date"
               params={{ date: next.date }}
-              className="flex items-center justify-end gap-3 rounded-2xl border border-border bg-card px-5 py-4 text-right transition-colors hover:bg-secondary"
+              className="flex items-center justify-end gap-3 rounded-2xl border border-border bg-card px-5 py-4 text-right transition-colors hover:bg-secondary w-full overflow-hidden"
             >
               <span className="min-w-0">
                 <span className="block text-xs font-semibold tracking-wide uppercase text-muted-foreground">

@@ -313,6 +313,7 @@ export function OverviewSection({
                         </p>
                         <p className="text-[10px] uppercase tracking-wide text-deep-foreground/60">
                           {r.attendance_adults ?? 0} adults · {r.attendance_children ?? 0} children
+                          {r.first_timers ? ` · ${r.first_timers} first-timers` : ""}
                         </p>
                       </Td>
                       <Td>{r.profiles?.full_name || "—"}</Td>
