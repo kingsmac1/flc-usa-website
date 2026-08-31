@@ -57,7 +57,7 @@ public/devotional-pdfs/
 From the project root, in your terminal:
 
 ```
-npx tsx scripts/parse-devotional.ts "public/devotional-pdfs/Awake-Devotional-<Month>-<Year>.pdf" output.json
+npx tsx scripts/parse-devotional.ts "devotional-archive/2026/Awake-Devotional-September-2026.pdf" output.json
 ```
 
 Replace `<Month>-<Year>` with the actual filename from Step 1. If your path has spaces anywhere, keep it wrapped in quotes exactly as shown.

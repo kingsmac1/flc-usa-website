@@ -84,7 +84,7 @@ const offerings = [
 function HomePage() {
   return (
     <>
-      <section className="relative isolate flex h-[100dvh] min-h-[640px] items-center overflow-hidden bg-deep text-deep-foreground">
+      <section className="sticky top-0 z-0 flex h-[100dvh] min-h-[640px] items-center overflow-hidden bg-deep text-deep-foreground">
         <Parallax strength={40} className="absolute inset-0 -z-10">
           <img
             src={PLACEHOLDER.worship}
@@ -108,7 +108,7 @@ function HomePage() {
                     We welcome you with great joy to Fountain of Life Church USA — a family sharing the
                     good news of Jesus Christ with all who will listen.
                   </p>
-                  <div className="mt-8 flex flex-wrap items-center gap-4">
+                  <div className="mt-8 flex flex-wrap items-center gap-3">
                     <PillLink to="/contact" variant="accent">
                       Plan a Visit
                     </PillLink>
@@ -141,7 +141,7 @@ function HomePage() {
         </div>
       </section>
 
-      <Section tone="cream" className="relative z-20 -mt-12 rounded-t-[2.5rem] sm:-mt-16 sm:rounded-t-[3rem]">
+      <Section tone="cream" className="relative z-10 rounded-t-[2.5rem] sm:rounded-t-[3rem]">
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <Reveal>
             <Parallax strength={30}>
