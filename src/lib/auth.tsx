@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { isSupabaseConfigured, supabase } from "./supabase";
 
-export type Role = "member" | "admin" | "pastor";
+export type Role = "member" | "staff" | "pastor";
 
 type AuthContextValue = {
   user: User | null;
@@ -94,7 +94,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         session,
         loading,
         role,
-        isAdmin: role === "admin" || role === "pastor",
+        isAdmin: role === "staff" || role === "pastor",
         isPastor: role === "pastor",
         signUp,
         signIn,

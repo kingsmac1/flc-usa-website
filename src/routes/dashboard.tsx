@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Lock, Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { isSupabaseConfigured } from "@/lib/supabase";
+import { AuthForm } from "@/components/site/AuthForm";
 import { PillButton, Section } from "@/components/site/ui";
 import { DashboardBody } from "@/components/dashboard/DashboardBody";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
@@ -46,7 +47,26 @@ export function DashboardPage() {
     );
   }
 
-  if (!user || !isAdmin) {
+  if (!user) {
+    // Not signed in at all — show login form
+    return (
+      <Section tone="cream" className="flex min-h-[60vh] items-center justify-center">
+        <div className="mx-auto max-w-md rounded-3xl border border-border bg-card p-10 text-center">
+          <h2 className="mb-4 font-display text-2xl font-bold">Staff & Pastor Login</h2>
+          <p className="mb-4 text-sm text-muted-foreground">
+            This area is restricted to church staff. Please sign in below.
+          </p>
+          <AuthForm onSuccess={() => {
+            // onSuccess triggers a re-render; useAuth() updates reactively,
+            // so if the new role qualifies as isAdmin the dashboard will show automatically.
+          }} />
+        </div>
+      </Section>
+    );
+  }
+
+  if (!isAdmin) {
+    // Signed in but wrong role — show clear rejection message
     return (
       <Section tone="cream" className="flex min-h-[60vh] items-center justify-center">
         <div className="mx-auto max-w-md rounded-3xl border border-border bg-card p-10 text-center">
@@ -55,8 +75,7 @@ export function DashboardPage() {
           </div>
           <h2 className="mt-5 font-display text-2xl font-bold">You don't have access to this page</h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            The dashboard is for church staff only. If you believe you should have access, ask
-            an administrator to update your role in Supabase.
+            The dashboard is for church staff only. If you believe you should have access, reach out to an administrator.
           </p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
             <Link
