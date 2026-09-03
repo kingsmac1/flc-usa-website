@@ -86,7 +86,7 @@ function BooksPage() {
                   href={book.buyUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-auto inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-accent px-6 pt-3 pb-3 text-sm font-semibold text-accent-foreground hover:brightness-95"
+                  className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-accent px-6 pt-3 pb-3 text-sm font-semibold text-accent-foreground hover:brightness-95"
                 >
                   Buy now
                   <ExternalLink className="size-4" aria-hidden="true" />
