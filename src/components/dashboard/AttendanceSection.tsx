@@ -1,8 +1,10 @@
-import { Check, Undo2 } from "lucide-react";
+import { Check, Download, Undo2 } from "lucide-react";
 import { useMemo, useState } from "react";
+import { PillButton } from "@/components/site/ui";
 import { Badge, ConfirmButton, EmptyState } from "./Primitives";
 import { ErrorBanner, LoadingRow, TableShell, Td, Th } from "./Table";
 import { formatDateTime } from "./shared";
+import { downloadCsv } from "./csv";
 import type { AccountRow, CheckInRow } from "./types";
 
 type Props = {
@@ -44,6 +46,24 @@ export function AttendanceSection({
 
   const presentCount = profiles.filter((p) => checkInByMember.has(p.id)).length;
 
+  const exportCsv = () => {
+    const header = ["Name", "Email", "Status", "Method", "Checked In At"];
+    const lines = [
+      header,
+      ...profiles.map((p) => {
+        const checkIn = checkInByMember.get(p.id);
+        return [
+          p.full_name ?? "",
+          p.email ?? "",
+          checkIn ? "Present" : "Absent",
+          checkIn ? (checkIn.method === "gps" ? "GPS" : "Marked by staff") : "",
+          checkIn ? formatDateTime(checkIn.checked_in_at) : "",
+        ];
+      }),
+    ];
+    downloadCsv(`attendance-${date}.csv`, lines);
+  };
+
   if (profilesIsError) return <ErrorBanner message={profilesError} />;
   if (checkInsIsError) return <ErrorBanner message={checkInsError} />;
 
@@ -61,6 +81,10 @@ export function AttendanceSection({
             className="min-h-10 rounded-2xl border border-border bg-secondary px-3 text-sm focus-visible:outline-2 focus-visible:outline-accent"
           />
         </label>
+        <PillButton type="button" variant="outline" onClick={exportCsv} disabled={profiles.length === 0}>
+          <Download className="size-4" aria-hidden="true" />
+          Export CSV
+        </PillButton>
       </div>
 
       {!isLoading ? (
