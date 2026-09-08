@@ -28,6 +28,7 @@ export const QUERY_KEYS = {
   accounts: ["dashboard-accounts"] as const,
   reports: ["dashboard-reports"] as const,
   offerings: ["dashboard-offerings"] as const,
+  checkins: ["dashboard-checkins"] as const,
 };
 
 export function nowIso() {

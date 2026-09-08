@@ -1,6 +1,7 @@
 import {
   BarChart3,
   Calendar,
+  CalendarCheck,
   Coins,
   FileText,
   Home,
@@ -27,6 +28,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Viewers", to: "/dashboard#viewers", icon: Video },
   { label: "Comments", to: "/dashboard#comments", icon: MessageCircle },
   { label: "Accounts", to: "/dashboard#accounts", icon: BarChart3 },
+  { label: "Attendance", to: "/dashboard#attendance", icon: CalendarCheck },
   { label: "Reports", to: "/dashboard#reports", icon: FileText },
   { label: "Offerings", to: "/dashboard#offerings", icon: Coins, hint: "Pastor" },
 ];

@@ -7,6 +7,7 @@ import {
   ViewersSection,
   CommentsSection,
   AccountsSection,
+  AttendanceSection,
   ServiceReportsSection,
   OfferingsSection,
   OverviewSection,
@@ -25,6 +26,7 @@ import {
   type AccountRow,
   type ReportRow,
   type OfferingRow,
+  type CheckInRow,
 } from "./types";
 import { StatCard } from "./Primitives";
 
@@ -63,6 +65,9 @@ export function DashboardBody() {
   const [offerSubmitting, setOfferSubmitting] = useState(false);
   const [offerError, setOfferError] = useState<string | null>(null);
   const [offerSuccess, setOfferSuccess] = useState(false);
+
+  // Attendance state
+  const [attendanceDate, setAttendanceDate] = useState(todayIso());
 
   // -- Queries -------------------------------------------------------------
   // Each query is independent so a single failure doesn't block the rest.
@@ -163,6 +168,19 @@ export function DashboardBody() {
     },
   });
 
+  const checkInsQuery = useQuery({
+    queryKey: [...QUERY_KEYS.checkins, attendanceDate],
+    enabled: isSupabaseConfigured,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("check_ins")
+        .select("id, member_id, service_date, checked_in_at, method, checked_in_by, latitude, longitude")
+        .eq("service_date", attendanceDate);
+      if (error) throw new Error(error.message);
+      return (data ?? []) as CheckInRow[];
+    },
+  });
+
   const reportsQuery = useQuery({
     queryKey: QUERY_KEYS.reports,
     enabled: isSupabaseConfigured,
@@ -207,6 +225,31 @@ export function DashboardBody() {
     }
     queryClient.invalidateQueries({ queryKey: QUERY_KEYS.comments });
     queryClient.invalidateQueries({ queryKey: QUERY_KEYS.stats });
+  };
+
+  const handleMarkPresent = async (profileId: string) => {
+    if (!isSupabaseConfigured || !user) return;
+    const { error } = await supabase.from("check_ins").insert({
+      member_id: profileId,
+      service_date: attendanceDate,
+      method: "manual",
+      checked_in_by: user.id,
+    });
+    if (error) {
+      console.error("Failed to mark present:", error.message);
+      return;
+    }
+    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.checkins });
+  };
+
+  const handleUndoCheckIn = async (checkInId: string) => {
+    if (!isSupabaseConfigured) return;
+    const { error } = await supabase.from("check_ins").delete().eq("id", checkInId);
+    if (error) {
+      console.error("Failed to undo check-in:", error.message);
+      return;
+    }
+    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.checkins });
   };
 
   const handleUploadReport = async (e: React.FormEvent) => {
@@ -433,7 +476,30 @@ export function DashboardBody() {
         </div>
       </section>
 
-      {/* 6. Service Reports (any admin) */}
+      {/* 6. Attendance */}
+      <section id="attendance" aria-labelledby="attendance-heading" className="scroll-mt-32">
+        <h2 id="attendance-heading" className="mb-3 font-display text-xs font-bold tracking-wide uppercase text-muted-foreground scroll-mt-24">
+          Attendance
+        </h2>
+        <div className="rounded-3xl border border-border bg-card p-6">
+          <AttendanceSection
+            date={attendanceDate}
+            onDateChange={setAttendanceDate}
+            profiles={accountsQuery.data ?? []}
+            profilesLoading={accountsQuery.isLoading}
+            profilesIsError={accountsQuery.isError}
+            profilesError={errMsg(accountsQuery.error)}
+            checkIns={checkInsQuery.data ?? []}
+            checkInsLoading={checkInsQuery.isLoading}
+            checkInsIsError={checkInsQuery.isError}
+            checkInsError={errMsg(checkInsQuery.error)}
+            onMarkPresent={handleMarkPresent}
+            onUndo={handleUndoCheckIn}
+          />
+        </div>
+      </section>
+
+      {/* 7. Service Reports (any admin) */}
       <section id="reports" aria-labelledby="reports-heading" className="scroll-mt-32">
         <h2 id="reports-heading" className="mb-3 font-display text-xs font-bold tracking-wide uppercase text-muted-foreground scroll-mt-24">
           Service reports
@@ -471,7 +537,7 @@ export function DashboardBody() {
         </div>
       </section>
 
-      {/* 7. Offerings — pastor only. The render and the query are both gated
+      {/* 8. Offerings — pastor only. The render and the query are both gated
           on isPastor, so a non-pastor admin never sees this section or any
           of the financial data behind it. */}
       {isPastor ? (

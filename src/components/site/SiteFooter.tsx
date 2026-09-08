@@ -37,6 +37,7 @@ const columns = [
       { label: "Prayer of Salvation", to: "/salvation" as const },
       { label: "Prayer Request", to: "/prayer-request" as const },
       { label: "Become a Member", to: "/membership" as const },
+      { label: "Check In", to: "/checkin" as const },
       { label: "Upcoming Events", to: "/events" as const },
       { label: "Blog", to: "/blog" as const },
     ],

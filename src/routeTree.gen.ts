@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as BooksRouteImport } from './routes/books'
+import { Route as CheckinRouteImport } from './routes/checkin'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as GiveRouteImport } from './routes/give'
@@ -42,6 +43,11 @@ const AboutRoute = AboutRouteImport.update({
 const BooksRoute = BooksRouteImport.update({
   id: '/books',
   path: '/books',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckinRoute = CheckinRouteImport.update({
+  id: '/checkin',
+  path: '/checkin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -129,6 +135,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/books': typeof BooksRoute
+  '/checkin': typeof CheckinRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
   '/give': typeof GiveRoute
@@ -150,6 +157,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/books': typeof BooksRoute
+  '/checkin': typeof CheckinRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
   '/give': typeof GiveRoute
@@ -172,6 +180,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/books': typeof BooksRoute
+  '/checkin': typeof CheckinRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
   '/give': typeof GiveRoute
@@ -195,6 +204,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/books'
+    | '/checkin'
     | '/contact'
     | '/dashboard'
     | '/give'
@@ -216,6 +226,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/books'
+    | '/checkin'
     | '/contact'
     | '/dashboard'
     | '/give'
@@ -237,6 +248,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/books'
+    | '/checkin'
     | '/contact'
     | '/dashboard'
     | '/give'
@@ -259,6 +271,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   BooksRoute: typeof BooksRoute
+  CheckinRoute: typeof CheckinRoute
   ContactRoute: typeof ContactRoute
   DashboardRoute: typeof DashboardRoute
   GiveRoute: typeof GiveRoute
@@ -298,6 +311,13 @@ declare module '@tanstack/react-router' {
       path: '/books'
       fullPath: '/books'
       preLoaderRoute: typeof BooksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkin': {
+      id: '/checkin'
+      path: '/checkin'
+      fullPath: '/checkin'
+      preLoaderRoute: typeof CheckinRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -419,6 +439,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   BooksRoute: BooksRoute,
+  CheckinRoute: CheckinRoute,
   ContactRoute: ContactRoute,
   DashboardRoute: DashboardRoute,
   GiveRoute: GiveRoute,

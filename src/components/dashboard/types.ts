@@ -67,3 +67,14 @@ export type OfferingRow = {
   created_at: string;
   profiles: { full_name: string | null } | null;
 };
+
+export type CheckInRow = {
+  id: string;
+  member_id: string;
+  service_date: string;
+  checked_in_at: string;
+  method: "gps" | "manual";
+  checked_in_by: string | null;
+  latitude: number | null;
+  longitude: number | null;
+};

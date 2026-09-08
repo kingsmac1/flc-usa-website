@@ -1,4 +1,5 @@
 export { MembersSection } from "./MembersSection";
+export { AttendanceSection } from "./AttendanceSection";
 export { ViewersSection } from "./ViewersSection";
 export { CommentsSection } from "./CommentsSection";
 export { AccountsSection } from "./AccountsSection";
