@@ -2,7 +2,7 @@
 
 backend:
   name: github
-  repo: OWNER/flc-usa-website
+  repo: kingsmac1/flc-usa-website
   branch: main
   base_url: https://sveltia-cms-auth.emkaydigitals.workers.dev
 
