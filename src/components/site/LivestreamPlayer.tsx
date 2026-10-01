@@ -1,20 +1,21 @@
 import { Play, Radio } from "lucide-react";
 import { PLACEHOLDER } from "@/data/site";
-import { nextUpcomingService } from "@/data/events";
 
 export type LivestreamPlayerProps = {
   /** Set by the YouTube live-status check. */
   isLive?: boolean;
   videoId?: string | null;
   title?: string | undefined;
+  /** The next upcoming service/event, computed by the caller from its loader data. */
+  service: { target: Date; title: string; type: string };
 };
 
 export function LivestreamPlayer({
   isLive = false,
   videoId = null,
   title,
+  service,
 }: LivestreamPlayerProps) {
-  const service = nextUpcomingService();
   // When the YouTube API gives us a real title, prefer it; otherwise mirror
   // the next event/service that the EventCountdown below is counting to.
   const displayTitle = title ?? service.title;

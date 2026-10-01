@@ -7,6 +7,8 @@ import { isSupabaseConfigured, supabase } from "@/lib/supabase";
 import { checkLocation, todayServiceDate, type LocationResult } from "@/lib/checkin";
 import { AuthForm } from "@/components/site/AuthForm";
 import { PillButton, Section, SectionHeading } from "@/components/site/ui";
+import { SuccessModal } from "@/components/site/SuccessModal";
+import { notifyFormSubmission } from "@/lib/forms";
 
 const title = "Check In | Fountain of Life Church USA";
 const description = "Check yourself in for service at Fountain of Life Church USA when you arrive.";
@@ -66,7 +68,11 @@ function CheckInPage() {
               <AuthForm />
             </>
           ) : (
-            <CheckInPanel userId={user.id} />
+            <CheckInPanel
+              userId={user.id}
+              userEmail={user.email ?? ""}
+              userName={(user.user_metadata?.["full_name"] as string | undefined) ?? ""}
+            />
           )}
 
           {!loading && isSupabaseConfigured ? (
@@ -80,7 +86,15 @@ function CheckInPage() {
   );
 }
 
-function CheckInPanel({ userId }: { userId: string }) {
+function CheckInPanel({
+  userId,
+  userEmail,
+  userName,
+}: {
+  userId: string;
+  userEmail: string;
+  userName: string;
+}) {
   const queryClient = useQueryClient();
   const queryKey = ["checkin-today", userId] as const;
 
@@ -101,6 +115,7 @@ function CheckInPanel({ userId }: { userId: string }) {
   const [checking, setChecking] = useState(false);
   const [locationResult, setLocationResult] = useState<LocationResult | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const handleCheckIn = async () => {
     setSubmitError(null);
@@ -129,6 +144,18 @@ function CheckInPanel({ userId }: { userId: string }) {
       return;
     }
 
+    if (userEmail) {
+      void notifyFormSubmission({
+        formName: "service check-in",
+        fields: [],
+        submitterEmail: userEmail,
+        notifyOwner: false,
+        templateKey: "checkin_confirmation",
+        variables: { name: userName || "there" },
+      });
+    }
+    setShowSuccess(true);
+
     queryClient.invalidateQueries({ queryKey });
   };
 
@@ -151,15 +178,23 @@ function CheckInPanel({ userId }: { userId: string }) {
 
   if (todayQuery.data) {
     return (
-      <div className="flex flex-col items-center gap-3">
-        <div className="grid size-14 place-items-center rounded-full border border-accent/40 bg-accent/10 text-accent">
-          <CheckCircle2 className="size-7" aria-hidden="true" />
+      <>
+        <div className="flex flex-col items-center gap-3">
+          <div className="grid size-14 place-items-center rounded-full border border-accent/40 bg-accent/10 text-accent">
+            <CheckCircle2 className="size-7" aria-hidden="true" />
+          </div>
+          <h2 className="font-display text-2xl font-bold">You're checked in for today ✓</h2>
+          <p className="text-sm text-muted-foreground">
+            Checked in at {formatTime(todayQuery.data.checked_in_at)}
+          </p>
         </div>
-        <h2 className="font-display text-2xl font-bold">You're checked in for today ✓</h2>
-        <p className="text-sm text-muted-foreground">
-          Checked in at {formatTime(todayQuery.data.checked_in_at)}
-        </p>
-      </div>
+        <SuccessModal
+          open={showSuccess}
+          onOpenChange={setShowSuccess}
+          title="You're checked in ✓"
+          message="Thanks for being here today!"
+        />
+      </>
     );
   }
 

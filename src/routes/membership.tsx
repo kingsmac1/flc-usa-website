@@ -15,6 +15,7 @@ import {
 import { PillButton, Section, SectionHeading } from "@/components/site/ui";
 import { CtaBand } from "@/components/site/CtaBand";
 import { isSupabaseConfigured, supabase } from "@/lib/supabase";
+import { notifyFormSubmission } from "@/lib/forms";
 
 const title = "Become a Member | Fountain of Life Church USA";
 const description =
@@ -203,6 +204,23 @@ function MembershipPage() {
       setError(supabaseError.message ?? "Something went wrong. Please try again.");
       return;
     }
+
+    void notifyFormSubmission({
+      formName: "membership application",
+      fields: [
+        { label: "Full name", value: fullName.trim() },
+        { label: "Email", value: email.trim() },
+        { label: "Phone", value: phone.trim() },
+        { label: "Preferred contact", value: preferredContact },
+        { label: "Visitor status", value: visitorStatus },
+        { label: "Baptized", value: baptized },
+        { label: "Ministry interests", value: [...ministryInterests].join(", ") },
+        { label: "Notes", value: notes.trim() },
+      ],
+      submitterEmail: email.trim(),
+      templateKey: "membership_confirmation",
+      variables: { name: fullName.trim() },
+    });
 
     setSent(true);
     window.scrollTo({ top: 0, behavior: "smooth" });

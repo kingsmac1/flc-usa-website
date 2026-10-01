@@ -16,9 +16,18 @@ dist-ssr
 .nitro
 *.local
 
+# Secrets — was tracked in git before (with only the public anon key); now
+# holds a Supabase service-role key and a Resend API key too, which must
+# never be committed. Set these as Cloudflare Pages environment variables
+# for production instead.
+.env
+
 # Wrangler / Cloudflare
 .wrangler/
 .dev.vars
+
+# Supabase CLI local cache
+supabase/.temp/
 
 # Editor directories and files
 .vscode/*

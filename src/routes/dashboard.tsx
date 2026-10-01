@@ -9,12 +9,29 @@ import { DashboardBody } from "@/components/dashboard/DashboardBody";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { DashboardTopbar } from "@/components/dashboard/DashboardTopbar";
 import { DashboardMobileNav } from "@/components/dashboard/DashboardMobileNav";
-import { QUERY_KEYS } from "@/components/dashboard/shared";
+import {
+  DASHBOARD_SECTIONS,
+  DEFAULT_DASHBOARD_SECTION,
+  QUERY_KEYS,
+  type DashboardSection,
+} from "@/components/dashboard/shared";
 
 const title = "Dashboard | Fountain of Life Church USA";
 const description = "Internal admin dashboard for Fountain of Life Church USA staff.";
 
+// `section` is typed optional here (even though a value is always read with
+// a fallback below) so a plain `<Link to="/dashboard">` elsewhere in the
+// app — e.g. the site header's nav — doesn't have to specify one.
+type DashboardSearch = { section?: DashboardSection };
+
 export const Route = createFileRoute("/dashboard")({
+  validateSearch: (search: Record<string, unknown>): DashboardSearch => {
+    const raw = typeof search["section"] === "string" ? search["section"] : "";
+    const section = (DASHBOARD_SECTIONS as readonly string[]).includes(raw)
+      ? (raw as DashboardSection)
+      : undefined;
+    return section ? { section } : {};
+  },
   head: () => ({
     meta: [
       { title },
@@ -33,6 +50,7 @@ export const Route = createFileRoute("/dashboard")({
 export function DashboardPage() {
   const { user, loading, isAdmin, isPastor, signOut } = useAuth();
   const queryClient = useQueryClient();
+  const { section = DEFAULT_DASHBOARD_SECTION } = Route.useSearch();
 
   if (loading || !isSupabaseConfigured) {
     return (
@@ -110,6 +128,7 @@ export function DashboardPage() {
       <DashboardSidebar
         isPastor={isPastor}
         signOut={() => void signOut()}
+        activeSection={section}
       />
       <div className="flex min-h-screen min-w-0 flex-1 flex-col">
         <DashboardTopbar
@@ -121,10 +140,10 @@ export function DashboardPage() {
           onSignOut={() => void signOut()}
         />
         <main className="min-w-0 flex-1 overflow-x-hidden px-3 py-6 pb-24 sm:px-6 sm:py-8 sm:pb-8 lg:px-8 lg:py-10">
-          <DashboardBody />
+          <DashboardBody section={section} />
         </main>
       </div>
-      <DashboardMobileNav isPastor={isPastor} />
+      <DashboardMobileNav isPastor={isPastor} activeSection={section} />
     </div>
   );
 }

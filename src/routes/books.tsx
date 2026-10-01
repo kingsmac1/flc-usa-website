@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { ExternalLink } from "lucide-react";
 import { Section, SectionHeading } from "@/components/site/ui";
-import { BOOKS, BOOK_CATEGORIES } from "@/data/books";
+import { getBooks, BOOK_CATEGORIES } from "@/data/books";
 import { cn } from "@/lib/utils";
 import { CtaBand } from "@/components/site/CtaBand";
 
@@ -11,6 +11,7 @@ const description =
   "Browse books, devotionals and study guides from the ministry of Fountain of Life Church USA.";
 
 export const Route = createFileRoute("/books")({
+  loader: async () => ({ books: await getBooks() }),
   head: () => ({
     meta: [
       { title },
@@ -29,11 +30,12 @@ export const Route = createFileRoute("/books")({
 });
 
 function BooksPage() {
+  const { books } = Route.useLoaderData();
   const [category, setCategory] = useState<string>("All");
 
   const visible = useMemo(
-    () => (category === "All" ? BOOKS : BOOKS.filter((b) => b.category === category)),
-    [category],
+    () => (category === "All" ? books : books.filter((b) => b.category === category)),
+    [books, category],
   );
 
   return (

@@ -3,6 +3,9 @@ import { useState } from "react";
 import { BookOpen, Sparkles } from "lucide-react";
 import { PillButton, PillLink, Section, SectionHeading } from "@/components/site/ui";
 import { SITE } from "@/data/site";
+import { isSupabaseConfigured, supabase } from "@/lib/supabase";
+import { SuccessModal } from "@/components/site/SuccessModal";
+import { notifyFormSubmission } from "@/lib/forms";
 
 const title = "Prayer of Salvation | Fountain of Life Church USA";
 const description =
@@ -31,6 +34,54 @@ const fieldClass =
 
 function SalvationPage() {
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    if (!isSupabaseConfigured) {
+      setError("Sorry, this can't be submitted right now — please email us directly.");
+      return;
+    }
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    const name = String(data.get("name") ?? "").trim();
+    const email = String(data.get("email") ?? "").trim();
+    const phone = String(data.get("phone") ?? "").trim();
+    const location = String(data.get("location") ?? "").trim();
+    const decision = String(data.get("decision") ?? "I gave my life to Christ for the first time");
+    setSubmitting(true);
+    const { error: supabaseError } = await supabase.from("salvation_decisions").insert({
+      name,
+      email,
+      phone: phone || null,
+      location: location || null,
+      decision,
+    });
+    setSubmitting(false);
+    if (supabaseError) {
+      setError("Something went wrong sending your decision. Please try again.");
+      return;
+    }
+    void notifyFormSubmission({
+      formName: "salvation decision",
+      fields: [
+        { label: "Name", value: name },
+        { label: "Email", value: email },
+        { label: "Phone", value: phone },
+        { label: "Location", value: location },
+        { label: "Decision", value: decision },
+      ],
+      submitterEmail: email,
+      templateKey: "salvation_confirmation",
+      variables: { name },
+    });
+    form.reset();
+    setSent(true);
+    setShowSuccess(true);
+  }
 
   return (
     <>
@@ -82,10 +133,7 @@ function SalvationPage() {
 
           <form
             className="h-fit rounded-3xl border border-border bg-card p-7"
-            onSubmit={(e) => {
-              e.preventDefault();
-              setSent(true);
-            }}
+            onSubmit={handleSubmit}
             aria-label="Salvation decision form"
           >
             <h2 className="font-display text-xl font-bold">I prayed this prayer</h2>
@@ -116,17 +164,29 @@ function SalvationPage() {
                 <option>I would like to speak with a pastor</option>
               </select>
             </label>
-            <PillButton type="submit" variant="accent" className="mt-6 w-full">
-              Send my decision
+            <PillButton type="submit" variant="accent" className="mt-6 w-full" disabled={submitting}>
+              {submitting ? "Sending…" : "Send my decision"}
             </PillButton>
             <p aria-live="polite" className="mt-3 text-xs text-muted-foreground">
               {sent
                 ? "Welcome to the family! Someone from our team will reach out to you shortly."
                 : `Questions? Email ${SITE.email}.`}
             </p>
+            {error && (
+              <p role="alert" className="mt-2 text-xs text-destructive">
+                {error}
+              </p>
+            )}
           </form>
         </div>
       </Section>
+
+      <SuccessModal
+        open={showSuccess}
+        onOpenChange={setShowSuccess}
+        title="Welcome to the family!"
+        message="Someone from our team will reach out to you shortly."
+      />
     </>
   );
 }

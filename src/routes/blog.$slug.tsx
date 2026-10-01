@@ -1,6 +1,6 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { PillLink, Section } from "@/components/site/ui";
-import { getPost, adjacentPosts, getRelatedPosts } from "@/data/blog";
+import { getPost, getPosts, adjacentPosts, getRelatedPosts } from "@/data/blog";
 import { PostNavigation } from "@/components/site/PostNavigation";
 import { RelatedPosts } from "@/components/site/RelatedPosts";
 import { Reveal, HeroReveal } from "@/components/site/motion";
@@ -9,10 +9,10 @@ import { ShareButtons } from "@/components/site/ShareButtons";
 import { SITE } from "@/data/site";
 
 export const Route = createFileRoute("/blog/$slug")({
-  loader: ({ params }) => {
-    const post = getPost(params.slug);
+  loader: async ({ params }) => {
+    const [post, posts] = await Promise.all([getPost(params.slug), getPosts()]);
     if (!post) throw notFound();
-    return { post };
+    return { post, posts };
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
@@ -54,9 +54,9 @@ function PostNotFound() {
 }
 
 function BlogPostPage() {
-  const { post } = Route.useLoaderData();
-  const { prev, next } = adjacentPosts(post.slug);
-  const related = getRelatedPosts(post.slug, 3);
+  const { post, posts } = Route.useLoaderData();
+  const { prev, next } = adjacentPosts(posts, post.slug);
+  const related = getRelatedPosts(posts, post.slug, 3);
 
   const relatedItems = related.map((p) => ({
     slug: p.slug,

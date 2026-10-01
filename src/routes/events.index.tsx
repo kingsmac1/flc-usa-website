@@ -1,16 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CalendarDays, MapPin } from "lucide-react";
 import { Section, SectionHeading } from "@/components/site/ui";
-import { EVENTS, formatEventDate } from "@/data/events";
+import { getEvents, formatEventDate, nextUpcomingService } from "@/data/events";
 import { Reveal } from "@/components/site/motion";
 import { CtaBand } from "@/components/site/CtaBand";
-import { EventCountdown, NEXT_SERVICE } from "@/components/site/EventCountdown";
+import { EventCountdown } from "@/components/site/EventCountdown";
 
 const title = "Upcoming Events | Fountain of Life Church USA";
 const description =
   "Conferences, prayer nights and gatherings coming up at Fountain of Life Church USA in Indianapolis.";
 
 export const Route = createFileRoute("/events/")({
+  loader: async () => ({ events: await getEvents() }),
   head: () => ({
     meta: [
       { title },
@@ -29,7 +30,8 @@ export const Route = createFileRoute("/events/")({
 });
 
 function EventsIndex() {
-  const sorted = [...EVENTS].sort((a, b) => (a.start < b.start ? -1 : 1));
+  const { events } = Route.useLoaderData();
+  const sorted = [...events].sort((a, b) => (a.start < b.start ? -1 : 1));
 
   return (
     <>
@@ -42,7 +44,7 @@ function EventsIndex() {
         />
       </Section>
 
-      <EventCountdown {...NEXT_SERVICE} />
+      <EventCountdown {...nextUpcomingService(events)} />
 
       <Section tone="cream">
         <ul className="grid gap-6 md:grid-cols-2">

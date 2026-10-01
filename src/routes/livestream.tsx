@@ -7,17 +7,19 @@ import { isSupabaseConfigured, supabase } from "@/lib/supabase";
 import { BiblePanel } from "@/components/site/BiblePanel";
 import { CtaBand } from "@/components/site/CtaBand";
 import { CommentFeed } from "@/components/site/CommentFeed";
-import { EventCountdown, NEXT_SERVICE } from "@/components/site/EventCountdown";
+import { EventCountdown } from "@/components/site/EventCountdown";
 import { GiveWidget } from "@/components/site/GiveWidget";
 import { LivestreamPlayer } from "@/components/site/LivestreamPlayer";
 import { Section, SectionHeading } from "@/components/site/ui";
 import { getLiveStatus } from "@/lib/youtube.functions";
+import { getEvents, nextUpcomingService } from "@/data/events";
 
 const title = "Watch Live | Fountain of Life Church USA";
 const description =
   "Join Fountain of Life Church USA live online. Follow the scripture alongside the stream, give, and worship with the family from anywhere.";
 
 export const Route = createFileRoute("/livestream")({
+  loader: async () => ({ events: await getEvents() }),
   head: () => ({
     meta: [
       { title },
@@ -35,6 +37,8 @@ export const Route = createFileRoute("/livestream")({
 });
 
 function LivestreamPage() {
+  const { events } = Route.useLoaderData();
+  const service = nextUpcomingService(events);
   const fetchStatus = useServerFn(getLiveStatus);
   const { data } = useQuery({
     queryKey: ["youtube-live"],
@@ -76,6 +80,7 @@ function LivestreamPage() {
             // otherwise the YouTube helper's "offline" placeholder would
             // override the next-event title we just computed locally.
             title={data?.isLive ? data.title : undefined}
+            service={service}
           />
           <BiblePanel />
         </div>
@@ -87,7 +92,7 @@ function LivestreamPage() {
 
       <CtaBand items={["salvation", "prayer"]} tone="white" />
 
-      <EventCountdown {...NEXT_SERVICE} />
+      <EventCountdown {...service} />
     </>
   );
 }

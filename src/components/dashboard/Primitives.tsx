@@ -70,12 +70,13 @@ export function Badge({
   tone = "light",
 }: {
   children: React.ReactNode;
-  tone?: "light" | "accent" | "gold";
+  tone?: "light" | "accent" | "gold" | "danger";
 }) {
   const toneClasses = {
     light: "bg-secondary text-foreground",
     accent: "bg-accent/15 text-accent-foreground",
     gold: "bg-gold/15 text-gold-foreground",
+    danger: "border border-destructive/30 bg-destructive/10 text-destructive",
   };
   return (
     <span className={"inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold " + toneClasses[tone]}>

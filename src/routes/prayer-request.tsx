@@ -3,6 +3,9 @@ import { useState } from "react";
 import { HeartHandshake } from "lucide-react";
 import { PillButton, Section, SectionHeading } from "@/components/site/ui";
 import { SITE } from "@/data/site";
+import { isSupabaseConfigured, supabase } from "@/lib/supabase";
+import { SuccessModal } from "@/components/site/SuccessModal";
+import { notifyFormSubmission } from "@/lib/forms";
 
 const title = "Prayer Request | Fountain of Life Church USA";
 const description =
@@ -42,14 +45,62 @@ export const PRAYER_CATEGORIES = [
 
 export function PrayerRequestForm({ compact = false }: { compact?: boolean }) {
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    if (!isSupabaseConfigured) {
+      setError("Sorry, requests can't be submitted right now — please email us directly.");
+      return;
+    }
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    const name = String(data.get("name") ?? "").trim();
+    const email = String(data.get("email") ?? "").trim();
+    const phone = String(data.get("phone") ?? "").trim();
+    const category = String(data.get("category") ?? PRAYER_CATEGORIES[0]);
+    const request = String(data.get("request") ?? "").trim();
+    const confidential = data.get("confidential") === "on";
+    setSubmitting(true);
+    const { error: supabaseError } = await supabase.from("prayer_requests").insert({
+      name,
+      email,
+      phone: phone || null,
+      category,
+      request,
+      confidential,
+    });
+    setSubmitting(false);
+    if (supabaseError) {
+      setError("Something went wrong submitting your request. Please try again.");
+      return;
+    }
+    void notifyFormSubmission({
+      formName: "prayer request",
+      fields: [
+        { label: "Name", value: name },
+        { label: "Email", value: email },
+        { label: "Phone", value: phone },
+        { label: "Category", value: category },
+        { label: "Request", value: request },
+        { label: "Confidential", value: confidential ? "Yes" : "No" },
+      ],
+      submitterEmail: email,
+      templateKey: "prayer_confirmation",
+      variables: { name },
+    });
+    form.reset();
+    setSent(true);
+    setShowSuccess(true);
+  }
 
   return (
     <form
       className={compact ? "" : "rounded-3xl border border-border bg-card p-7"}
-      onSubmit={(e) => {
-        e.preventDefault();
-        setSent(true);
-      }}
+      onSubmit={handleSubmit}
       aria-label="Prayer request form"
     >
       <div className="grid gap-5 sm:grid-cols-2">
@@ -82,14 +133,26 @@ export function PrayerRequestForm({ compact = false }: { compact?: boolean }) {
         <input type="checkbox" name="confidential" className="size-4 rounded border-border" />
         Please keep my request confidential to the pastoral team
       </label>
-      <PillButton type="submit" className="mt-6">
-        Submit prayer request
+      <PillButton type="submit" className="mt-6" disabled={submitting}>
+        {submitting ? "Sending…" : "Submit prayer request"}
       </PillButton>
       <p aria-live="polite" className="mt-3 text-xs text-muted-foreground">
         {sent
           ? "Thank you — your request has been received and our intercessors will pray with you."
           : `You can also email us directly at ${SITE.email}.`}
       </p>
+      {error && (
+        <p role="alert" className="mt-2 text-xs text-destructive">
+          {error}
+        </p>
+      )}
+
+      <SuccessModal
+        open={showSuccess}
+        onOpenChange={setShowSuccess}
+        title="Prayer request received"
+        message="Thank you — our intercessors will pray with you."
+      />
     </form>
   );
 }

@@ -1,41 +1,11 @@
 /**
  * UPCOMING EVENTS
  * ---------------
- * Real events live as individual Markdown files in content/events/ (one
- * file per event), managed either by hand or through the Sveltia CMS
- * "Events" collection at /admin. This file loads them all at build time.
- *
- * To add an event by hand: copy an existing content/events/*.md file and
- * edit it.
- *   start/end    ISO datetime, e.g. "2026-09-12T18:00:00"
- *   flyer        A direct image URL (or an uploaded path once media
- *                storage is wired up)
+ * Real events live in the `cms_events` Supabase table, managed from the
+ * in-dashboard CMS. This file fetches them on each request (via a route
+ * loader) instead of bundling them at build time.
  */
-import { load as parseYaml } from "js-yaml";
-
-function frontmatter(raw: string): Record<string, unknown> {
-  const match = /^---\r?\n([\s\S]*?)\r?\n---/.exec(raw.trim());
-  if (!match) return {};
-  return (parseYaml(match[1] ?? "") as Record<string, unknown>) ?? {};
-}
-
-/**
- * Normalizes "details" — a plain multi-line text field in the CMS (one
- * point per line) rather than a list widget; also accepts the older array
- * shape for backward compatibility.
- */
-function normalizeDetails(value: unknown): string[] {
-  if (Array.isArray(value)) {
-    return value.map((item) => String(item ?? "")).filter(Boolean);
-  }
-  if (typeof value === "string") {
-    return value
-      .split(/\r?\n/)
-      .map((l) => l.trim())
-      .filter(Boolean);
-  }
-  return [];
-}
+import { supabase } from "@/lib/supabase";
 
 export type ChurchEvent = {
   slug: string;
@@ -50,19 +20,44 @@ export type ChurchEvent = {
   registration?: boolean;
 };
 
-const eventFiles = import.meta.glob("/content/events/*.md", {
-  query: "?raw",
-  import: "default",
-  eager: true,
-}) as Record<string, string>;
+type EventDbRow = {
+  slug: string;
+  title: string;
+  type: string;
+  start: string;
+  end: string | null;
+  location: string;
+  flyer_url: string;
+  summary: string;
+  details: string[] | null;
+  registration: boolean;
+};
 
-export const EVENTS: ChurchEvent[] = Object.values(eventFiles).map((raw) => {
-  const data = frontmatter(raw) as Record<string, unknown>;
-  return { ...data, details: normalizeDetails(data.details) } as ChurchEvent;
-});
+function mapEvent(row: EventDbRow): ChurchEvent {
+  return {
+    slug: row.slug,
+    title: row.title,
+    type: row.type,
+    start: row.start,
+    ...(row.end ? { end: row.end } : {}),
+    location: row.location,
+    flyer: row.flyer_url,
+    summary: row.summary,
+    details: row.details ?? [],
+    registration: row.registration,
+  };
+}
 
-export function getEvent(slug: string) {
-  return EVENTS.find((e) => e.slug === slug);
+export async function getEvents(): Promise<ChurchEvent[]> {
+  const { data, error } = await supabase.from("cms_events").select("*").order("start");
+  if (error) throw new Error(error.message);
+  return (data ?? []).map(mapEvent);
+}
+
+export async function getEvent(slug: string): Promise<ChurchEvent | undefined> {
+  const { data, error } = await supabase.from("cms_events").select("*").eq("slug", slug).maybeSingle();
+  if (error) throw new Error(error.message);
+  return data ? mapEvent(data) : undefined;
 }
 
 export function formatEventDate(iso: string) {
@@ -87,17 +82,18 @@ function nextSundayAt(hour: number) {
 }
 
 /**
- * Determines the next upcoming service/event to count down to.
+ * Determines the next upcoming service/event to count down to, given the
+ * full list of events (fetched by the caller's route loader).
  *
  * Looks at all future events and picks the closest one — but only up to
  * the next Sunday Celebration Service. If no event falls before the next
  * Sunday, it falls back to the normal Sunday Celebration Service at 10:00 AM.
  */
-export function nextUpcomingService(): { target: Date; title: string; type: string } {
+export function nextUpcomingService(events: ChurchEvent[]): { target: Date; title: string; type: string } {
   const nextServiceDate = nextSundayAt(10);
   const now = new Date();
 
-  const upcomingEvents = EVENTS
+  const upcomingEvents = events
     .filter((e) => new Date(e.start) > now)
     .sort((a, b) => new Date(a.start).valueOf() - new Date(b.start).valueOf());
 

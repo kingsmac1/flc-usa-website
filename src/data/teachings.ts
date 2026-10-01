@@ -1,23 +1,16 @@
 /**
  * TEACHINGS LIBRARY
  * -----------------
- * Real teaching series live as individual Markdown files in
- * content/teachings/ (one file per series, each containing a list of
- * video items), managed either by hand or through the Sveltia CMS
- * "Teachings" collection at /admin. This file loads them all at build time.
+ * Real teaching series live in the `cms_teachings` (+ `cms_teaching_items`)
+ * Supabase tables, managed from the in-dashboard CMS. This file fetches
+ * them on each request (via a route loader) instead of bundling them at
+ * build time.
  *
- * To add a series by hand: copy an existing content/teachings/*.md file
- * and edit it. Every teaching is a YouTube video — paste any YouTube link
- * format (watch?v=, youtu.be/, /live/) into the youtube field.
+ * Every teaching is a YouTube video — paste any YouTube link format
+ * (watch?v=, youtu.be/, /live/) into the youtube field.
  */
+import { supabase } from "@/lib/supabase";
 import { PLACEHOLDER } from "./site";
-import { load as parseYaml } from "js-yaml";
-
-function frontmatter(raw: string): Record<string, unknown> {
-  const match = /^---\r?\n([\s\S]*?)\r?\n---/.exec(raw.trim());
-  if (!match) return {};
-  return (parseYaml(match[1] ?? "") as Record<string, unknown>) ?? {};
-}
 
 export type Teaching = {
   title: string;
@@ -52,23 +45,69 @@ export function youtubeThumb(url: string) {
   return id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : DEFAULT_THUMB;
 }
 
-const teachingFiles = import.meta.glob("/content/teachings/*.md", {
-  query: "?raw",
-  import: "default",
-  eager: true,
-}) as Record<string, string>;
+type TeachingItemRow = {
+  title: string;
+  speaker: string;
+  date: string;
+  duration: string;
+  youtube: string;
+  image_url: string | null;
+  summary: string | null;
+};
 
-export const SERIES: Series[] = Object.values(teachingFiles).map(
-  (raw) => frontmatter(raw) as unknown as Series,
-);
+function mapSeries(row: {
+  slug: string;
+  title: string;
+  summary: string;
+  image_url: string;
+  cms_teaching_items: TeachingItemRow[];
+}): Series {
+  return {
+    slug: row.slug,
+    title: row.title,
+    summary: row.summary,
+    image: row.image_url,
+    items: (row.cms_teaching_items ?? []).map((item) => ({
+      title: item.title,
+      speaker: item.speaker,
+      date: item.date,
+      duration: item.duration,
+      youtube: item.youtube,
+      ...(item.image_url ? { image: item.image_url } : {}),
+      ...(item.summary ? { summary: item.summary } : {}),
+    })),
+  };
+}
 
-export function getSeries(slug: string) {
-  return SERIES.find((s) => s.slug === slug);
+const SERIES_SELECT =
+  "slug, title, summary, image_url, cms_teaching_items(title, speaker, date, duration, youtube, image_url, summary, sort_order)";
+
+export async function getSeriesList(): Promise<Series[]> {
+  const { data, error } = await supabase
+    .from("cms_teachings")
+    .select(SERIES_SELECT)
+    .order("sort_order", { referencedTable: "cms_teaching_items" });
+  if (error) throw new Error(error.message);
+  return ((data ?? []) as unknown as Parameters<typeof mapSeries>[0][]).map(mapSeries);
+}
+
+export async function getSeries(slug: string): Promise<Series | undefined> {
+  const { data, error } = await supabase
+    .from("cms_teachings")
+    .select(SERIES_SELECT)
+    .eq("slug", slug)
+    .order("sort_order", { referencedTable: "cms_teaching_items" })
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  return data ? mapSeries(data as unknown as Parameters<typeof mapSeries>[0]) : undefined;
 }
 
 /** Previous / next teaching series relative to a series (sorted by first item date). */
-export function adjacentSeries(slug: string): { prev?: Series | undefined; next?: Series | undefined } {
-  const sorted = [...SERIES].sort(
+export function adjacentSeries(
+  allSeries: Series[],
+  slug: string,
+): { prev?: Series | undefined; next?: Series | undefined } {
+  const sorted = [...allSeries].sort(
     (a, b) => new Date(b.items[0]?.date ?? "").valueOf() - new Date(a.items[0]?.date ?? "").valueOf(),
   );
   const i = sorted.findIndex((s) => s.slug === slug);
@@ -77,8 +116,8 @@ export function adjacentSeries(slug: string): { prev?: Series | undefined; next?
 }
 
 /** Related teaching series excluding the current one, sorted by first item date descending. */
-export function getRelatedSeries(excludeSlug: string, limit = 3): Series[] {
-  const others = SERIES.filter((s) => s.slug !== excludeSlug);
+export function getRelatedSeries(allSeries: Series[], excludeSlug: string, limit = 3): Series[] {
+  const others = allSeries.filter((s) => s.slug !== excludeSlug);
   const sorted = [...others].sort(
     (a, b) => new Date(b.items[0]?.date ?? "").valueOf() - new Date(a.items[0]?.date ?? "").valueOf(),
   );
