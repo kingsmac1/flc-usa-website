@@ -215,6 +215,20 @@
   animation: flc-overlay-out 0.5s cubic-bezier(0.65, 0, 0.35, 1) both;
 }
 
+/*
+ * Hides the scrollbar on an internally-scrollable element (the dashboard
+ * nav rail/mobile tab bar) while keeping it scrollable — the up/down or
+ * left/right arrow buttons are the visible affordance for more content,
+ * instead of a visible scrollbar.
+ */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 @keyframes success-check-circle {
   0% {
     stroke-dashoffset: 166;
