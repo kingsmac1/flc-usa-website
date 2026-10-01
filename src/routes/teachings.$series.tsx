@@ -1,6 +1,6 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { PillLink, Section } from "@/components/site/ui";
-import { getSeries, youtubeId, adjacentSeries, getRelatedSeries } from "@/data/teachings";
+import { getSeries, getSeriesList, youtubeId, adjacentSeries, getRelatedSeries } from "@/data/teachings";
 import { PostNavigation } from "@/components/site/PostNavigation";
 import { RelatedPosts } from "@/components/site/RelatedPosts";
 import { Reveal, HeroReveal } from "@/components/site/motion";
@@ -9,10 +9,10 @@ import { ShareButtons } from "@/components/site/ShareButtons";
 import { SITE } from "@/data/site";
 
 export const Route = createFileRoute("/teachings/$series")({
-  loader: ({ params }) => {
-    const series = getSeries(params.series);
+  loader: async ({ params }) => {
+    const [series, seriesList] = await Promise.all([getSeries(params.series), getSeriesList()]);
     if (!series) throw notFound();
-    return { series };
+    return { series, seriesList };
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
@@ -52,9 +52,9 @@ function PostNotFound() {
 }
 
 function TeachingsIndex() {
-  const { series } = Route.useLoaderData();
-  const { prev, next } = adjacentSeries(series.slug);
-  const related = getRelatedSeries(series.slug, 3);
+  const { series, seriesList } = Route.useLoaderData();
+  const { prev, next } = adjacentSeries(seriesList, series.slug);
+  const related = getRelatedSeries(seriesList, series.slug, 3);
 
   const navItems = {
     prev: prev ? { slug: prev.slug, title: prev.title, date: prev.items[0]?.date ?? prev.slug } : undefined,

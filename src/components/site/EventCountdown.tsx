@@ -1,25 +1,12 @@
 import { useEffect, useState } from "react";
 import { CalendarClock } from "lucide-react";
 import { PillLink } from "./ui";
-import { nextUpcomingService } from "@/data/events";
 
 export type EventCountdownProps = {
   /** Target datetime for the upcoming service. */
   target: Date;
   title: string;
   type: string;
-};
-
-export const NEXT_SERVICE: EventCountdownProps = {
-  get target() {
-    return nextUpcomingService().target;
-  },
-  get title() {
-    return nextUpcomingService().title;
-  },
-  get type() {
-    return nextUpcomingService().type;
-  },
 };
 
 function diff(target: Date) {

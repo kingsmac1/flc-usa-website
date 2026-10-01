@@ -7,10 +7,13 @@ import { Reveal, HeroReveal } from "@/components/site/motion";
 import { CtaBand } from "@/components/site/CtaBand";
 import { ShareButtons } from "@/components/site/ShareButtons";
 import { SITE } from "@/data/site";
+import { isSupabaseConfigured, supabase } from "@/lib/supabase";
+import { SuccessModal } from "@/components/site/SuccessModal";
+import { notifyFormSubmission } from "@/lib/forms";
 
 export const Route = createFileRoute("/events/$slug")({
-  loader: ({ params }) => {
-    const event = getEvent(params.slug);
+  loader: async ({ params }) => {
+    const event = await getEvent(params.slug);
     if (!event) throw notFound();
     return { event };
   },
@@ -59,6 +62,60 @@ function EventNotFound() {
 function EventDetail() {
   const { event } = Route.useLoaderData();
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    if (!isSupabaseConfigured) {
+      setError("Sorry, registrations can't be submitted right now — please email us directly.");
+      return;
+    }
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    const name = String(data.get("name") ?? "").trim();
+    const email = String(data.get("email") ?? "").trim();
+    const phone = String(data.get("phone") ?? "").trim();
+    const guests = Number(data.get("guests")) || 1;
+    const mode = String(data.get("mode") ?? "In person");
+    const notes = String(data.get("notes") ?? "").trim();
+    setSubmitting(true);
+    const { error: supabaseError } = await supabase.from("event_interest").insert({
+      event_slug: event.slug,
+      event_title: event.title,
+      name,
+      email,
+      phone: phone || null,
+      guests,
+      mode,
+      notes: notes || null,
+    });
+    setSubmitting(false);
+    if (supabaseError) {
+      setError("Something went wrong registering your interest. Please try again.");
+      return;
+    }
+    void notifyFormSubmission({
+      formName: `event interest — ${event.title}`,
+      fields: [
+        { label: "Event", value: event.title },
+        { label: "Name", value: name },
+        { label: "Email", value: email },
+        { label: "Phone", value: phone },
+        { label: "Guests", value: String(guests) },
+        { label: "Attending", value: mode },
+        { label: "Notes", value: notes },
+      ],
+      submitterEmail: email,
+      templateKey: "event_interest_confirmation",
+      variables: { name, event: event.title },
+    });
+    form.reset();
+    setSent(true);
+    setShowSuccess(true);
+  }
 
   return (
     <>
@@ -112,10 +169,7 @@ function EventDetail() {
           <Reveal delay={0.1}>
           <form
             className="h-fit rounded-3xl border border-border bg-card p-7"
-            onSubmit={(e) => {
-              e.preventDefault();
-              setSent(true);
-            }}
+            onSubmit={handleSubmit}
             aria-label={`Interest form for ${event.title}`}
           >
             <h2 className="font-display text-xl font-bold">I'm interested</h2>
@@ -149,20 +203,32 @@ function EventDetail() {
               Anything we should know? (optional)
               <textarea name="notes" rows={4} className={fieldClass} />
             </label>
-            <PillButton type="submit" variant="accent" className="mt-6 w-full">
-              Register my interest
+            <PillButton type="submit" variant="accent" className="mt-6 w-full" disabled={submitting}>
+              {submitting ? "Sending…" : "Register my interest"}
             </PillButton>
             <p aria-live="polite" className="mt-3 text-xs text-muted-foreground">
               {sent
                 ? "Thank you! We've noted your interest and will send you a reminder closer to the date."
                 : "We'll only use your details to contact you about this event."}
             </p>
+            {error && (
+              <p role="alert" className="mt-2 text-xs text-destructive">
+                {error}
+              </p>
+            )}
           </form>
           </Reveal>
         </div>
       </Section>
 
       <CtaBand items={["salvation", "prayer"]} tone="white" />
+
+      <SuccessModal
+        open={showSuccess}
+        onOpenChange={setShowSuccess}
+        title="You're registered!"
+        message="We've noted your interest and will send you a reminder closer to the date."
+      />
     </>
   );
 }

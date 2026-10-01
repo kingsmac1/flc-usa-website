@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Section, SectionHeading } from "@/components/site/ui";
-import { BLOG_POSTS } from "@/data/blog";
+import { getPosts } from "@/data/blog";
 import { Reveal } from "@/components/site/motion";
 import { CtaBand } from "@/components/site/CtaBand";
 
@@ -9,6 +9,7 @@ const description =
   "Articles, teaching notes and church news from Fountain of Life Church USA in Indianapolis.";
 
 export const Route = createFileRoute("/blog/")({
+  loader: async () => ({ posts: await getPosts() }),
   head: () => ({
     meta: [
       { title },
@@ -27,6 +28,7 @@ export const Route = createFileRoute("/blog/")({
 });
 
 function BlogIndex() {
+  const { posts } = Route.useLoaderData();
   return (
     <>
       <Section tone="deep">
@@ -40,7 +42,7 @@ function BlogIndex() {
 
       <Section tone="cream">
         <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {BLOG_POSTS.map((post, i) => (
+          {posts.map((post, i) => (
             <Reveal key={post.slug} delay={i * 0.07}>
               <li className="overflow-hidden rounded-3xl border border-border bg-card">
                 <Link to="/blog/$slug" params={{ slug: post.slug }} className="block">

@@ -4,6 +4,9 @@ import { Mail, MapPin, Phone } from "lucide-react";
 import { PillButton, PillLink, Section, SectionHeading } from "@/components/site/ui";
 import { SITE } from "@/data/site";
 import { CtaBand } from "@/components/site/CtaBand";
+import { isSupabaseConfigured, supabase } from "@/lib/supabase";
+import { SuccessModal } from "@/components/site/SuccessModal";
+import { notifyFormSubmission } from "@/lib/forms";
 
 const title = "Contact Us | Fountain of Life Church USA";
 const description =
@@ -31,6 +34,48 @@ const fieldClass =
 
 function ContactPage() {
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    if (!isSupabaseConfigured) {
+      setError("Sorry, messages can't be sent right now — please email us directly.");
+      return;
+    }
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    const name = String(data.get("name") ?? "").trim();
+    const email = String(data.get("email") ?? "").trim();
+    const message = String(data.get("message") ?? "").trim();
+    setSubmitting(true);
+    const { error: supabaseError } = await supabase.from("contact_messages").insert({
+      name,
+      email,
+      message,
+    });
+    setSubmitting(false);
+    if (supabaseError) {
+      setError("Something went wrong sending your message. Please try again.");
+      return;
+    }
+    void notifyFormSubmission({
+      formName: "contact message",
+      fields: [
+        { label: "Name", value: name },
+        { label: "Email", value: email },
+        { label: "Message", value: message },
+      ],
+      submitterEmail: email,
+      templateKey: "contact_confirmation",
+      variables: { name },
+    });
+    form.reset();
+    setSent(true);
+    setShowSuccess(true);
+  }
 
   return (
     <>
@@ -48,10 +93,7 @@ function ContactPage() {
         <div className="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
           <form
             className="rounded-3xl border border-border bg-card p-7"
-            onSubmit={(e) => {
-              e.preventDefault();
-              setSent(true);
-            }}
+            onSubmit={handleSubmit}
           >
             <h2 className="font-display text-xl font-bold">Send a message</h2>
             <div className="mt-6 grid gap-5 sm:grid-cols-2">
@@ -68,14 +110,19 @@ function ContactPage() {
               Message
               <textarea required name="message" rows={6} className={fieldClass} />
             </label>
-            <PillButton type="submit" className="mt-6">
-              Send message
+            <PillButton type="submit" className="mt-6" disabled={submitting}>
+              {submitting ? "Sending…" : "Send message"}
             </PillButton>
             <p aria-live="polite" className="mt-3 text-xs text-muted-foreground">
               {sent
                 ? "Thanks! Your message has been received — our team will get back to you shortly."
                 : "We usually respond within two business days."}
             </p>
+            {error && (
+              <p role="alert" className="mt-2 text-xs text-destructive">
+                {error}
+              </p>
+            )}
           </form>
 
           <div className="grid gap-6">
@@ -113,6 +160,13 @@ function ContactPage() {
       </Section>
 
       <CtaBand items={["prayer", "give"]} tone="white" />
+
+      <SuccessModal
+        open={showSuccess}
+        onOpenChange={setShowSuccess}
+        title="Message sent!"
+        message="Thanks for reaching out — our team will get back to you shortly."
+      />
     </>
   );
 }

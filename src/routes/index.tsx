@@ -1,18 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { BookOpen, CalendarDays, Library, MapPin, Play, Radio, ShoppingBag, Sunrise } from "lucide-react";
-import { EventCountdown, NEXT_SERVICE, ServiceCountdownCard } from "@/components/site/EventCountdown";
+import { EventCountdown, ServiceCountdownCard } from "@/components/site/EventCountdown";
 import { Card, Eyebrow, PillLink, Section, SectionHeading } from "@/components/site/ui";
 import { LEAD_PASTORS, WELCOME } from "@/data/pastors";
 import { PLACEHOLDER, SITE } from "@/data/site";
 import { CtaBand } from "@/components/site/CtaBand";
 import { Parallax, Reveal, HeroReveal } from "@/components/site/motion";
-import { EVENTS, formatEventDate } from "@/data/events";
+import { getEvents, formatEventDate, nextUpcomingService } from "@/data/events";
 
 const title = "Fountain of Life Church USA | Faith, Worship & Purpose";
 const description =
   "A place of faith, worship and purpose in Indianapolis. Join Fountain of Life Church USA in person or online for services, devotionals and teachings.";
 
 export const Route = createFileRoute("/")({
+  loader: async () => ({ events: await getEvents() }),
   head: () => ({
     meta: [
       { title },
@@ -82,6 +83,8 @@ const offerings = [
 ];
 
 function HomePage() {
+  const { events } = Route.useLoaderData();
+  const nextService = nextUpcomingService(events);
   return (
     <>
       <section className="sticky top-0 z-0 flex h-[100dvh] min-h-[640px] items-center overflow-hidden bg-deep text-deep-foreground">
@@ -128,7 +131,7 @@ function HomePage() {
           </div>
 
           <div className="lg:justify-self-end lg:w-full lg:max-w-sm">
-            <ServiceCountdownCard target={NEXT_SERVICE.target} title={NEXT_SERVICE.title} />
+            <ServiceCountdownCard target={nextService.target} title={nextService.title} />
           </div>
         </div>
         <div className="pointer-events-none absolute inset-x-0 bottom-6 z-10 flex justify-center">
@@ -226,7 +229,7 @@ function HomePage() {
           />
         </Reveal>
         <ul className="mt-10 grid gap-6 md:grid-cols-2">
-          {[...EVENTS]
+          {[...events]
             .sort((a, b) => (a.start < b.start ? -1 : 1))
             .slice(0, 2)
             .map((event, i) => (
@@ -271,7 +274,7 @@ function HomePage() {
         </Reveal>
       </Section>
 
-      <EventCountdown {...NEXT_SERVICE} />
+      <EventCountdown {...nextService} />
 
       <Section tone="white">
         <Reveal>

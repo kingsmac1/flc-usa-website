@@ -1,7 +1,11 @@
 import { Link } from "@tanstack/react-router";
+import { useState } from "react";
 import logo from "@/assets/images/flcusa-logo.png";
 import { FREE_GIFT, SITE } from "@/data/site";
+import { isSupabaseConfigured, supabase } from "@/lib/supabase";
 import { PillButton } from "./ui";
+import { SuccessModal } from "./SuccessModal";
+import { notifyFormSubmission } from "@/lib/forms";
 
 const columns = [
   {
@@ -45,6 +49,36 @@ const columns = [
 ];
 
 export function SiteFooter() {
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "already" | "error">("idle");
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  async function handleNewsletterSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (!isSupabaseConfigured) {
+      setStatus("error");
+      return;
+    }
+    const form = e.currentTarget;
+    const email = String(new FormData(form).get("email") ?? "").trim();
+    if (!email) return;
+    setStatus("sending");
+    const { error } = await supabase.from("newsletter_subscribers").insert({ email });
+    if (error) {
+      // Postgres unique_violation — this email is already subscribed.
+      setStatus(error.code === "23505" ? "already" : "error");
+      return;
+    }
+    void notifyFormSubmission({
+      formName: "newsletter signup",
+      fields: [{ label: "Email", value: email }],
+      submitterEmail: email,
+      templateKey: "newsletter_confirmation",
+    });
+    form.reset();
+    setStatus("sent");
+    setShowSuccess(true);
+  }
+
   return (
     <footer className="bg-deep text-deep-foreground">
       <div className="container-flc grid gap-12 py-16 lg:grid-cols-[1.3fr_2fr]">
@@ -57,7 +91,7 @@ export function SiteFooter() {
 
           <form
             className="mt-6 max-w-sm"
-            onSubmit={(e) => e.preventDefault()}
+            onSubmit={handleNewsletterSubmit}
             aria-label="Newsletter signup"
           >
             <label htmlFor="footer-newsletter" className="text-sm font-semibold">
@@ -66,14 +100,21 @@ export function SiteFooter() {
             <div className="mt-3 flex flex-col gap-2 sm:flex-row">
               <input
                 id="footer-newsletter"
+                name="email"
+                required
                 type="email"
                 placeholder="you@example.com"
                 className="min-h-11 w-full rounded-full border border-deep-foreground/25 bg-deep-foreground/5 px-4 text-sm text-deep-foreground placeholder:text-deep-foreground/50 focus-visible:outline-2 focus-visible:outline-accent"
               />
-              <PillButton type="submit" variant="accent" className="shrink-0">
-                Subscribe
+              <PillButton type="submit" variant="accent" className="shrink-0" disabled={status === "sending"}>
+                {status === "sending" ? "Subscribing…" : "Subscribe"}
               </PillButton>
             </div>
+            <p aria-live="polite" className="mt-2 text-xs text-deep-foreground/70">
+              {status === "sent" && "Thanks — you're on the list!"}
+              {status === "already" && "You're already subscribed — thank you!"}
+              {status === "error" && "Something went wrong. Please try again."}
+            </p>
           </form>
 
           <p className="mt-6 max-w-sm text-sm text-deep-foreground/80">
@@ -135,6 +176,13 @@ export function SiteFooter() {
           <p>Indianapolis, Indiana · Sundays 10:00 AM</p>
         </div>
       </div>
+
+      <SuccessModal
+        open={showSuccess}
+        onOpenChange={setShowSuccess}
+        title="You're on the list!"
+        message="Thanks for subscribing — we'll keep you inspired."
+      />
     </footer>
   );
 }

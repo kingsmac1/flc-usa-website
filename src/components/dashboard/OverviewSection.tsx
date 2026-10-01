@@ -136,7 +136,7 @@ export function OverviewSection({
           </p>
           <Link
             to="/dashboard"
-            hash="reports"
+            search={{ section: "reports" }}
             className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-gold hover:underline"
           >
             View reports
@@ -153,7 +153,7 @@ export function OverviewSection({
           </p>
           <Link
             to="/dashboard"
-            hash="accounts"
+            search={{ section: "accounts" }}
             className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-gold hover:underline"
           >
             View accounts
@@ -170,7 +170,7 @@ export function OverviewSection({
           </p>
           <Link
             to="/dashboard"
-            hash="viewers"
+            search={{ section: "viewers" }}
             className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-gold hover:underline"
           >
             View viewers
@@ -188,7 +188,7 @@ export function OverviewSection({
             </h3>
             <Link
               to="/dashboard"
-              hash="members"
+              search={{ section: "members" }}
               className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
             >
               View all
@@ -226,7 +226,7 @@ export function OverviewSection({
             </h3>
             <Link
               to="/dashboard"
-              hash="comments"
+              search={{ section: "comments" }}
               className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
             >
               View all
@@ -261,7 +261,7 @@ export function OverviewSection({
           </h3>
           <Link
             to="/dashboard"
-            hash="reports"
+            search={{ section: "reports" }}
             className="inline-flex items-center gap-1 text-xs font-semibold text-gold hover:underline"
           >
             View all
