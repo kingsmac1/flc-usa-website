@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CalendarDays, MapPin } from "lucide-react";
 import { Section, SectionHeading } from "@/components/site/ui";
-import { getEvents, formatEventDate, nextUpcomingService } from "@/data/events";
+import { getEvents, formatEventDate, nextUpcomingService, eventEndsAt, type ChurchEvent } from "@/data/events";
 import { Reveal } from "@/components/site/motion";
 import { CtaBand } from "@/components/site/CtaBand";
 import { EventCountdown } from "@/components/site/EventCountdown";
@@ -29,9 +29,50 @@ export const Route = createFileRoute("/events/")({
   component: EventsIndex,
 });
 
+function EventCard({ event, delay }: { event: ChurchEvent; delay: number }) {
+  return (
+    <Reveal delay={delay}>
+      <li className="overflow-hidden rounded-3xl border border-border bg-card">
+        <Link to="/events/$slug" params={{ slug: event.slug }} className="block">
+          <img
+            src={event.flyer}
+            alt={`${event.title} flyer`}
+            loading="lazy"
+            className="aspect-[16/10] w-full object-cover"
+          />
+          <div className="p-6">
+            <span className="rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
+              {event.type}
+            </span>
+            <h2 className="mt-3 font-display text-xl font-bold">{event.title}</h2>
+            <p className="mt-2 inline-flex items-center gap-2 text-sm text-muted-foreground">
+              <CalendarDays className="size-4 text-primary" aria-hidden="true" />
+              {formatEventDate(event.start)}
+            </p>
+            <p className="mt-1 inline-flex items-center gap-2 text-sm text-muted-foreground">
+              <MapPin className="size-4 text-primary" aria-hidden="true" />
+              {event.location}
+            </p>
+            <p className="mt-3 text-sm text-muted-foreground">{event.summary}</p>
+            <span className="mt-4 inline-block text-sm font-semibold text-primary underline underline-offset-4">
+              View event
+            </span>
+          </div>
+        </Link>
+      </li>
+    </Reveal>
+  );
+}
+
 function EventsIndex() {
   const { events } = Route.useLoaderData();
-  const sorted = [...events].sort((a, b) => (a.start < b.start ? -1 : 1));
+  const now = Date.now();
+  const upcoming = events
+    .filter((e) => eventEndsAt(e).valueOf() >= now)
+    .sort((a, b) => (a.start < b.start ? -1 : 1));
+  const past = events
+    .filter((e) => eventEndsAt(e).valueOf() < now)
+    .sort((a, b) => (a.start > b.start ? -1 : 1));
 
   return (
     <>
@@ -46,42 +87,42 @@ function EventsIndex() {
 
       <EventCountdown {...nextUpcomingService(events)} />
 
-      <Section tone="cream">
-        <ul className="grid gap-6 md:grid-cols-2">
-          {sorted.map((event, i) => (
-            <Reveal key={event.slug} delay={i * 0.07}>
-              <li className="overflow-hidden rounded-3xl border border-border bg-card">
-                <Link to="/events/$slug" params={{ slug: event.slug }} className="block">
-                  <img
-                    src={event.flyer}
-                    alt={`${event.title} flyer`}
-                    loading="lazy"
-                    className="aspect-[16/10] w-full object-cover"
-                  />
-                  <div className="p-6">
-                    <span className="rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
-                      {event.type}
-                    </span>
-                    <h2 className="mt-3 font-display text-xl font-bold">{event.title}</h2>
-                    <p className="mt-2 inline-flex items-center gap-2 text-sm text-muted-foreground">
-                      <CalendarDays className="size-4 text-primary" aria-hidden="true" />
-                      {formatEventDate(event.start)}
-                    </p>
-                    <p className="mt-1 inline-flex items-center gap-2 text-sm text-muted-foreground">
-                      <MapPin className="size-4 text-primary" aria-hidden="true" />
-                      {event.location}
-                    </p>
-                    <p className="mt-3 text-sm text-muted-foreground">{event.summary}</p>
-                    <span className="mt-4 inline-block text-sm font-semibold text-primary underline underline-offset-4">
-                      View event
-                    </span>
-                  </div>
-                </Link>
-              </li>
-            </Reveal>
-          ))}
-        </ul>
+      <Section tone="cream" id="upcoming-events">
+        <SectionHeading eyebrow="Upcoming" title="Upcoming events" />
+        {upcoming.length > 0 ? (
+          <ul className="mt-10 grid gap-6 md:grid-cols-2">
+            {upcoming.map((event, i) => (
+              <EventCard key={event.slug} event={event} delay={i * 0.07} />
+            ))}
+          </ul>
+        ) : (
+          <div className="mt-10 rounded-3xl border border-border bg-card p-10 text-center">
+            <p className="text-sm text-muted-foreground">
+              There are no upcoming events on the calendar right now — check back soon, or take a look at
+              what we've hosted before.
+            </p>
+            {past.length > 0 && (
+              <a
+                href="#past-events"
+                className="mt-4 inline-block text-sm font-semibold text-primary underline underline-offset-4"
+              >
+                View past events
+              </a>
+            )}
+          </div>
+        )}
       </Section>
+
+      {past.length > 0 && (
+        <Section tone="white" id="past-events">
+          <SectionHeading eyebrow="Past" title="Past events" />
+          <ul className="mt-10 grid gap-6 md:grid-cols-2">
+            {past.map((event, i) => (
+              <EventCard key={event.slug} event={event} delay={i * 0.05} />
+            ))}
+          </ul>
+        </Section>
+      )}
 
       <CtaBand items={["salvation", "prayer"]} tone="white" />
     </>

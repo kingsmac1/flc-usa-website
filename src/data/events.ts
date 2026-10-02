@@ -60,6 +60,16 @@ export async function getEvent(slug: string): Promise<ChurchEvent | undefined> {
   return data ? mapEvent(data) : undefined;
 }
 
+/**
+ * The instant an event is considered "over" for upcoming/past purposes —
+ * its `end` time if it has one (e.g. a multi-day event stays "upcoming"
+ * until its last day, not just its first), falling back to `start` for
+ * single-instant events.
+ */
+export function eventEndsAt(event: Pick<ChurchEvent, "start" | "end">): Date {
+  return new Date(event.end ?? event.start);
+}
+
 export function formatEventDate(iso: string) {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return iso;

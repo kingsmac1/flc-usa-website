@@ -6,7 +6,7 @@ import { LEAD_PASTORS, WELCOME } from "@/data/pastors";
 import { PLACEHOLDER, SITE } from "@/data/site";
 import { CtaBand } from "@/components/site/CtaBand";
 import { Parallax, Reveal, HeroReveal } from "@/components/site/motion";
-import { getEvents, formatEventDate, nextUpcomingService } from "@/data/events";
+import { getEvents, formatEventDate, nextUpcomingService, eventEndsAt } from "@/data/events";
 
 const title = "Fountain of Life Church USA | Faith, Worship & Purpose";
 const description =
@@ -228,43 +228,71 @@ function HomePage() {
             intro="Conferences, prayer nights and gatherings we'd love to see you at."
           />
         </Reveal>
-        <ul className="mt-10 grid gap-6 md:grid-cols-2">
-          {[...events]
+        {(() => {
+          const now = Date.now();
+          const upcoming = [...events]
+            .filter((e) => eventEndsAt(e).valueOf() >= now)
             .sort((a, b) => (a.start < b.start ? -1 : 1))
-            .slice(0, 2)
-            .map((event, i) => (
-              <Reveal key={event.slug} delay={i * 0.08}>
-                <li className="overflow-hidden rounded-3xl border border-border bg-card">
-                  <Link to="/events/$slug" params={{ slug: event.slug }} className="block">
-                    <img
-                      src={event.flyer}
-                      alt={`${event.title} flyer`}
-                      loading="lazy"
-                      className="aspect-[16/10] w-full object-cover"
-                    />
-                    <div className="p-6">
-                      <span className="rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
-                        {event.type}
-                      </span>
-                      <h2 className="mt-3 font-display text-xl font-bold">{event.title}</h2>
-                      <p className="mt-2 inline-flex items-center gap-2 text-sm text-muted-foreground">
-                        <CalendarDays className="size-4 text-primary" aria-hidden="true" />
-                        {formatEventDate(event.start)}
-                      </p>
-                      <p className="mt-1 inline-flex items-center gap-2 text-sm text-muted-foreground">
-                        <MapPin className="size-4 text-primary" aria-hidden="true" />
-                        {event.location}
-                      </p>
-                      <p className="mt-3 text-sm text-muted-foreground">{event.summary}</p>
-                      <span className="mt-4 inline-block text-sm font-semibold text-primary underline underline-offset-4">
-                        View event
-                      </span>
-                    </div>
+            .slice(0, 2);
+          const hasPast = events.some((e) => eventEndsAt(e).valueOf() < now);
+
+          if (upcoming.length === 0) {
+            return (
+              <div className="mt-10 rounded-3xl border border-border bg-card p-10 text-center">
+                <p className="text-sm text-muted-foreground">
+                  There are no upcoming events on the calendar right now — check back soon, or take a
+                  look at what we've hosted before.
+                </p>
+                {hasPast && (
+                  <Link
+                    to="/events"
+                    hash="past-events"
+                    className="mt-4 inline-block text-sm font-semibold text-primary underline underline-offset-4"
+                  >
+                    View past events
                   </Link>
-                </li>
-              </Reveal>
-            ))}
-        </ul>
+                )}
+              </div>
+            );
+          }
+
+          return (
+            <ul className="mt-10 grid gap-6 md:grid-cols-2">
+              {upcoming.map((event, i) => (
+                <Reveal key={event.slug} delay={i * 0.08}>
+                  <li className="overflow-hidden rounded-3xl border border-border bg-card">
+                    <Link to="/events/$slug" params={{ slug: event.slug }} className="block">
+                      <img
+                        src={event.flyer}
+                        alt={`${event.title} flyer`}
+                        loading="lazy"
+                        className="aspect-[16/10] w-full object-cover"
+                      />
+                      <div className="p-6">
+                        <span className="rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
+                          {event.type}
+                        </span>
+                        <h2 className="mt-3 font-display text-xl font-bold">{event.title}</h2>
+                        <p className="mt-2 inline-flex items-center gap-2 text-sm text-muted-foreground">
+                          <CalendarDays className="size-4 text-primary" aria-hidden="true" />
+                          {formatEventDate(event.start)}
+                        </p>
+                        <p className="mt-1 inline-flex items-center gap-2 text-sm text-muted-foreground">
+                          <MapPin className="size-4 text-primary" aria-hidden="true" />
+                          {event.location}
+                        </p>
+                        <p className="mt-3 text-sm text-muted-foreground">{event.summary}</p>
+                        <span className="mt-4 inline-block text-sm font-semibold text-primary underline underline-offset-4">
+                          View event
+                        </span>
+                      </div>
+                    </Link>
+                  </li>
+                </Reveal>
+              ))}
+            </ul>
+          );
+        })()}
         <Reveal delay={0.15}>
           <div className="mt-8 text-center">
             <PillLink to="/events" variant="outline">
