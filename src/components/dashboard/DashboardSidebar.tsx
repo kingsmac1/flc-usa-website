@@ -121,7 +121,7 @@ export function DashboardSidebar({
 
   return (
     <aside
-      className="sticky top-0 z-30 hidden h-screen w-64 shrink-0 flex-col border-r border-deep-foreground/10 bg-deep py-5 text-deep-foreground lg:flex"
+      className="z-30 hidden h-full w-64 shrink-0 flex-col overflow-hidden border-r border-deep-foreground/10 bg-deep py-5 text-deep-foreground lg:flex"
       aria-label="Dashboard navigation"
     >
       {/* Brand mark */}

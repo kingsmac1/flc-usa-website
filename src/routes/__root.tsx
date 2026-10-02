@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -134,19 +135,30 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const isDashboard = pathname === "/dashboard";
 
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Preloader />
-        <SmoothScroll />
-        <div className="flex min-h-dvh flex-col overflow-x-hidden">
+        {!isDashboard ? <SmoothScroll /> : null}
+        <div
+          className={
+            "flex flex-col overflow-x-hidden " + (isDashboard ? "h-dvh overflow-hidden" : "min-h-dvh")
+          }
+        >
           <SiteHeader />
-          <main className="flex-1 overflow-x-hidden">
-            {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+          <main className={"flex-1 overflow-x-hidden" + (isDashboard ? " min-h-0 overflow-y-auto" : "")}>
+            {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes.
+                On /dashboard, this flex-1 + min-h-0 sizes main to the remaining viewport height
+                below the header. The signed-in dashboard layout caps itself to that height with
+                its own overflow-hidden + internal scroll column (so the sidebar never scrolls) —
+                this overflow-y-auto only matters as a fallback for the loading/sign-in/access-
+                denied states on short viewports, which aren't height-capped the same way. */}
             <Outlet />
           </main>
-          <SiteFooter />
+          {!isDashboard ? <SiteFooter /> : null}
         </div>
       </AuthProvider>
     </QueryClientProvider>

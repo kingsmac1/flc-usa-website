@@ -124,13 +124,13 @@ export function DashboardPage() {
   const userRole = isPastor ? "Pastor" : "Admin";
 
   return (
-    <div className="flex min-h-screen bg-cream">
+    <div className="flex h-full min-h-0 overflow-hidden bg-cream">
       <DashboardSidebar
         isPastor={isPastor}
         signOut={() => void signOut()}
         activeSection={section}
       />
-      <div className="flex min-h-screen min-w-0 flex-1 flex-col">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto overflow-x-hidden">
         <DashboardTopbar
           userName={userName}
           userRole={userRole}
@@ -139,7 +139,7 @@ export function DashboardPage() {
           onRefresh={invalidateAll}
           onSignOut={() => void signOut()}
         />
-        <main className="min-w-0 flex-1 overflow-x-hidden px-3 py-6 pb-24 sm:px-6 sm:py-8 sm:pb-8 lg:px-8 lg:py-10">
+        <main className="min-w-0 flex-1 px-3 py-6 pb-24 sm:px-6 sm:py-8 sm:pb-8 lg:px-8 lg:py-10">
           <DashboardBody section={section} />
         </main>
       </div>
