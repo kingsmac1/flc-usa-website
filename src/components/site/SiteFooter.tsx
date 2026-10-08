@@ -172,7 +172,7 @@ export function SiteFooter() {
 
       <div className="border-t border-deep-foreground/15">
         <div className="container-flc flex flex-col gap-2 py-5 text-xs text-deep-foreground/65 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} Fountain of Life Church USA. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Fountain of Life Church USA. All rights reserved.{" "}<span className="whitespace-nowrap">· Website by <a href="https://emkaydigitals.com" target="_blank" rel="noopener" className="underline-offset-2 hover:underline">Emkay Digitals</a></span></p>
           <p>Indianapolis, Indiana · Sundays 10:00 AM</p>
         </div>
       </div>
