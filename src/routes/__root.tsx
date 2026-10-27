@@ -1,3 +1,4 @@
+import CookieConsent from "@/components/CookieConsent";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
@@ -156,7 +157,7 @@ function RootComponent() {
                 its own overflow-hidden + internal scroll column (so the sidebar never scrolls) —
                 this overflow-y-auto only matters as a fallback for the loading/sign-in/access-
                 denied states on short viewports, which aren't height-capped the same way. */}
-            <Outlet />
+            <><Outlet /><CookieConsent /></>
           </main>
           {!isDashboard ? <SiteFooter /> : null}
         </div>
